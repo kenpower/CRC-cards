@@ -1,11 +1,5 @@
 <script>
-  let isDragging = false;
-  let dragTarget;
-  let draggedSticky = null;
-
-  let lastOffsetX = 0;
-  let lastOffsetY = 0;
-
+  import Draggable from './components/Draggable.svelte';
   let stickies = {};
 
   let stickyTitle = "";
@@ -28,7 +22,7 @@
     let id = self.crypto.randomUUID();
     let newSticky = {};
 
-    newSticky.html = `<h3>${title}</h3><p>${text}</p><span class="deletesticky">&times;</span>`;
+    newSticky.html = `<div class="sticky"><h3>${title}</h3><p>${text}</p><span class="deletesticky">&times;</span></div>`;
 
     newSticky.style = {};
     positionSticky(newSticky);
@@ -55,61 +49,27 @@
       (-100 + Math.round(Math.random() * 50));
   }
 
-  function mousedown(e) {
-    console.log(e);
-    if (!e.target.classList.contains("drag")) {
-      return;
-    }
-    dragTarget = e.target;
-    dragTarget.parentNode.append(dragTarget);
-    lastOffsetX = e.offsetX;
-    lastOffsetY = e.offsetY;
-    // console.log(lastOffsetX, lastOffsetY);
-    isDragging = true;
-    draggedSticky = stickies[dragTarget.id];
-  }
-
-  function drag(e) {
-    if (!isDragging) return;
-
-    console.log(lastOffsetX);
-    
-    draggedSticky.left = e.clientX - lastOffsetX;
-    draggedSticky.top = e.clientY - lastOffsetY;
-
+  function updateDrag(){
     stickies = stickies;
-    console.log(draggedSticky.left);
-  }
-
-  function mouseup() {
-    if (!isDragging) return;
-
-    isDragging = false;
-    dragTarget.parentNode.append(dragTarget);
   }
 
   createSticky("Hello", "World"); 
+  createSticky("Hello2", "World2"); 
+
 </script>
 
 <svelte:window
   bind:innerWidth
   bind:innerHeight
-  on:mousedown={mousedown}
-  on:mousemove={drag}
-  on:mouseup={mouseup}
 />
 
 <main>
   <div id="stickies-container">
     {#each Object.values(stickies) as sticky}
-      <div
-        class="drag sticky"
-        style="left: {sticky.left}px; top: {sticky.top}px;"
-        id={sticky.id}
-      >
+      <Draggable containedElement={sticky} id={sticky.id} {updateDrag}>
         {@html sticky.html}
         <span class="deletesticky">&times;</span>
-      </div>
+      </Draggable>
     {/each}
   </div>
   <div class="sticky-form">
@@ -150,24 +110,16 @@
   #stickies-container {
     padding: 1rem;
   }
-  .drag {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
+
   .sticky {
+
+    /* 0 0 150px rgba(0, 0, 0, 0.2); */
+    width: 12.5rem;
     background: linear-gradient(to left bottom, #d4fc78, #99e5a2);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     color: #00243f;
-    /* 0 0 150px rgba(0, 0, 0, 0.2); */
-    cursor: grab;
-    display: inline-block;
     padding: 1rem;
-    position: absolute;
-    width: 12.5rem;
+
   }
   .sticky h3,
   .sticky p {
