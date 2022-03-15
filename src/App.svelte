@@ -14,19 +14,21 @@
   let innerWidth;
   let innerHeight;
 
-  function createSticky() {
+  function createStickyFromForm() {
+    createSticky(
+      stickyTitle.replace(/<\/?[^>]+(>|$)/g,""),
+      stickyText
+        .replace(/<\/?[^>]+(>|$)/g, "")
+        .replace(/\r\n|\r|\n/g,"<br />")
+    ) 
+    clearStickyForm();
+  }  
+  
+  function createSticky(title, text) {
     let id = self.crypto.randomUUID();
     let newSticky = {};
 
-    newSticky.html = `<h3>${stickyTitle.replace(
-      /<\/?[^>]+(>|$)/g,
-      ""
-    )}</h3><p>${stickyText
-      .replace(/<\/?[^>]+(>|$)/g, "")
-      .replace(
-        /\r\n|\r|\n/g,
-        "<br />"
-      )}</p><span class="deletesticky">&times;</span>`;
+    newSticky.html = `<h3>${title}</h3><p>${text}</p><span class="deletesticky">&times;</span>`;
 
     newSticky.style = {};
     positionSticky(newSticky);
@@ -34,7 +36,7 @@
     stickies[id] = newSticky;
     stickies = stickies;
     console.log(stickies);
-    clearStickyForm();
+
   }
 
   function clearStickyForm() {
@@ -46,13 +48,11 @@
     sticky.left =
       innerWidth / 2 -
       // sticky.clientWidth / 2 +
-      (-100 + Math.round(Math.random() * 50)) +
-      "px";
+      (-100 + Math.round(Math.random() * 50));
     sticky.top =
       innerHeight / 2 -
       // sticky.clientHeight / 2 +
-      (-100 + Math.round(Math.random() * 50)) +
-      "px";
+      (-100 + Math.round(Math.random() * 50));
   }
 
   function mousedown(e) {
@@ -72,10 +72,13 @@
   function drag(e) {
     if (!isDragging) return;
 
-    // console.log(lastOffsetX);
-
+    console.log(lastOffsetX);
+    
     draggedSticky.left = e.clientX - lastOffsetX;
     draggedSticky.top = e.clientY - lastOffsetY;
+
+    stickies = stickies;
+    console.log(draggedSticky.left);
   }
 
   function mouseup() {
@@ -84,6 +87,8 @@
     isDragging = false;
     dragTarget.parentNode.append(dragTarget);
   }
+
+  createSticky("Hello", "World"); 
 </script>
 
 <svelte:window
@@ -99,7 +104,7 @@
     {#each Object.values(stickies) as sticky}
       <div
         class="drag sticky"
-        style="left: {sticky.left}; top: {sticky.top};"
+        style="left: {sticky.left}px; top: {sticky.top}px;"
         id={sticky.id}
       >
         {@html sticky.html}
@@ -123,7 +128,7 @@
       rows="10"
       bind:value={stickyText}
     />
-    <button class="button" id="createsticky" on:click={createSticky}
+    <button class="button" id="createsticky" on:click={createStickyFromForm}
       >Stick it!</button
     >
   </div>
