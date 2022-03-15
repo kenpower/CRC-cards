@@ -1,41 +1,47 @@
 <script>
   import Draggable from './components/Draggable.svelte';
-  let stickies = {};
+  import CRCCard from './components/CRCCard.svelte';
+  
+  let crcCards = {};
 
-  let stickyTitle = "";
-  let stickyText = "";
+  let crcTitle = "";
+  let crcResponsibilities = "";
+  let crcCollaborators = "";
 
   let innerWidth;
   let innerHeight;
 
-  function createStickyFromForm() {
-    createSticky(
-      stickyTitle.replace(/<\/?[^>]+(>|$)/g,""),
-      stickyText
-        .replace(/<\/?[^>]+(>|$)/g, "")
-        .replace(/\r\n|\r|\n/g,"<br />")
+  function createCRCFromForm() {
+    const clean = s => s.replace(/<\/?[^>]+(>|$)/g,"");
+    const split = s => s.split(/\r\n|\r|\n/g);
+
+    createCRC(
+      clean(crcTitle),
+      split(clean(crcResponsibilities)),
+      split(clean(crcCollaborators))
     ) 
-    clearStickyForm();
+    clearNewCRCForm();
   }  
   
-  function createSticky(title, text) {
+  function createCRC(title, responsibilities, collaborators) {
     let id = self.crypto.randomUUID();
-    let newSticky = {};
+    let newCRC = {};
+    
+    newCRC.id = id;
+    newCRC.title = title;
+    newCRC.collaborators = collaborators;
+    newCRC.responsibilities = responsibilities;
 
-    newSticky.html = `<div class="sticky"><h3>${title}</h3><p>${text}</p><span class="deletesticky">&times;</span></div>`;
+    positionSticky(newCRC);
+    crcCards[id] = newCRC;
 
-    newSticky.style = {};
-    positionSticky(newSticky);
-    newSticky.id = id;
-    stickies[id] = newSticky;
-    stickies = stickies;
-    console.log(stickies);
-
+    crcCards = crcCards;
+    console.log(crcCards);
   }
 
-  function clearStickyForm() {
-    stickyTitle = "";
-    stickyText = "";
+  function clearNewCRCForm() {
+    //crcTitle = "";
+    //crcText = "";
   }
 
   function positionSticky(sticky) {
@@ -49,12 +55,11 @@
       (-100 + Math.round(Math.random() * 50));
   }
 
-  function updateDrag(){
-    stickies = stickies;
-  }
+  const updateDrag = _ => crcCards = crcCards;
+  
 
-  createSticky("Hello", "World"); 
-  createSticky("Hello2", "World2"); 
+  createCRC("ClassA", ["Responsibility1", "Responsibility1"], ["Collaborator1", "Collaborator2"]);
+  createCRC("ClassB", ["Responsibility1", "Responsibility1"], ["Collaborator1", "Collaborator2"]);
 
 </script>
 
@@ -65,10 +70,13 @@
 
 <main>
   <div id="stickies-container">
-    {#each Object.values(stickies) as sticky}
-      <Draggable containedElement={sticky} id={sticky.id} {updateDrag}>
-        {@html sticky.html}
-        <span class="deletesticky">&times;</span>
+    {#each Object.values(crcCards) as card}
+      <Draggable containedElement={card} {updateDrag}>
+        <CRCCard 
+          title = {card.title} 
+          responsibilities = {card.responsibilities}
+          collaborators = {card.collaborators}
+        />
       </Draggable>
     {/each}
   </div>
@@ -78,18 +86,26 @@
       type="text"
       name="stickytitle"
       id="stickytitle"
-      bind:value={stickyTitle}
+      bind:value={crcTitle}
     />
     <label for="stickytext">Responsibilities</label>
     <textarea
       name="stickytext"
       id="stickytext"
       cols="24"
-      rows="10"
-      bind:value={stickyText}
+      rows="5"
+      bind:value={crcResponsibilities}
     />
-    <button class="button" id="createsticky" on:click={createStickyFromForm}
-      >Stick it!</button
+    <label for="stickytext">Collaborators</label>
+    <textarea
+      name="stickytext"
+      id="stickytext"
+      cols="24"
+      rows="5"
+      bind:value={crcCollaborators}
+    />
+    <button class="button" id="createsticky" on:click={createCRCFromForm}
+      >New Card!</button
     >
   </div>
 </main>
@@ -109,41 +125,6 @@
   }
   #stickies-container {
     padding: 1rem;
-  }
-
-  .sticky {
-
-    /* 0 0 150px rgba(0, 0, 0, 0.2); */
-    width: 12.5rem;
-    background: linear-gradient(to left bottom, #d4fc78, #99e5a2);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    color: #00243f;
-    padding: 1rem;
-
-  }
-  .sticky h3,
-  .sticky p {
-    /* color: #0065b3; */
-    color: #00243f;
-    pointer-events: none;
-  }
-  .sticky h3 {
-    border-bottom: dashed 2px #0085e8;
-    margin: 0 0 1rem;
-    min-height: 1.3rem;
-    padding: 0 1.5rem 0.25rem 0;
-  }
-  .sticky p {
-    margin: 0;
-    min-height: 9rem;
-  }
-  .sticky .deletesticky {
-    color: #0085e8;
-    cursor: pointer;
-    font-size: 2rem;
-    position: absolute;
-    right: 0.8rem;
-    top: 0.4rem;
   }
 
   .sticky-form {
