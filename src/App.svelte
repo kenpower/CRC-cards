@@ -2,9 +2,8 @@
   import Draggable from './components/Draggable.svelte';
   import CRCCardView from './components/CRCCardView.svelte';
   import CRCCard from './components/CRCCard.js';
+  import { crcCards } from "./stores.js"
   
-  let crcCards = {};
-
   let crcTitle = "";
   let crcResponsibilities = "";
   let crcCollaborators = "";
@@ -29,9 +28,9 @@
     let newCRC = new CRCCard(title, responsibilities, collaborators);
 
     positionSticky(newCRC);
-    crcCards[newCRC.id] = newCRC;
 
-    crcCards = crcCards;
+    $crcCards = [...$crcCards, newCRC];
+
     console.log(crcCards);
   }
 
@@ -52,12 +51,8 @@
       (-100 + Math.round(Math.random() * 50));
   }
 
-  const updateDrag = _ => crcCards = crcCards;
+  const updateDrag = _ => $crcCards = $crcCards;
   
-
-  createCRC("ClassA", ["Responsibility1", "Responsibility1"], ["Collaborator1", "Collaborator2"]);
-  createCRC("ClassB", ["Responsibility1", "Responsibility1"], ["Collaborator1", "Collaborator2"]);
-
 </script>
 
 <svelte:window
@@ -67,7 +62,7 @@
 
 <main>
   <div id="stickies-container">
-    {#each Object.values(crcCards) as card}
+    {#each $crcCards as card}
       <Draggable containedElement={card} {updateDrag}>
         <CRCCardView {card} />
       </Draggable>

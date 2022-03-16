@@ -1,10 +1,15 @@
 <script>
-export let card;
+    import { crcCards } from "../stores.js"
+    export let card;
 
-
+    const deleteCard = () => {
+        $crcCards = $crcCards.filter(c => c !== card);
+        updateDrag();
+    }
 </script>
 
 <div class = "card">
+    <span class="delete" on:click="{deleteCard}">&times;</span>
     <div class="title">
         <h1 
             contenteditable={true} class="editable"
@@ -39,6 +44,14 @@ export let card;
     color: #00243f;
   }
 
+  .delete {
+    color: #0085e8;
+    cursor: pointer;
+    font-size: 2rem;
+    position: absolute;
+    right: 0.4rem;
+    top: -0.5rem;
+  }
   .card .title{
     display: flex;
     justify-content: center;
