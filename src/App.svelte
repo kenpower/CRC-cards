@@ -1,6 +1,7 @@
 <script>
   import Draggable from './components/Draggable.svelte';
-  import CRCCard from './components/CRCCard.svelte';
+  import CRCCardView from './components/CRCCardView.svelte';
+  import CRCCard from './components/CRCCard.js';
   
   let crcCards = {};
 
@@ -24,16 +25,11 @@
   }  
   
   function createCRC(title, responsibilities, collaborators) {
-    let id = self.crypto.randomUUID();
-    let newCRC = {};
-    
-    newCRC.id = id;
-    newCRC.title = title;
-    newCRC.collaborators = collaborators;
-    newCRC.responsibilities = responsibilities;
+   
+    let newCRC = new CRCCard(title, responsibilities, collaborators);
 
     positionSticky(newCRC);
-    crcCards[id] = newCRC;
+    crcCards[newCRC.id] = newCRC;
 
     crcCards = crcCards;
     console.log(crcCards);
@@ -44,6 +40,7 @@
     //crcText = "";
   }
 
+  //todo rename and be more robust
   function positionSticky(sticky) {
     sticky.left =
       innerWidth / 2 -
@@ -72,14 +69,11 @@
   <div id="stickies-container">
     {#each Object.values(crcCards) as card}
       <Draggable containedElement={card} {updateDrag}>
-        <CRCCard 
-          title = {card.title} 
-          responsibilities = {card.responsibilities}
-          collaborators = {card.collaborators}
-        />
+        <CRCCardView {card} />
       </Draggable>
     {/each}
   </div>
+
   <div class="sticky-form">
     <label for="stickytitle">Class Name</label>
     <input

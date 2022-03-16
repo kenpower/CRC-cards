@@ -1,7 +1,5 @@
 <script>
-export let title = "Class Name";
-export let collaborators = ["Collaborator 1", "Collaborator 2"];
-export let responsibilities =["Responsibility 1", "Responsibility 2"];
+export let card;
 
 
 </script>
@@ -10,12 +8,12 @@ export let responsibilities =["Responsibility 1", "Responsibility 2"];
     <div class="title">
         <h1 
             contenteditable={true} class="editable"
-        >{title}</h1>
+        >{card.title}</h1>
     </div>
     <div class = "body">
         <div class = "responsibilities">
             <ul>
-                {#each responsibilities as responsibility}
+                {#each card.responsibilities as responsibility}
                     <li contenteditable={true} class="editable">{responsibility}</li>
                 {/each}
             </ul>
@@ -23,7 +21,7 @@ export let responsibilities =["Responsibility 1", "Responsibility 2"];
         <div class ="vline"/>
         <div class ="collaborators">
             <ul>
-                {#each collaborators as collaborator}
+                {#each card.collaborators as collaborator}
                     <li contenteditable={true} class="editable" >{collaborator}</li>
                 {/each}
             </ul>
