@@ -4,22 +4,24 @@
 
     const deleteCard = () => {
         $crcCards = $crcCards.filter(c => c !== card);
-        updateDrag();
     }
+
+    const updateCard = _ =>  $crcCards = $crcCards
+
 </script>
 
 <div class = "card">
     <span class="delete" on:click="{deleteCard}">&times;</span>
     <div class="title">
         <h1 
-            contenteditable={true} class="editable"
-        >{card.title}</h1>
+            class="editable" contenteditable="true" bind:textContent={card.title} on:input="{updateCard}"
+        ></h1>
     </div>
     <div class = "body">
         <div class = "responsibilities">
             <ul>
                 {#each card.responsibilities as responsibility}
-                    <li contenteditable={true} class="editable">{responsibility}</li>
+                    <li class="editable" contenteditable="true" bind:textContent={responsibility} on:input="{updateCard}"></li>
                 {/each}
             </ul>
         </div>
@@ -27,7 +29,7 @@
         <div class ="collaborators">
             <ul>
                 {#each card.collaborators as collaborator}
-                    <li contenteditable={true} class="editable" >{collaborator}</li>
+                    <li class="editable"contenteditable="true" bind:textContent={collaborator} on:input="{updateCard}" ></li>
                 {/each}
             </ul>
         </div>
