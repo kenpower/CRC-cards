@@ -8,8 +8,14 @@
     export let updateDrag;
 
     const mousedown = e => {
-        const bringToTop = elem => elem.parentNode.append(elem);
-
+        const bringToTop = elem => {
+            //be careful with this
+            //if we uncoditionally append the element to the end of the list,
+            //we loose mouse events of the child elements
+            if(elem !== elem.parentNode.lastElementChild) {
+                elem.parentNode.append(elem);
+            }
+        }
         const draggable = e.currentTarget;
 
         bringToTop(draggable);
@@ -48,14 +54,7 @@
 <style>
   .drag {
     cursor: grab;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     position: absolute;
-
   }
 
   </style>

@@ -3,32 +3,28 @@ export let title = "Class Name";
 export let collaborators = ["Collaborator 1", "Collaborator 2"];
 export let responsibilities =["Responsibility 1", "Responsibility 2"];
 
-let editingTitle = false;
 
-const toggleEdit = _ => editingTitle = !editingTitle;
 </script>
 
 <div class = "card">
     <div class="title">
         <h1 
-            contenteditable={editingTitle}
-            on:click = {toggleEdit}
-           
+            contenteditable={true} class="editable"
         >{title}</h1>
     </div>
     <div class = "body">
         <div class = "responsibilities">
             <ul>
                 {#each responsibilities as responsibility}
-                    <li>{responsibility}</li>
+                    <li contenteditable={true} class="editable">{responsibility}</li>
                 {/each}
             </ul>
         </div>
         <div class ="vline"/>
-        <div class ="c">
+        <div class ="collaborators">
             <ul>
                 {#each collaborators as collaborator}
-                    <li>{collaborator}</li>
+                    <li contenteditable={true} class="editable" >{collaborator}</li>
                 {/each}
             </ul>
         </div>
@@ -54,7 +50,6 @@ const toggleEdit = _ => editingTitle = !editingTitle;
     h1{
           text-align: center;
           margin: 0rem;
-
       }
   .card .body{
       display:flex;
@@ -75,5 +70,9 @@ const toggleEdit = _ => editingTitle = !editingTitle;
   display: inline-block;
   border-left: 1px solid black;
   width: 0px;
+}
+
+.editable{
+     cursor: text;
 }
 </style>
