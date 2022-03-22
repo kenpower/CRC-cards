@@ -3,10 +3,7 @@
     import MemberList from "./MemberList.svelte"
 
     export let card;
-    let focused = false;
 
-
-    const newCollaboratorPlaceholder = "+collaborator";
     let newCollaborator;
 
     const deleteCard = () => {
