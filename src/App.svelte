@@ -70,7 +70,7 @@
   </div>
 
   <div class="sticky-form">
-    <label for="stickytitle">Class Name sdfds!</label>
+    <label for="stickytitle">Class Name</label>
     <input
       type="text"
       name="stickytitle"
