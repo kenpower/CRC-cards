@@ -1,7 +1,10 @@
 <script>
     import { crcCards } from "../stores.js"
     export let card;
+    let focused = false;
 
+    const newResponsibilityPlaceholder = "+responsibility";
+    const newCollaboratorPlaceholder = "+collaborator";
     let newResponsibility;
     let newCollaborator;
 
@@ -28,15 +31,16 @@
     }
     
     const refresh = _ => { 
-        newCollaborator = "+ collaborator"
-        newResponsibility = "+ responsibility"
-        $crcCards = $crcCards
+        newCollaborator = "";
+        newResponsibility = "";
+        $crcCards = $crcCards;
     }
 
     refresh();
 </script>
 
-<div class = "card">
+<div class = "card"  
+    on:mouseover = "{() => focused = true}" on:focus = "{() => focused = true}" on:blur="{() => focused = false}" on:mouseleave="{() => focused = false}" >
     <span class="delete" on:click="{deleteCard}">&times;</span>
     <div class="title">
         <h1 
@@ -47,9 +51,14 @@
         <div class = "responsibilities">
             <ul>
                 {#each card.responsibilities as responsibility}
-                    <input type="text" class="editable" contenteditable="true" bind:value={responsibility} on:change="{updateCard}"/>
+                    <input type="text" class="editable" contenteditable="true" 
+                        bind:value={responsibility} 
+                        on:change="{updateCard}"/>
                 {/each}
-                <input type="text" class="editable empty" contenteditable="true" bind:value={newResponsibility} on:change="{addResponsibility}"/>
+                <input type="text" class="editable empty" class:focused contenteditable="true"
+                    placeholder={newResponsibilityPlaceholder}
+                    bind:value={newResponsibility} 
+                    on:change="{addResponsibility}"/>
             </ul>
         </div>
         <div class ="vline"/>
@@ -58,7 +67,10 @@
                 {#each card.collaborators as collaborator}
                     <input type="text" class="editable" contenteditable="true" bind:value={collaborator} on:change="{updateCard}"/>
                     {/each}
-                <input type="text" class="editable empty" contenteditable="true" bind:value={newCollaborator} on:change="{addCollaborator}"/>
+                <input type="text" class="editable empty" class:focused contenteditable="true" 
+                    placeholder={newCollaboratorPlaceholder}
+                    bind:value={newCollaborator} 
+                    on:change="{addCollaborator}"/>
             </ul>
         </div>
     </div>
@@ -127,6 +139,11 @@ input.editable{
 
 .empty{
     color: #777;
+     visibility: hidden;
 
+}
+
+.empty.focused{
+    visibility: visible;
 }
 </style>
