@@ -1,11 +1,12 @@
 <script>
     import { crcCards } from "../stores.js"
+    import MemberList from "./MemberList.svelte"
+
     export let card;
     let focused = false;
 
-    const newResponsibilityPlaceholder = "+responsibility";
+
     const newCollaboratorPlaceholder = "+collaborator";
-    let newResponsibility;
     let newCollaborator;
 
     const deleteCard = () => {
@@ -20,7 +21,7 @@
         refresh();
     }
 
-    const addResponsibility = _ => {
+    const addResponsibility = (newResponsibility) => {
         card.responsibilities = [...card.responsibilities, newResponsibility]
         refresh();
     }
@@ -32,15 +33,14 @@
     
     const refresh = _ => { 
         newCollaborator = "";
-        newResponsibility = "";
+
         $crcCards = $crcCards;
     }
 
     refresh();
 </script>
 
-<div class = "card"  
-    on:mouseover = "{() => focused = true}" on:focus = "{() => focused = true}" on:blur="{() => focused = false}" on:mouseleave="{() => focused = false}" >
+<div class = "card" >
     <span class="delete" on:click="{deleteCard}">&times;</span>
     <div class="title">
         <h1 
@@ -48,31 +48,17 @@
         ></h1>
     </div>
     <div class = "body">
-        <div class = "responsibilities">
-            <ul>
-                {#each card.responsibilities as responsibility}
-                    <input type="text" class="editable" contenteditable="true" 
-                        bind:value={responsibility} 
-                        on:change="{updateCard}"/>
-                {/each}
-                <input type="text" class="editable empty" class:focused contenteditable="true"
-                    placeholder={newResponsibilityPlaceholder}
-                    bind:value={newResponsibility} 
-                    on:change="{addResponsibility}"/>
-            </ul>
-        </div>
+        <MemberList 
+            members={card.responsibilities}
+            newMemberPlaceholder={"+responsibility"}
+            addMember={addResponsibility}
+            editMember={updateCard}/>
         <div class ="vline"/>
-        <div class ="collaborators">
-            <ul>
-                {#each card.collaborators as collaborator}
-                    <input type="text" class="editable" contenteditable="true" bind:value={collaborator} on:change="{updateCard}"/>
-                    {/each}
-                <input type="text" class="editable empty" class:focused contenteditable="true" 
-                    placeholder={newCollaboratorPlaceholder}
-                    bind:value={newCollaborator} 
-                    on:change="{addCollaborator}"/>
-            </ul>
-        </div>
+        <MemberList 
+            members={card.collaborators}
+            newMemberPlaceholder={"+collaborator"}
+            addMember={addCollaborator}
+            editMember={updateCard}/>
     </div>
 </div>
 
@@ -110,40 +96,18 @@
       padding-top: 1rem;  
   }
 
-  .responsibilities, .collaborators {
-      flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-  }
-
-  ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
 .vline {
   display: inline-block;
   border-left: 1px solid black;
   width: 0px;
 }
 
-input.editable{
-    display: block;
+h1.editable{
+    min-width: 5rem;
     cursor: text;
-    background-color: transparent;
-    border: none;
-    flex-grow: 1;
-    padding: 0 ;
-    margin : 0;
+}
+h1.editable:hover{
+    background-color: azure;
 }
 
-.empty{
-    color: #777;
-     visibility: hidden;
-
-}
-
-.empty.focused{
-    visibility: visible;
-}
 </style>
