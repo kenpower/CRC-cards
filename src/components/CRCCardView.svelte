@@ -6,7 +6,13 @@
         $crcCards = $crcCards.filter(c => c !== card);
     }
 
-    const updateCard = _ =>  $crcCards = $crcCards
+    const removeEmpty = list => list.filter(s => s.trim() !== "");
+
+    const updateCard = _ =>  {
+        card.responsibilities = removeEmpty(card.responsibilities)
+        card.collaborators = removeEmpty(card.collaborators)
+        $crcCards = $crcCards
+    }
 
 </script>
 
