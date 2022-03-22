@@ -2,6 +2,9 @@
     import { crcCards } from "../stores.js"
     export let card;
 
+    let newResponsibility;
+    let newCollaborator;
+
     const deleteCard = () => {
         $crcCards = $crcCards.filter(c => c !== card);
     }
@@ -11,9 +14,26 @@
     const updateCard = _ =>  {
         card.responsibilities = removeEmpty(card.responsibilities)
         card.collaborators = removeEmpty(card.collaborators)
+        refresh();
+    }
+
+    const addResponsibility = _ => {
+        card.responsibilities = [...card.responsibilities, newResponsibility]
+        refresh();
+    }
+    
+    const addCollaborator = _ => {
+        card.collaborators = [...card.collaborators, newCollaborator]
+        refresh();
+    }
+    
+    const refresh = _ => { 
+        newCollaborator = "+ collaborator"
+        newResponsibility = "+ responsibility"
         $crcCards = $crcCards
     }
 
+    refresh();
 </script>
 
 <div class = "card">
@@ -27,16 +47,18 @@
         <div class = "responsibilities">
             <ul>
                 {#each card.responsibilities as responsibility}
-                    <li class="editable" contenteditable="true" bind:textContent={responsibility} on:input="{updateCard}"></li>
+                    <input type="text" class="editable" contenteditable="true" bind:value={responsibility} on:change="{updateCard}"/>
                 {/each}
+                <input type="text" class="editable empty" contenteditable="true" bind:value={newResponsibility} on:change="{addResponsibility}"/>
             </ul>
         </div>
         <div class ="vline"/>
         <div class ="collaborators">
             <ul>
                 {#each card.collaborators as collaborator}
-                    <li class="editable"contenteditable="true" bind:textContent={collaborator} on:input="{updateCard}" ></li>
-                {/each}
+                    <input type="text" class="editable" contenteditable="true" bind:value={collaborator} on:change="{updateCard}"/>
+                    {/each}
+                <input type="text" class="editable empty" contenteditable="true" bind:value={newCollaborator} on:change="{addCollaborator}"/>
             </ul>
         </div>
     </div>
@@ -78,6 +100,8 @@
 
   .responsibilities, .collaborators {
       flex-grow: 1;
+        display: flex;
+        flex-direction: column;
   }
 
   ul {
@@ -91,7 +115,18 @@
   width: 0px;
 }
 
-.editable{
-     cursor: text;
+input.editable{
+    display: block;
+    cursor: text;
+    background-color: transparent;
+    border: none;
+    flex-grow: 1;
+    padding: 0 ;
+    margin : 0;
+}
+
+.empty{
+    color: #777;
+
 }
 </style>
