@@ -8,6 +8,8 @@
     export let top;
     export let updateDrag;
 
+    let liftOffset=15;
+
     const mousedown = e => {
         const bringToTop = elem => {
             //be careful with this
@@ -23,10 +25,24 @@
 
         // can't use e.offsetX as it is relative to the bottommost child element
         var rect = draggable.getBoundingClientRect();
-        lastOffsetX = e.clientX - rect.left;
-        lastOffsetY = e.clientY - rect.top;
+        lastOffsetX = e.clientX - rect.left + liftOffset;
+        lastOffsetY = e.clientY - rect.top + liftOffset;
+        
+
+        adjustPositionToGiveLiftingEffect()
+
+        updateDrag(left, top);
 
         isDragging = true;
+     }
+
+     const adjustPositionToGiveLiftingEffect = () =>{
+        left-=liftOffset;
+        top-=liftOffset;
+
+        lastOffsetX += liftOffset;
+        lastOffsetY += liftOffset;
+
      }
 
     const drag = e =>  {
@@ -60,6 +76,7 @@
 
   .isDragging{
     box-shadow: 22px 23px 27px 15px rgba(0,0,0,0.82);
+    transform: rotateZ(-5deg);
   }
 
   </style>
