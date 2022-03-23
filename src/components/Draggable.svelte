@@ -3,8 +3,9 @@
     
     let lastOffsetX = 0;
     let lastOffsetY = 0;
-    
-    export let containedElement; //this a card, not a cardView!
+
+    export let left;
+    export let top;
     export let updateDrag;
 
     const mousedown = e => {
@@ -31,10 +32,10 @@
     const drag = e =>  {
         if (!isDragging) return;
 
-        containedElement.left = e.clientX - lastOffsetX;
-        containedElement.top = e.clientY - lastOffsetY;
+        left = e.clientX - lastOffsetX;
+        top = e.clientY - lastOffsetY;
 
-        updateDrag();
+        updateDrag(left, top);
     }
 
     const mouseup = _ => isDragging = false;
@@ -47,7 +48,7 @@
   on:mousemove = {drag}
   on:mouseup = {mouseup}
     class="drag" class:isDragging
-    style="left: {containedElement.left}px; top: {containedElement.top}px;">
+    style="left: {left}px; top: {top}px;">
         <slot></slot>
 </div>
 

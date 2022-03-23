@@ -51,7 +51,13 @@
       (-100 + Math.round(Math.random() * 50));
   }
 
-  const updateDrag = _ => $crcCards = $crcCards;
+  const updateCardPosition = (card) => { //partial function
+    return function(left, top){
+      card.left = left;
+      card.top = top;
+      $crcCards = $crcCards;
+    }
+  }
   
 </script>
 
@@ -63,7 +69,7 @@
 <main>
   <div id="stickies-container">
     {#each $crcCards as card}
-      <Draggable containedElement={card} {updateDrag}>
+      <Draggable left={card.left} top={card.top} updateDrag={updateCardPosition(card)}>
         <CRCCardView {card} />
       </Draggable>
     {/each}
