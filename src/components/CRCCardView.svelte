@@ -45,13 +45,13 @@
     </div>
     <div class = "body">
         <MemberList 
-            members={card.responsibilities}
+            halfCard={card.responsibilities}
             newMemberPlaceholder={"+responsibility"}
             {save}
         />
         <div class ="vline"/>
         <MemberList 
-            members={card.collaborators}
+            halfCard={card.collaborators}
             newMemberPlaceholder={"+collaborator"}
             {save}
         />

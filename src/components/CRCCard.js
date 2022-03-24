@@ -3,7 +3,7 @@ export default class CRCCard {
     this.id = self.crypto.randomUUID();
 
     this.title = title;
-    this.collaborators = collaborators || [];
-    this.responsibilities = responsibilities || [];
+    this.collaborators = { members: collaborators || [] };
+    this.responsibilities = { members: responsibilities || [] };
   }
 }

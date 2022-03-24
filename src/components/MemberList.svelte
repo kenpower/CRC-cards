@@ -2,7 +2,7 @@
     import DraggableInput from "./DraggableInput.svelte";
     //export let addMember;
     //export let editMember;
-    export let members
+    export let halfCard;
     export let newMemberPlaceholder
     export let save
 
@@ -20,14 +20,14 @@
     const edit = (newText, idx) =>  {
         const removeEmpty = list => list.filter(s => s && s.trim() !== "");
 
-        members[idx] = newText;
+        halfCard.members[idx] = newText;
         console.log("update");
-        members = removeEmpty(members)
+        halfCard.members = removeEmpty(halfCard.members)
         save();
     }
 
     const add = (newMember) => {
-        members = [...members, newMember]
+        halfCard.members = [...halfCard.members, newMember]
         save();
     }
 
@@ -39,7 +39,7 @@
     on:dragover|preventDefault = "{_ => false}"
     on:drop|preventDefault = "{onDrop}"
     >
-        {#each members as member, id}
+        {#each halfCard.members as member, id}
             <DraggableInput {id} text={member} {edit}  />
         {/each}
         <input type="text" class="editable empty" class:focused contenteditable="true"
