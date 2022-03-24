@@ -11,6 +11,7 @@
     let liftOffset=15;
 
     const mousedown = e => {
+        return;// TODO disable dragging for now
         const bringToTop = elem => {
             //be careful with this
             //if we unconditionally append the element to the end of the list,

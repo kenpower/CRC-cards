@@ -1,27 +1,51 @@
 <script>
- export let addMember;
- export let editMember;
- export let members
- export let newMemberPlaceholder
+    import DraggableInput from "./DraggableInput.svelte";
+    //export let addMember;
+    //export let editMember;
+    export let members
+    export let newMemberPlaceholder
+    export let save
 
- let focused = false;
- 
+
+    let draggedMember = null;
+    let focused = false;
+    
+    const onDrop = (event) =>  {
+        const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+        //event.target.textContent = data;
+        console.log(data.text);
+        add(data.text);
+    }
+
+    const edit = (newText, idx) =>  {
+        const removeEmpty = list => list.filter(s => s && s.trim() !== "");
+
+        members[idx] = newText;
+        console.log("update");
+        members = removeEmpty(members)
+        save();
+    }
+
+    const add = (newMember) => {
+        members = [...members, newMember]
+        save();
+    }
 
 </script>
 
 <div class="memberList"
     on:mouseover = "{() => focused = true}" on:focus = "{() => focused = true}" 
-    on:blur="{() => focused = false}" on:mouseleave="{() => focused = false}" 
+    on:blur="{() => focused = false}" on:mouseleave="{() => focused = false}"
+    on:dragover|preventDefault = "{_ => false}"
+    on:drop|preventDefault = "{onDrop}"
     >
-        {#each members as member}
-            <input type="text" class="editable" contenteditable="true" 
-                bind:value={member} 
-                on:change="{editMember}"/>
+        {#each members as member, id}
+            <DraggableInput {id} text={member} {edit}  />
         {/each}
         <input type="text" class="editable empty" class:focused contenteditable="true"
             placeholder={newMemberPlaceholder}
             on:change= { e => {
-                addMember(e.target.value);
+                add(e.target.value);
                 e.target.value = '';
                 }
             }

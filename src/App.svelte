@@ -3,6 +3,7 @@
   import CRCCardView from './components/CRCCardView.svelte';
   import CRCCard from './components/CRCCard.js';
   import { crcCards } from "./stores.js"
+  import { flip } from 'svelte/animate';
   
   let crcTitle = "";
   let crcResponsibilities = "";
@@ -69,7 +70,7 @@
 <main>
   <div id="stickies-container">
     {#each $crcCards as card}
-      <Draggable left={card.left} top={card.top} updateDrag={updateCardPosition(card)}>
+      <Draggable left={card.left} top={card.top} updateDrag={updateCardPosition(card)} >
         <CRCCardView {card} />
       </Draggable>
     {/each}

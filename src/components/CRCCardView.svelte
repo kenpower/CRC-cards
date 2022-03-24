@@ -10,52 +10,51 @@
         $crcCards = $crcCards.filter(c => c !== card);
     }
 
-    const removeEmpty = list => list.filter(s => s.trim() !== "");
+    // const removeEmpty = list => list.filter(s => s && s.trim() !== "");
 
-    const updateCard = _ =>  {
-        card.responsibilities = removeEmpty(card.responsibilities)
-        card.collaborators = removeEmpty(card.collaborators)
-        refresh();
-    }
+    // const updateCard = _ =>  {
+    //     console.log("update card");
+    //     card.responsibilities = removeEmpty(card.responsibilities)
+    //     card.collaborators = removeEmpty(card.collaborators)
+    //     refresh();
+    // }
 
-    const addResponsibility = (newResponsibility) => {
-        card.responsibilities = [...card.responsibilities, newResponsibility]
-        refresh();
-    }
+    // const addResponsibility = (newResponsibility) => {
+    //     card.responsibilities = [...card.responsibilities, newResponsibility]
+    //     refresh();
+    // }
     
-    const addCollaborator = _ => {
+    const addCollaborator =  (newCollaborator) => {
         card.collaborators = [...card.collaborators, newCollaborator]
         refresh();
     }
     
-    const refresh = _ => { 
-        newCollaborator = "";
-
+    const save = _ => { 
         $crcCards = $crcCards;
     }
 
-    refresh();
+    save();
 </script>
 
 <div class = "card" >
     <span class="delete" on:click="{deleteCard}">&times;</span>
     <div class="title">
         <h1 
-            class="editable" contenteditable="true" bind:textContent={card.title} on:input="{updateCard}"
+            class="editable" contenteditable="true" bind:textContent={card.title} on:input="{save}"
         ></h1>
     </div>
     <div class = "body">
         <MemberList 
             members={card.responsibilities}
             newMemberPlaceholder={"+responsibility"}
-            addMember={addResponsibility}
-            editMember={updateCard}/>
+            {save}
+        />
         <div class ="vline"/>
         <MemberList 
             members={card.collaborators}
             newMemberPlaceholder={"+collaborator"}
-            addMember={addCollaborator}
-            editMember={updateCard}/>
+            {save}
+        />
     </div>
 </div>
 
