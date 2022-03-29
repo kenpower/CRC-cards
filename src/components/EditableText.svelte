@@ -46,7 +46,7 @@ input{
 
 .empty{
     color: #777;
-    visibility: hidden;
+    /* visibility: hidden; */
 
 }
 .empty:hover, .empty:focus{

@@ -91,6 +91,7 @@ const saveold = () => {
 
 :global(.title) {
     text-align: center;
+    cursor: text;
     margin: 0rem;
     font-size: 2rem;
     font-weight: 700;

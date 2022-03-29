@@ -44,7 +44,9 @@
     >
         {#each halfCard.members as member, id}
             <Draggable data = {{'text':member, id}} >
-                <EditableText text={member} edit={partial_edit(id)}/>
+                <!-- TODO blur editable when dragging starts <div draggable=true on:dragstart={e=>console.log(e, e.target.blur())}> -->
+                <EditableText text={member} edit={partial_edit(id)} />
+               <!-- </div> -->
             </Draggable>
         {/each}
         <input type="text" class="editable empty" class:focused contenteditable="true"
