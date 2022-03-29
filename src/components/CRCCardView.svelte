@@ -35,12 +35,6 @@ const save = (newTitle) => {
     $crcCards = $crcCards;
 }
 
-const saveold = () => {
-
-    $crcCards = $crcCards;
-}
-
-//save();
 </script>
 
 <div class = "card" >

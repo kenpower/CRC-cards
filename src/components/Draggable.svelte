@@ -3,6 +3,9 @@
     let draggedMember = null;
     let focused = false;
 
+    export let left;
+    export let top;
+
     // see here (modify to make dragable work) https://svelte.dev/repl/b225504c9fea44b189ed5bfb566df6e6?version=3.46.4
 
     const dragStart = (event,) => {
@@ -21,11 +24,17 @@
     //     text=text;
     // }
     
+    const getStyle = () => 
+        (top && left) 
+            ? `left: ${left}px; top: ${top}px; position: absolute;}`
+            : "";
+    
 
 </script>
     
 <div draggable={true}
-         on:dragstart|stopPropagation={event => dragStart(event)}>
+         on:dragstart|stopPropagation={event => dragStart(event)}
+         style="{getStyle()}">
         <slot></slot>
 </div>
 

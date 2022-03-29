@@ -1,5 +1,5 @@
 <script>
-  import DraggableOld from './components/DraggableOld.svelte';
+  import Draggable from './components/Draggable.svelte';
   import CRCCardView from './components/CRCCardView.svelte';
   import CRCCard from './components/CRCCard.js';
   import { crcCards } from "./stores.js"
@@ -54,10 +54,31 @@
 
   const updateCardPosition = (card) => { //partial function
     return function(left, top){
+      console.log(card, left, top)
       card.left = left;
       card.top = top;
       $crcCards = $crcCards;
+      console.log(card, left, top)
     }
+  }
+
+  const onDrop = (event) =>  {
+        const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+        //event.target.textContent = data;
+        const movedCardidx= $crcCards.findIndex(card => card.id == data.card.id);
+        console.log($crcCards[movedCardidx]);
+        //updateCardPosition(movedCard)(event.clientX, event.clientY);
+        //todo fix this so that it updates after the card is dropped
+        //right now need a browser refresh to see new position 
+        $crcCards[movedCardidx].top = event.clientY;
+        $crcCards[movedCardidx].left = event.clientX;
+        console.log($crcCards[movedCardidx]);
+
+    }
+  
+  const onDragOver = (event) => {
+    //updateCardPosition(card)(event.clientX, event.clientY);
+    return false;
   }
   
 </script>
@@ -68,11 +89,16 @@
 />
 
 <main>
-  <div id="stickies-container">
+  <div id="stickies-container"
+    class="full-screen"
+    on:dragover|preventDefault = "{onDragOver}"
+    on:drop|preventDefault = "{onDrop}">
     {#each $crcCards as card}
-      <DraggableOld left={card.left} top={card.top} updateDrag={updateCardPosition(card)} >
+      <Draggable 
+        left={card.left} top={card.top}  
+        data = {{card}} >
         <CRCCardView {card} />
-      </DraggableOld>
+      </Draggable>
     {/each}
   </div>
 
@@ -171,5 +197,9 @@
     text-align: center;
     user-select: none;
     vertical-align: middle;
+  }
+
+  .full-screen{
+    min-height: 100vh;
   }
 </style>
