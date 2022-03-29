@@ -13,7 +13,7 @@
         //text="";
 
         //todo use nice svlete transition to sjow gap being filled
-        setTimeout(()=> edit("", id), 500); //remove after 500ms
+        //setTimeout(()=> edit("", id), 500); //remove after 500ms
     }
 
     // const drag = (event, member, idx) => {

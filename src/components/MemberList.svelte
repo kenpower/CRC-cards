@@ -22,7 +22,7 @@
         const removeEmpty = list => list.filter(s => s && s.trim() !== "");
 
         halfCard.members[idx] = newText;
-        console.log("update");
+        console.log("update!");
         halfCard.members = removeEmpty(halfCard.members)
         save();
     }
@@ -32,11 +32,8 @@
         save();
     }
 
-    const edit_id = (idx) => {
-        return function (newText) {
-            edit(newText, idx)
-        }
-    }
+    const partial_edit = (idx) => (newText) => edit(newText, idx);
+
 </script>
 
 <div class="memberList"
@@ -47,7 +44,7 @@
     >
         {#each halfCard.members as member, id}
             <Draggable data = {{'text':member, id}} >
-                <EditableText text={member} id={id} edit={edit_id}/>
+                <EditableText text={member} edit={partial_edit(id)}/>
             </Draggable>
         {/each}
         <input type="text" class="editable empty" class:focused contenteditable="true"
