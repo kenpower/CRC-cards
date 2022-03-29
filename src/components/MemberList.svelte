@@ -1,5 +1,6 @@
 <script>
-    import DraggableInput from "./DraggableInput.svelte";
+    import Draggable from "./Draggable.svelte";
+    import EditableText from "./EditableText.svelte";
     //export let addMember;
     //export let editMember;
     export let halfCard;
@@ -31,6 +32,11 @@
         save();
     }
 
+    const edit_id = (idx) => {
+        return function (newText) {
+            edit(newText, idx)
+        }
+    }
 </script>
 
 <div class="memberList"
@@ -40,7 +46,9 @@
     on:drop|preventDefault = "{onDrop}"
     >
         {#each halfCard.members as member, id}
-            <DraggableInput {id} text={member} {edit}  />
+            <Draggable data = {{'text':member, id}} >
+                <EditableText text={member} id={id} edit={edit_id}/>
+            </Draggable>
         {/each}
         <input type="text" class="editable empty" class:focused contenteditable="true"
             placeholder={newMemberPlaceholder}

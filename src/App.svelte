@@ -1,5 +1,5 @@
 <script>
-  import Draggable from './components/Draggable.svelte';
+  import DraggableOld from './components/DraggableOld.svelte';
   import CRCCardView from './components/CRCCardView.svelte';
   import CRCCard from './components/CRCCard.js';
   import { crcCards } from "./stores.js"
@@ -70,9 +70,9 @@
 <main>
   <div id="stickies-container">
     {#each $crcCards as card}
-      <Draggable left={card.left} top={card.top} updateDrag={updateCardPosition(card)} >
+      <DraggableOld left={card.left} top={card.top} updateDrag={updateCardPosition(card)} >
         <CRCCardView {card} />
-      </Draggable>
+      </DraggableOld>
     {/each}
   </div>
 

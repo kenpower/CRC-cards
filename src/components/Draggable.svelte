@@ -1,83 +1,33 @@
-<script>
-    let isDragging = false;
-    
-    let lastOffsetX = 0;
-    let lastOffsetY = 0;
+ <script>
+    export let data = {};
+    let draggedMember = null;
+    let focused = false;
 
-    export let left;
-    export let top;
-    export let updateDrag;
+    // see here (modify to make dragable work) https://svelte.dev/repl/b225504c9fea44b189ed5bfb566df6e6?version=3.46.4
 
-    let liftOffset=15;
+    const dragStart = (event,) => {
+        //remove();
 
-    const mousedown = e => {
-        return;// TODO disable dragging for now
-        const bringToTop = elem => {
-            //be careful with this
-            //if we unconditionally append the element to the end of the list,
-            //we lose mouse events of the child elements
-            if(elem !== elem.parentNode.lastElementChild) {
-                elem.parentNode.append(elem);
-            }
-        }
-        const draggable = e.currentTarget;
+        event.dataTransfer.effectAllowed = "move";
+   	    event.dataTransfer.setData('text/plain', JSON.stringify(data));
+        //text="";
 
-        bringToTop(draggable);
-
-        // can't use e.offsetX as it is relative to the bottommost child element
-        var rect = draggable.getBoundingClientRect();
-        lastOffsetX = e.clientX - rect.left + liftOffset;
-        lastOffsetY = e.clientY - rect.top + liftOffset;
-        
-
-        adjustPositionToGiveLiftingEffect()
-
-        updateDrag(left, top);
-
-        isDragging = true;
-     }
-
-     const adjustPositionToGiveLiftingEffect = () =>{
-        left-=liftOffset;
-        top-=liftOffset;
-
-        lastOffsetX += liftOffset;
-        lastOffsetY += liftOffset;
-
-     }
-
-    const drag = e =>  {
-        if (!isDragging) return;
-
-        left = e.clientX - lastOffsetX;
-        top = e.clientY - lastOffsetY;
-
-        updateDrag(left, top);
+        //todo use nice svlete transition to sjow gap being filled
+        setTimeout(()=> edit("", id), 500); //remove after 500ms
     }
 
-    const mouseup = _ => isDragging = false;
+    // const drag = (event, member, idx) => {
+    //     draggedMember = idx;
+    //     text=text;
+    // }
+    
 
 </script>
-
-
-<div
-  on:mousedown = {mousedown}
-  on:mousemove = {drag}
-  on:mouseup = {mouseup}
-    class="drag" class:isDragging
-    style="left: {left}px; top: {top}px;">
+    
+<div draggable={true}
+         on:dragstart|stopPropagation={event => dragStart(event)}>
         <slot></slot>
 </div>
 
 <style>
-  .drag {
-    cursor: grab;
-    position: absolute;
-  }
-
-  .isDragging{
-    box-shadow: 22px 23px 27px 15px rgba(0,0,0,0.82);
-    transform: rotateZ(-5deg);
-  }
-
-  </style>
+</style>
