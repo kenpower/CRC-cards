@@ -1,6 +1,7 @@
 <script>
     export let text="";
     export let edit;
+    export let classes ="";
 
     let originalText=text;
     let is_editing = false;
@@ -20,7 +21,7 @@
 
 <input  
     type="text" 
-    class="editable" 
+    class={"editable "+classes} 
     contenteditable="true" 
     class:is_editing
     class:empty={!text}
