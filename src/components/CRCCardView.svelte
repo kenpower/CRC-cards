@@ -64,10 +64,14 @@
     background: linear-gradient(to left bottom, #d4fc78, #99e5a2);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     color: #00243f;
+    box-sizing: border-box;
+    background-clip: padding-box;
+    border-radius: 0.5rem;
   }
 
-  .card:hover {
-    background-clip: content-box
+  .card:hover, .card:active {
+    border: 2rem solid  #99e5a2dd;
+    padding: 0;
   }
 
   .delete {
@@ -107,6 +111,6 @@
   }
 
   .ignore-mouse-down{
-    cursor: pointer;
+    cursor: default;
   }
 </style>
