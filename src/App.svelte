@@ -1,5 +1,5 @@
 <script>
-  import Draggable from './components/Draggable.svelte';
+  import Moveable from './components/Moveable.svelte';
   import CRCCardView from './components/CRCCardView.svelte';
   import CRCCard from './components/CRCCard.js';
   import { crcCards } from "./stores.js"
@@ -24,7 +24,7 @@
     clearNewCRCForm();
   }  
   
-  function createCRC(title, responsibilities, collaborators) {
+  const createCRC = (title, responsibilities, collaborators) => {
    
     let newCRC = new CRCCard(title, responsibilities, collaborators);
 
@@ -53,31 +53,54 @@
   }
 
   const updateCardPosition = (card) => { //partial function
+    const movedCardidx = $crcCards.findIndex(c => c.id == card.id);
     return function(left, top){
-      console.log(card, left, top)
-      card.left = left;
-      card.top = top;
-      $crcCards = $crcCards;
-      console.log(card, left, top)
+      console.log($crcCards[movedCardidx]);
+      $crcCards[movedCardidx].top = top;
+      $crcCards[movedCardidx].left = left;
+     
+      console.log($crcCards[movedCardidx]);
     }
   }
 
+	$: console.log("refresh!", $crcCards);
+
+  $: console.log(crcCards);
+
   const onDrop = (event) =>  {
-        const data = JSON.parse(event.dataTransfer.getData("text/plain"));
-        //event.target.textContent = data;
-        const movedCardidx= $crcCards.findIndex(card => card.id == data.card.id);
-        console.log($crcCards[movedCardidx]);
-        //updateCardPosition(movedCard)(event.clientX, event.clientY);
-        //todo fix this so that it updates after the card is dropped
-        //right now need a browser refresh to see new position 
-        $crcCards[movedCardidx].top = event.clientY;
-        $crcCards[movedCardidx].left = event.clientX;
-        console.log($crcCards[movedCardidx]);
+        console.log("On Drop!");
+        const {card} = JSON.parse(event.dataTransfer.getData("text/plain"));
+        updateCardPosition(card)(event.clientX, event.clientY);
+
+        //$crcCards = [...$crcCards];
+        // //event.target.textContent = data;
+        // const movedCardidx= $crcCards.findIndex(card => card.id == data.card.id);
+        // console.log($crcCards[movedCardidx]);
+        // //updateCardPosition(movedCard)(event.clientX, event.clientY);
+        // //todo fix this so that it updates after the card is dropped
+        // //right now need a browser refresh to see new position 
+        // $crcCards[movedCardidx].top = event.clientY;
+        // $crcCards[movedCardidx].left = event.clientX;
+        // console.log($crcCards[movedCardidx]);
 
     }
   
+  // const dragStart = (event, data) => {
+	// 	event.dataTransfer.effectAllowed = "move";
+	// 	event.dataTransfer.setData('text/plain', JSON.stringify(data));
+	// }
+
+  // 	const getStyle = (top, left) => 
+	// (top && left) 
+	// ? `left: ${left}px; top: ${top}px; position: absolute;}`
+	// : "";
+
   const onDragOver = (event) => {
-    //updateCardPosition(card)(event.clientX, event.clientY);
+    const dragData=event.dataTransfer.getData("text/plain");
+    if(dragData){
+      const {card} = JSON.parse(event.dataTransfer.getData("text/plain"));
+      updateCardPosition(card)(event.clientX, event.clientY);
+    }
     return false;
   }
   
@@ -94,13 +117,16 @@
     on:dragover|preventDefault = "{onDragOver}"
     on:drop|preventDefault = "{onDrop}">
     {#each $crcCards as card}
-      <Draggable 
-        left={card.left} top={card.top}  
-        data = {{card}} >
+      <Moveable 
+        pos = {{"left":card.left, "top":card.top}}
+        updateDrag = {updateCardPosition(card)}  
+        >
         <CRCCardView {card} />
-      </Draggable>
+    </Moveable>
     {/each}
   </div>
+
+  
 
   <div class="sticky-form">
     <label for="stickytitle">Class Name</label>

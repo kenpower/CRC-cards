@@ -1,7 +1,5 @@
 <script>
-import {
-    crcCards
-} from "../stores.js"
+import { crcCards } from "../stores.js"
 import MemberList from "./MemberList.svelte"
 import EditableText from "./EditableText.svelte"
 
@@ -37,7 +35,7 @@ const save = (newTitle) => {
 
 </script>
 
-<div class = "card" >
+<div class = "card"  >
     <span class="delete" on:click="{deleteCard}">&times;</span>
     <div class="title-area">
         <EditableText text={card.title} edit={save} classes="title"/>

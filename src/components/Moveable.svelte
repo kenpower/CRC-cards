@@ -4,14 +4,15 @@
     let lastOffsetX = 0;
     let lastOffsetY = 0;
 
-    export let left;
-    export let top;
-    export let updateDrag;
+    export let pos;
+
+    export let updateDrag=null;
 
     let liftOffset=15;
 
+
     const mousedown = e => {
-        return;// TODO disable dragging for now
+       
         const bringToTop = elem => {
             //be careful with this
             //if we unconditionally append the element to the end of the list,
@@ -32,14 +33,14 @@
 
         adjustPositionToGiveLiftingEffect()
 
-        updateDrag(left, top);
+        updateDrag(pos.left, pos.top);
 
         isDragging = true;
      }
 
      const adjustPositionToGiveLiftingEffect = () =>{
-        left-=liftOffset;
-        top-=liftOffset;
+        pos.left-=liftOffset;
+        pos.top-=liftOffset;
 
         lastOffsetX += liftOffset;
         lastOffsetY += liftOffset;
@@ -49,13 +50,17 @@
     const drag = e =>  {
         if (!isDragging) return;
 
-        left = e.clientX - lastOffsetX;
-        top = e.clientY - lastOffsetY;
+        pos.left = e.clientX - lastOffsetX;
+        pos.top = e.clientY - lastOffsetY;
 
-        updateDrag(left, top);
+        updateDrag(pos.left, pos.top);
     }
 
-    const mouseup = _ => isDragging = false;
+  $: style = pos 
+      ? `left: ${pos.left}px; top: ${pos.top}px; position: absolute;}`
+      : "";
+    
+  const mouseup = _ => isDragging = false;
 
 </script>
 
@@ -65,7 +70,7 @@
   on:mousemove = {drag}
   on:mouseup = {mouseup}
     class="drag" class:isDragging
-    style="left: {left}px; top: {top}px;">
+    style="{style}">
         <slot></slot>
 </div>
 
