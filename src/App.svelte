@@ -55,11 +55,11 @@
     //partial function
     const movedCardidx = $crcCards.findIndex((c) => c.id == card.id);
     return function (left, top) {
-      console.log($crcCards[movedCardidx]);
+      
       $crcCards[movedCardidx].top = top;
       $crcCards[movedCardidx].left = left;
 
-      console.log($crcCards[movedCardidx]);
+     
     };
   };
 

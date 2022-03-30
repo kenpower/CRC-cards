@@ -24,8 +24,9 @@
   // }
 </script>
 
-<div draggable={true} on:dragstart|stopPropagation={(e) => dragStart(e)}>
-  <slot />
+<div draggable={true} 
+  on:dragstart|stopPropagation={(e) => dragStart(e)}>
+    <slot />
 </div>
 
 <style>

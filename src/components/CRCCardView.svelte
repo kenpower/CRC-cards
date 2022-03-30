@@ -35,22 +35,24 @@
 </script>
 
 <div class="card">
-  <span class="delete" on:click={deleteCard}>&times;</span>
-  <div class="title-area">
-    <EditableText text={card.title} edit={save} classes="title" />
-  </div>
-  <div class="body">
-    <MemberList
-      halfCard={card.responsibilities}
-      newMemberPlaceholder={"+responsibility"}
-      {save}
-    />
-    <div class="vline" />
-    <MemberList
-      halfCard={card.collaborators}
-      newMemberPlaceholder={"+collaborator"}
-      {save}
-    />
+  <div class="ignore-mouse-down" on:mousedown|stopPropagation={() => {}}>
+    <span class="delete" on:click={deleteCard}>&times;</span>
+    <div class="title-area">
+      <EditableText text={card.title} edit={save} classes="title" />
+    </div>
+    <div class="body">
+      <MemberList
+        halfCard={card.responsibilities}
+        newMemberPlaceholder={"+responsibility"}
+        {save}
+      />
+      <div class="vline" />
+      <MemberList
+        halfCard={card.collaborators}
+        newMemberPlaceholder={"+collaborator"}
+        {save}
+      />
+    </div>
   </div>
 </div>
 
@@ -58,10 +60,14 @@
   .card {
     user-select: none;
     display: inline-block;
-    padding: 1rem;
+    padding: 2rem;
     background: linear-gradient(to left bottom, #d4fc78, #99e5a2);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     color: #00243f;
+  }
+
+  .card:hover {
+    background-clip: content-box
   }
 
   .delete {
@@ -98,5 +104,9 @@
     display: inline-block;
     border-left: 1px solid black;
     width: 0px;
+  }
+
+  .ignore-mouse-down{
+    cursor: pointer;
   }
 </style>

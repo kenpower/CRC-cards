@@ -8,9 +8,9 @@
 
   export let updateDrag = null;
 
-  let liftOffset = 15;
+  let grabbingFrame;
 
-  const mousedown = (e) => {
+  const pointerdown = (e) => {
     const bringToTop = (elem) => {
       //be careful with this
       //if we unconditionally append the element to the end of the list,
@@ -19,31 +19,21 @@
         elem.parentNode.append(elem);
       }
     };
-    const draggable = e.currentTarget;
 
-    bringToTop(draggable);
+    grabbingFrame.setPointerCapture(e.pointerId);
+    
+    const thisEl = e.currentTarget;
+    bringToTop(thisEl);
 
     // can't use e.offsetX as it is relative to the bottommost child element
-    var rect = draggable.getBoundingClientRect();
-    lastOffsetX = e.clientX - rect.left + liftOffset;
-    lastOffsetY = e.clientY - rect.top + liftOffset;
-
-    adjustPositionToGiveLiftingEffect();
-
-    updateDrag(pos.left, pos.top);
+    var rect = thisEl.getBoundingClientRect();
+    lastOffsetX = e.clientX - rect.left;
+    lastOffsetY = e.clientY - rect.top;
 
     isDragging = true;
   };
 
-  const adjustPositionToGiveLiftingEffect = () => {
-    pos.left -= liftOffset;
-    pos.top -= liftOffset;
-
-    lastOffsetX += liftOffset;
-    lastOffsetY += liftOffset;
-  };
-
-  const drag = (e) => {
+  const pointermove = (e) => {
     if (!isDragging) return;
 
     pos.left = e.clientX - lastOffsetX;
@@ -52,20 +42,31 @@
     updateDrag(pos.left, pos.top);
   };
 
-  $: style = pos
-    ? `left: ${pos.left}px; top: ${pos.top}px; position: absolute;}`
+  const pointerup = (e) => {
+    if(grabbingFrame)
+      grabbingFrame.releasePointerCapture(e.pointerId);
+    isDragging = false;
+  }
+
+  $: positionStyle = pos
+    ? `left: ${pos.left}px; top: ${pos.top}px; position: absolute;`
     : "";
 
-  const mouseup = (_) => (isDragging = false);
+  $:rotateAboutMouseStyle = isDragging
+    ? `transform-origin: ${lastOffsetX}px ${lastOffsetY}px;`
+    : "";
+
+  
 </script>
 
-<div
-  on:mousedown={mousedown}
-  on:mousemove={drag}
-  on:mouseup={mouseup}
+<div bind:this={grabbingFrame}
+  on:pointerdown={pointerdown}
+  on:pointermove={pointermove}
+  on:pointerup={pointerup}
+
   class="drag"
   class:isDragging
-  {style}
+  style = {positionStyle + rotateAboutMouseStyle}
 >
   <slot />
 </div>
@@ -78,6 +79,7 @@
 
   .isDragging {
     box-shadow: 22px 23px 27px 15px rgba(0, 0, 0, 0.82);
+    transform-origin: 0 0;
     transform: rotateZ(-5deg);
   }
 </style>
