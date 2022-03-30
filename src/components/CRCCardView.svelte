@@ -35,7 +35,7 @@
 </script>
 
 <div class="card">
-  <div class="ignore-mouse-down" on:mousedown|stopPropagation={() => {}}>
+  <div class="ignore-pointer-down" on:pointerdown|stopPropagation>
     <span class="delete" on:click={deleteCard}>&times;</span>
     <div class="title-area">
       <EditableText text={card.title} edit={save} classes="title" />
@@ -110,7 +110,7 @@
     width: 0px;
   }
 
-  .ignore-mouse-down{
+  .ignore-pointer-down{
     cursor: default;
   }
 </style>

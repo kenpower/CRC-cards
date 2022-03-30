@@ -42,6 +42,10 @@
     margin: 0;
     border: 0 none;
   }
+input:hover {
+    font-weight: 600;
+}
+  
 
   .empty {
     color: #777;

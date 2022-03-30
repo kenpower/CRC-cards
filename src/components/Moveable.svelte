@@ -73,7 +73,7 @@
 
 <style>
   .drag {
-    cursor: grab;
+    cursor: move;
     position: absolute;
   }
 
@@ -81,5 +81,6 @@
     box-shadow: 22px 23px 27px 15px rgba(0, 0, 0, 0.82);
     transform-origin: 0 0;
     transform: rotateZ(-5deg);
+    cursor: grabbing;
   }
 </style>
