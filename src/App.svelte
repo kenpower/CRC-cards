@@ -5,10 +5,6 @@
   import { crcCards } from "./stores.js";
   import { flip } from "svelte/animate";
 
-  let crcTitle = "";
-  let crcResponsibilities = "";
-  let crcCollaborators = "";
-
   let innerWidth;
   let innerHeight;
   
@@ -16,7 +12,6 @@
   const split = (s) => s.split(/\r\n|\r|\n/g);
   
   function createCRCFromForm() {
-
     createCRC(
       "New Card",
       [],
@@ -61,41 +56,6 @@
 
   $: console.log(crcCards);
 
-  const onDrop = (event) => {
-    console.log("On Drop!");
-    const { card } = JSON.parse(event.dataTransfer.getData("text/plain"));
-    updateCardPosition(card)(event.clientX, event.clientY);
-
-    //$crcCards = [...$crcCards];
-    // //event.target.textContent = data;
-    // const movedCardidx= $crcCards.findIndex(card => card.id == data.card.id);
-    // console.log($crcCards[movedCardidx]);
-    // //updateCardPosition(movedCard)(event.clientX, event.clientY);
-    // //todo fix this so that it updates after the card is dropped
-    // //right now need a browser refresh to see new position
-    // $crcCards[movedCardidx].top = event.clientY;
-    // $crcCards[movedCardidx].left = event.clientX;
-    // console.log($crcCards[movedCardidx]);
-  };
-
-  // const dragStart = (event, data) => {
-  // 	event.dataTransfer.effectAllowed = "move";
-  // 	event.dataTransfer.setData('text/plain', JSON.stringify(data));
-  // }
-
-  // 	const getStyle = (top, left) =>
-  // (top && left)
-  // ? `left: ${left}px; top: ${top}px; position: absolute;}`
-  // : "";
-
-  const onDragOver = (event) => {
-    const dragData = event.dataTransfer.getData("text/plain");
-    if (dragData) {
-      const { card } = JSON.parse(event.dataTransfer.getData("text/plain"));
-      updateCardPosition(card)(event.clientX, event.clientY);
-    }
-    return false;
-  };
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -104,8 +64,6 @@
   <div
     id="stickies-container"
     class="full-screen"
-    on:dragover|preventDefault={onDragOver}
-    on:drop|preventDefault={onDrop}
   >
     {#each $crcCards as card}
       <Moveable
