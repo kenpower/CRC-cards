@@ -16,21 +16,23 @@
   };
 
   const edit = (newText, idx) => {
-    const removeEmpty = (list) => list.filter((s) => s && s.trim() !== "");
-    members[idx] = newText;
+    const removeEmpty = (list) => list.filter((s) => s.name && s.name.trim() !== "");
+    members[idx].name = newText;
     console.log("update!");
     members = removeEmpty(members);
 
   };
 
   const add = (newMember) => {
+    let id =  self.crypto.randomUUID();
     console.log(members)
-    members = [...members, newMember];
+
+    members = [...members, {name: newMember, id: id}];
   };
 
   const remove = (toRemove) => {
     console.log("remove", toRemove);
-    members = members.filter((s) => s  !== toRemove);
+    members = members.filter((s) => s.id  !== toRemove.id);
   };
 
   const partial_edit = (idx) => (newText) => edit(newText, idx);
@@ -45,11 +47,11 @@
   on:dragover|preventDefault={(_) => false}
   on:drop|preventDefault={onDrop}
 >
-  {#each members as member, id (id)}
-    <div animate:flip="{{delay: 5000, duration: 2050}}" >
-      <Draggable data={{ text: member, id }} on:dragFinish = {()=>remove(member)}>
+  {#each members as member, idx (member.id)}
+    <div animate:flip="{{delay: 250, duration: 250}}" >
+      <Draggable data={{ text: member.name, idx }} on:dragFinish = {()=>remove(member)}>
         <!-- TODO blur editable when dragging starts <div draggable=true on:dragstart={e=>console.log(e, e.target.blur())}> -->
-        <EditableText text={member} edit={partial_edit(id)} />
+        <EditableText text={member.name} edit={partial_edit(idx)} />
         <!-- </div> -->
       </Draggable>
     </div>
@@ -75,13 +77,13 @@
     padding: 0.25rem;
   }
 
-  input.editable {
+  :global(input.editable) {
     display: block;
     cursor: text;
     background-color: transparent;
     border: none;
-    padding: 0;
     margin: 0;
+    padding: 0.1rem;
   }
 
   .empty {
@@ -92,7 +94,7 @@
     visibility: visible;
   }
 
-  input.editable:hover {
+  :global(input.editable:hover) {
     background-color: azure;
   }
 </style>
