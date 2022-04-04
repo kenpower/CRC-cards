@@ -1,5 +1,6 @@
 <script>
-  import { crcCards } from "../stores.js";
+  import { crcCards} from "../stores.js";
+  import { onMount } from 'svelte';
   import MemberList from "./MemberList.svelte";
   import EditableText from "./EditableText.svelte";
 
@@ -23,34 +24,32 @@
   //     refresh();
   // }
 
-  const addCollaborator = (newCollaborator) => {
-    card.collaborators = [...card.collaborators, newCollaborator];
-    refresh();
-  };
+  // const addCollaborator = (newCollaborator) => {
+  //   card.collaborators = [...card.collaborators, newCollaborator];
+  //   refresh();
+  // };
 
-  const save = (newTitle) => {
-    card.title = newTitle;
-    $crcCards = $crcCards;
-  };
+  // const save = (newTitle) => {
+  //   // if(newTitle) card.title = newTitle;
+  //   // $crcCards = $crcCards;
+  // };
 </script>
 
 <div class="card">
   <div class="ignore-pointer-down" on:pointerdown|stopPropagation>
     <span class="delete" on:click={deleteCard}>&times;</span>
     <div class="title-area">
-      <EditableText text={card.title} edit={save} classes="title" />
+      <EditableText bind:text={card.title} classes="title" />
     </div>
     <div class="body">
       <MemberList
-        halfCard={card.responsibilities}
+        bind:members={card.responsibilities.members}
         newMemberPlaceholder={"+responsibility"}
-        {save}
       />
       <div class="vline" />
       <MemberList
-        halfCard={card.collaborators}
+        bind:members={card.collaborators.members}
         newMemberPlaceholder={"+collaborator"}
-        {save}
       />
     </div>
   </div>

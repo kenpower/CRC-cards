@@ -1,4 +1,5 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
   import Icon from "@iconify/svelte";
   //import dragIcon from "@iconify/icons-mdi/drag";
   import dragDropLine from '@iconify/icons-ri/drag-drop-line';
@@ -7,10 +8,13 @@
 
   let dragIconVisible = false;
 
+  const dispatch = createEventDispatcher();
+
   const dragStart = (event) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", JSON.stringify(data));
 
+    dispatch('dragBegin', {});
     //todo use nice svlete transition to slow gap being filled
   };
 

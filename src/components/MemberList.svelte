@@ -1,11 +1,9 @@
 <script>
   import Draggable from "./Draggable.svelte";
   import EditableText from "./EditableText.svelte";
-  //export let addMember;
-  //export let editMember;
-  export let halfCard;
+  import { flip } from "svelte/animate";
   export let newMemberPlaceholder;
-  export let save;
+  export let members;
 
   let draggedMember = null;
   let focused = false;
@@ -19,16 +17,20 @@
 
   const edit = (newText, idx) => {
     const removeEmpty = (list) => list.filter((s) => s && s.trim() !== "");
-
-    halfCard.members[idx] = newText;
+    members[idx] = newText;
     console.log("update!");
-    halfCard.members = removeEmpty(halfCard.members);
-    save();
+    members = removeEmpty(members);
+
   };
 
   const add = (newMember) => {
-    halfCard.members = [...halfCard.members, newMember];
-    save();
+    console.log(members)
+    members = [...members, newMember];
+  };
+
+  const remove = (toRemove) => {
+    console.log("remove", toRemove);
+    members = members.filter((s) => s  !== toRemove);
   };
 
   const partial_edit = (idx) => (newText) => edit(newText, idx);
@@ -43,12 +45,14 @@
   on:dragover|preventDefault={(_) => false}
   on:drop|preventDefault={onDrop}
 >
-  {#each halfCard.members as member, id}
-    <Draggable data={{ text: member, id }}>
+  {#each members as member, id (id)}
+  <div animate:flip="{{delay: 250, duration: 250}}" >
+    <Draggable data={{ text: member, id }} on:dragBegin = {()=>remove(member)}>
       <!-- TODO blur editable when dragging starts <div draggable=true on:dragstart={e=>console.log(e, e.target.blur())}> -->
       <EditableText text={member} edit={partial_edit(id)} />
       <!-- </div> -->
     </Draggable>
+  </div>
   {/each}
   <input
     type="text"

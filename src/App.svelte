@@ -3,7 +3,7 @@
   import CRCCardView from "./components/CRCCardView.svelte";
   import CRCCard from "./components/CRCCard.js";
   import { crcCards } from "./stores.js";
-  import { flip } from "svelte/animate";
+
 
   let innerWidth;
   let innerHeight;
@@ -70,7 +70,7 @@
         pos={{ left: card.left, top: card.top }}
         updateDrag={updateCardPosition(card)}
       >
-        <CRCCardView {card} />
+        <CRCCardView bind:card />
       </Moveable>
     {/each}
   </div>

@@ -1,4 +1,5 @@
 <script>
+
   export let text = "";
   export let edit;
   export let classes = "";
