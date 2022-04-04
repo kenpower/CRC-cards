@@ -46,13 +46,13 @@
   on:drop|preventDefault={onDrop}
 >
   {#each members as member, id (id)}
-  <div animate:flip="{{delay: 250, duration: 250}}" >
-    <Draggable data={{ text: member, id }} on:dragBegin = {()=>remove(member)}>
-      <!-- TODO blur editable when dragging starts <div draggable=true on:dragstart={e=>console.log(e, e.target.blur())}> -->
-      <EditableText text={member} edit={partial_edit(id)} />
-      <!-- </div> -->
-    </Draggable>
-  </div>
+    <div animate:flip="{{delay: 5000, duration: 2050}}" >
+      <Draggable data={{ text: member, id }} on:dragFinish = {()=>remove(member)}>
+        <!-- TODO blur editable when dragging starts <div draggable=true on:dragstart={e=>console.log(e, e.target.blur())}> -->
+        <EditableText text={member} edit={partial_edit(id)} />
+        <!-- </div> -->
+      </Draggable>
+    </div>
   {/each}
   <input
     type="text"

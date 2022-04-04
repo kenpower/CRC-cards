@@ -18,6 +18,10 @@
     //todo use nice svlete transition to slow gap being filled
   };
 
+  const dragEnd = (event) => {
+    dispatch('dragFinish', {});
+  };
+
   const catchAndPreventDragStartEventGettingToParent = (event) => {
     //prevent drag behaviour for slot item, need editable/selectable behaviour instead
     event.preventDefault();
@@ -38,7 +42,8 @@
 <div draggable={true} 
   on:mouseover = "{mouseover}" 
   on:mouseout = "{mouseout}" 
-  on:dragstart|stopPropagation={(e) => dragStart(e)}>
+  on:dragstart|stopPropagation={(e) => dragStart(e)}
+  on:dragend={dragEnd}>
   <Icon icon={dragIcon} style={iconStyle} inline={true} />
   <div
     draggable={true}
