@@ -8,9 +8,9 @@
     "start": "sirv public --no-clear"
   },
   "devDependencies": {
-    "@iconify/icons-mdi": "^1.2.6",
+    "@iconify/icons-mdi": "^1.2.7",
     "@iconify/icons-ri": "^1.2.1",
-    "@iconify/svelte": "^2.2.0",
+    "@iconify/svelte": "^2.2.1",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "rollup": "^2.3.4",
