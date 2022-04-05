@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { fade } from 'svelte/transition';
   import Icon from "@iconify/svelte";
   //import dragIcon from "@iconify/icons-mdi/drag";
   import dragDropLine from '@iconify/icons-ri/drag-drop-line';
@@ -44,7 +45,13 @@
   on:mouseout = "{mouseout}" 
   on:dragstart|stopPropagation={(e) => dragStart(e)}
   on:dragend={dragEnd}>
-  <Icon icon={dragIcon} style={iconStyle} inline={true} />
+  <div style="min-width:25px">
+    {#if dragIconVisible}
+      <div transition:fade ={{duration:500}} >
+        <Icon icon={dragIcon} style={iconStyle} inline={true} />
+      </div>
+    {/if}
+  </div>
   <div
     draggable={true}
     on:dragstart={catchAndPreventDragStartEventGettingToParent}>
