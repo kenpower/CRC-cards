@@ -3,11 +3,17 @@
     import EditableText from "./EditableText.svelte";
     import { flip } from "svelte/animate";
     import { dndzone } from 'svelte-dnd-action';
+    import Icon from "@iconify/svelte";
+    import dragIcon from '@iconify/icons-mdi/drag';
+    import { fade } from 'svelte/transition';
 
+
+    
     export let newMemberPlaceholder;
     export let members;
-
+    
     const flipDurationMs = 200;
+    let dragIconVisible = true;
     let dragDisabled = true;
   
     let draggedMember = null;
@@ -19,7 +25,9 @@
     //   console.log(data.text);
     //   add(data.text);
     // };
-    
+    const mouseover = () => dragIconVisible = true;
+    const mouseout = () => dragIconVisible = false;
+
     function handleDndConsiderCards(e) {
         const {items: newItems, info: {source, trigger}} = e.detail;
         //const colIdx = columnItems.findIndex(c => c.id === cid);
@@ -82,6 +90,10 @@
   
       members = [...members, {name: newMember, id: id}];
     };
+
+    $: iconVisibleStyle = dragIconVisible ? "visibility: visible" : "visibility: hidden";
+
+    $: iconStyle = "font-size: 1.5rem; cursor: move;" + iconVisibleStyle;
   
     // const remove = (toRemove) => {
     //   console.log("remove", toRemove);
@@ -102,15 +114,19 @@
         on:consider={(e) => handleDndConsiderCards(e)} 
         on:finalize={(e) => handleDndFinalizeCards(e)}>
             {#each members as item (item.id)}
-                <div class="member-wrapper" animate:flip="{{duration: flipDurationMs}}">
+                <div class="member-wrapper" 
+                    animate:flip="{{duration: flipDurationMs}}">
                     <div tabindex={dragDisabled? 0 : -1} 
                         aria-label="drag-handle"
                         class="handle" 
-                        style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
+                        style={(dragDisabled ? 'cursor: grab' : 'cursor: grabbing') + "; min-width:25px"}
                         on:mousedown={startDrag} 
                         on:touchstart={startDrag}
-                        on:keydown={handleKeyDown}/>
-                    <span>{item.name}</span>
+                        on:keydown={handleKeyDown}
+                        transition:fade ={{duration:500}}>
+                            <Icon icon={dragIcon} style={iconStyle} inline={true} />
+                        </div>
+                    <span class= "member-name">{item.name}</span>
                 </div>
             {/each}
     </div>
@@ -134,18 +150,15 @@
       flex-direction: column;
       padding: 0.25rem;
     }
-  
+    .member-wrapper{
+        position:relative;
+        display: flex;
+        align-items: center;
+    }
+
     .draggableItems{
         min-height: 2rem;
     }
-
-    .handle {
-		position: absolute;
-		right: 0;
-		width: 1em;
-		height: 0.5em;
-		background-color: grey;
-	}
 
     :global(input.editable) {
       display: block;
