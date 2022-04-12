@@ -1,7 +1,7 @@
 <script>
   import { crcCards} from "../stores.js";
   import { onMount } from 'svelte';
-  import MemberList from "./MemberList.svelte";
+  import MemberListView from "./MemberListView.svelte";
   import EditableText from "./EditableText.svelte";
 
   export let card;
@@ -42,12 +42,12 @@
       <EditableText bind:text={card.title} classes="title" />
     </div>
     <div class="body">
-      <MemberList
+      <MemberListView
         bind:members={card.responsibilities.members}
         newMemberPlaceholder={"+responsibility"}
       />
       <div class="vline" />
-      <MemberList
+      <MemberListView
         bind:members={card.collaborators.members}
         newMemberPlaceholder={"+collaborator"}
       />
