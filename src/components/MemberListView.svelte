@@ -62,7 +62,7 @@
     on:mouseleave={() => (focused = false)}
 >
     <section class="draggableItems"
-      use:dndzone="{{ items, dragDisabled, flipDurationMs }}"
+      use:dndzone="{{ items, dragDisabled, flipDurationMs, dropTargetStyle:"" }}"
       on:consider="{handleConsider}"
       on:finalize="{handleFinalize}">
             {#each items as item (item.id)}
@@ -78,7 +78,7 @@
                       >
                           <Icon icon={dragIcon} style={iconStyle} inline={true} />
                     </div>
-                    <span class= "member-name">{item.name}</span>
+                    <EditableText class= "member-name" bind:text={item.name}></EditableText>
                 </div>
             {/each}
     </section>
