@@ -1,9 +1,19 @@
 <script>
+  import Fab, { Label, Icon } from '@smui/fab';
   import Moveable from "./components/Moveable.svelte";
   import CRCCardView from "./components/CRCCardView.svelte";
   import CRCCard from "./components/CRCCard.js";
   import { crcCards } from "./stores.js";
+  import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
+  import IconButton from '@smui/icon-button';
+  import Checkbox from '@smui/checkbox';
+  import FormField from '@smui/form-field';
 
+
+
+  let prominent = false;
+  let dense = false;
+  let secondaryColor = true;
 
   let innerWidth;
   let innerHeight;
@@ -60,28 +70,83 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<main>
-  <div
-    id="stickies-container"
-    class="full-screen"
-  >
-    {#each $crcCards as card}
-      <Moveable
-        pos={{ left: card.left, top: card.top }}
-        updateDrag={updateCardPosition(card)}
-      >
-        <CRCCardView bind:card />
-      </Moveable>
-    {/each}
-  </div>
-
-  <div class="sticky-form">
-    <button class="button" id="createsticky" on:click={createCRCFromForm}
-      >New Card!</button
+<div class="flexy full-screen ">
+  <div class="top-app-bar-container flexor">
+    <TopAppBar
+      variant="static"
+      {prominent}
+      {dense}
+      color={secondaryColor ? 'secondary-variant' : 'primary'}
     >
-  </div>
-</main>
+    <Row>
+      <Section>
+        <IconButton class="material-icons">menu</IconButton>
+        <Title>Flex Static</Title>
+      </Section>
+      <Section align="end" toolbar>
+        <IconButton class="material-icons" aria-label="Download"
+          >file_download</IconButton
+        >
+        <IconButton class="material-icons" aria-label="Print this page"
+          >print</IconButton
+        >
+        <IconButton class="material-icons" aria-label="Bookmark this page"
+          >bookmark</IconButton
+        >
+      </Section>
+    </Row>
+    </TopAppBar>
 
+ 
+      <div
+        class="flexor-content">
+          <div class="sticky-form flexy margins">
+            <Fab color="secondary-variant" on:click={createCRCFromForm} extended>
+              <Icon class="material-icons">add_circle_outline</Icon>
+              <Label>New Card</Label>
+            </Fab>
+          </div>
+          {#each $crcCards as card}
+            <Moveable
+              pos={{ left: card.left, top: card.top }}
+              updateDrag={updateCardPosition(card)}
+            >
+              <CRCCardView bind:card />
+            </Moveable>
+          {/each}
+      </div>
+
+      <!-- <div class="sticky-form">
+        <button class="button" id="createsticky" on:click={createCRCFromForm}
+          >New Card!</button
+        >
+      -->
+
+
+
+  </div>
+</div>
+
+<svelte:head>
+  <!-- Fonts -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700"
+  />
+
+  <!-- Material Typography -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@material/typography@13.0.0/dist/mdc.typography.css"
+  />
+
+  <!-- SMUI -->
+  <link rel="stylesheet" href="https://unpkg.com/svelte-material-ui/bare.css" />
+</svelte:head>
 <style>
   :global(html) {
     box-sizing: border-box;
@@ -90,7 +155,6 @@
   :global(body) {
     background: linear-gradient(to left bottom, #41d8dd, #5583ee);
     padding: 0px;
-    height: 100%;
     margin: 0;
     position: relative;
     
@@ -103,7 +167,7 @@
   .sticky-form {
     left: 1rem;
     position: absolute;
-    top: 1rem;
+    top: 5rem;
   }
   button.button {
     -moz-user-select: none;
@@ -124,7 +188,25 @@
     vertical-align: middle;
   }
 
-  .full-screen {
-    min-height: 100vh;
+  .top-app-bar-container {
+    width: 100%;
+		background-color: var(--mdc-theme-background, #fff);
+    display: inline-block;
+    position: relative;
+  }
+
+  .flexy {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .flexor {
+    display: inline-flex;
+    flex-direction: column;
+  }
+  .flexor-content {
+    flex-basis: 0;
+    height: 0;
+    flex-grow: 1;
+    overflow: auto;
   }
 </style>
