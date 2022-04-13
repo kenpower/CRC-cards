@@ -89,20 +89,21 @@
   }
   :global(body) {
     background: linear-gradient(to left bottom, #41d8dd, #5583ee);
-    min-height: 100vh;
+    padding: 0px;
     height: 100%;
     margin: 0;
     position: relative;
+    
     /* overflow: hidden; */
   }
   #stickies-container {
-    padding: 1rem;
+    padding: 0rem;
   }
 
   .sticky-form {
-    bottom: 1rem;
+    left: 1rem;
     position: absolute;
-    right: 1rem;
+    top: 1rem;
   }
   button.button {
     -moz-user-select: none;
@@ -114,7 +115,7 @@
     color: #0065b3;
     display: inline-block;
     font-family: "Courier New", Courier, monospace;
-    font-size: 1rem;
+    font-size: 2rem;
     font-weight: 600;
     line-height: 1.5;
     padding: 0.375rem 0.75rem;
