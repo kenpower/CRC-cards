@@ -1,106 +1,58 @@
 <script>
     import Draggable from "./Draggable.svelte";
     import EditableText from "./EditableText.svelte";
-    import { flip } from "svelte/animate";
-    import { dndzone } from 'svelte-dnd-action';
+    import { dndzone, SOURCES, TRIGGERS	 } from 'svelte-dnd-action';
+	  import { flip } from 'svelte/animate';
     import Icon from "@iconify/svelte";
     import dragIcon from '@iconify/icons-mdi/drag';
     import { fade } from 'svelte/transition';
-
-
     
     export let newMemberPlaceholder;
-    export let members;
+    export let items;
     
     const flipDurationMs = 200;
+	  let dragDisabled = true;
     let dragIconVisible = true;
-    let dragDisabled = true;
-  
-    let draggedMember = null;
     let focused = false;
   
-    // const onDrop = (event) => {
-    //   const data = JSON.parse(event.dataTransfer.getData("text/plain"));
-    //   //event.target.textContent = data;
-    //   console.log(data.text);
-    //   add(data.text);
-    // };
-    const mouseover = () => dragIconVisible = true;
-    const mouseout = () => dragIconVisible = false;
-
-    function handleDndConsiderCards(e) {
-        const {items: newItems, info: {source, trigger}} = e.detail;
-        //const colIdx = columnItems.findIndex(c => c.id === cid);
-        members = newItems;
-        //columnItems = [...columnItems];
-        if (source === SOURCES.KEYBOARD && trigger === TRIGGERS.DRAG_STOPPED) {
-			dragDisabled = true;
-		}
-    }
-    function handleDndFinalizeCards(e) {
-        const {items: newItems, info: {source}} = e.detail;
-        members= newItems;
-        if (source === SOURCES.POINTER) {
-			dragDisabled = true;
-		}
+  	function handleConsider(e) {
+      const {items: newItems, info: {source, trigger}} = e.detail;
+      items = newItems;
+      // Ensure dragging is stopped on drag finish via keyboard
+      if (source === SOURCES.KEYBOARD && trigger === TRIGGERS.DRAG_STOPPED) {
+			  dragDisabled = true;
+		  }
+	  }
+	  function handleFinalize(e) {
+      const {items: newItems, info: {source}} = e.detail;
+      items = newItems;
+      // Ensure dragging is stopped on drag finish via pointer (mouse, touch)
+      if (source === SOURCES.POINTER) {
+        dragDisabled = true;
+      }
     }
 
     function startDrag(e) {
-		// preventing default to prevent lag on touch devices (because of the browser checking for screen scrolling)
-		e.preventDefault();
-		dragDisabled = false;
-	}
-	function handleKeyDown(e) {
-		if ((e.key === "Enter" || e.key === " ") && dragDisabled) dragDisabled = false;
-	}
+      // preventing default to prevent lag on touch devices (because of the browser checking for screen scrolling)
+      e.preventDefault();
+      dragDisabled = false;
+    }
 
-    // $: dragDone = false;
-  
-    // const onDragOverMember = (existingMember, idx) => (event) => {
-    //   console.log(event)
-    //   const data = JSON.parse(event.dataTransfer.getData("text/plain"));
-    //   const newMember = data.member;
-    //   if(dragDone) return;
-    //   console.log("dragover", members, idx, event)
-    //   if(members.every(m => m.id != newMember.id)){
-    //     members = [...members.slice(0, idx), newMember, ...members.slice(idx)];
-    //     console.log("added", members);
-    //     dragDone = true;
-  
-    //   }
-   
-    //   //insertBefore(event.target, draggedMember);
-    // };
-  
-    // function handleClick(e) {
-    //     alert('dragabble elements are still clickable :)');
-    // }
+    function handleKeyDown(e) {
+      if ((e.key === "Enter" || e.key === " ") && dragDisabled) dragDisabled = false;
+    }
 
-    // const edit = (newText, idx) => {
-    //   const removeEmpty = (list) => list.filter((s) => s.name && s.name.trim() !== "");
-    //   members[idx].name = newText;
-    //   console.log("update!");
-    //   members = removeEmpty(members);
-  
-    // };
-  
     const add = (newMember) => {
       let id =  self.crypto.randomUUID();
-      console.log(members)
+      console.log(items)
   
-      members = [...members, {name: newMember, id: id}];
+      items = [...items, {name: newMember, id: id}];
     };
 
-    $: iconVisibleStyle = dragIconVisible ? "visibility: visible" : "visibility: hidden";
+    $: iconVisibleStyle = focused ? "visibility: visible" : "visibility: hidden";
 
     $: iconStyle = "font-size: 1.5rem; cursor: move;" + iconVisibleStyle;
   
-    // const remove = (toRemove) => {
-    //   console.log("remove", toRemove);
-    //   members = members.filter((s) => s.id  !== toRemove.id);
-    // };
-  
-    // const partial_edit = (idx) => (newText) => edit(newText, idx);
   </script>
   
 <div class="memberList"
@@ -109,27 +61,27 @@
     on:blur={() => (focused = false)}
     on:mouseleave={() => (focused = false)}
 >
-    <div class="draggableItems"
-        use:dndzone={{items: members, dragDisabled, flipDurationMs}}
-        on:consider={(e) => handleDndConsiderCards(e)} 
-        on:finalize={(e) => handleDndFinalizeCards(e)}>
-            {#each members as item (item.id)}
+    <section class="draggableItems"
+      use:dndzone="{{ items, dragDisabled, flipDurationMs }}"
+      on:consider="{handleConsider}"
+      on:finalize="{handleFinalize}">
+            {#each items as item (item.id)}
                 <div class="member-wrapper" 
                     animate:flip="{{duration: flipDurationMs}}">
                     <div tabindex={dragDisabled? 0 : -1} 
-                        aria-label="drag-handle"
-                        class="handle" 
-                        style={(dragDisabled ? 'cursor: grab' : 'cursor: grabbing') + "; min-width:25px"}
-                        on:mousedown={startDrag} 
-                        on:touchstart={startDrag}
-                        on:keydown={handleKeyDown}
-                        transition:fade ={{duration:500}}>
-                            <Icon icon={dragIcon} style={iconStyle} inline={true} />
-                        </div>
+                      aria-label="drag-handle"
+                      class="handle" 
+                      style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
+                      on:mousedown={startDrag} 
+                      on:touchstart={startDrag}
+                      on:keydown={handleKeyDown}
+                      >
+                          <Icon icon={dragIcon} style={iconStyle} inline={true} />
+                    </div>
                     <span class= "member-name">{item.name}</span>
                 </div>
             {/each}
-    </div>
+    </section>
     <input
         type="text"
         class="editable empty"
@@ -170,6 +122,7 @@
     }
   
     .empty {
+      padding-left: 1rem;
       color: #777;
       visibility: hidden;
     }

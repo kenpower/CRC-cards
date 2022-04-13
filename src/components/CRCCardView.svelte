@@ -43,12 +43,12 @@
     </div>
     <div class="body">
       <MemberListView
-        bind:members={card.responsibilities.members}
+        bind:items={card.responsibilities.members}
         newMemberPlaceholder={"+responsibility"}
       />
       <div class="vline" />
       <MemberListView
-        bind:members={card.collaborators.members}
+        bind:items={card.collaborators.members}
         newMemberPlaceholder={"+collaborator"}
       />
     </div>
