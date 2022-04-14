@@ -1,5 +1,6 @@
 <script>
   import Fab, { Label, Icon } from '@smui/fab';
+  import Signin from "./Signin.svelte";
   import Moveable from "./components/Moveable.svelte";
   import CRCCardView from "./components/CRCCardView.svelte";
   import CRCCard from "./components/CRCCard.js";
@@ -8,12 +9,14 @@
   import IconButton from '@smui/icon-button';
   import Checkbox from '@smui/checkbox';
   import FormField from '@smui/form-field';
+import { onMount } from 'svelte';
 
 
 
   let prominent = false;
   let dense = false;
   let secondaryColor = true;
+
 
   let innerWidth;
   let innerHeight;
@@ -66,10 +69,26 @@
 
   $: console.log(crcCards);
 
+  let google_signed_in = false;
+  
+  let user = null;
+  onMount(()=>{
+    const googleToken = localStorage.getItem("google-token");
+    if(googleToken){
+      google_signed_in = true;
+      user = JSON.parse(googleToken);
+    }
+  })
+
 </script>
+
+
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
+{#if !google_signed_in}
+  <Signin/>
+{:else}
 <div class="flexy full-screen ">
   <div class="top-app-bar-container flexor">
     <TopAppBar
@@ -126,6 +145,7 @@
 
   </div>
 </div>
+{/if}
 
 <svelte:head>
   <!-- Fonts -->
