@@ -4,6 +4,7 @@
   import Moveable from "./components/Moveable.svelte";
   import CRCCardView from "./components/CRCCardView.svelte";
   import CRCCard from "./components/CRCCard.js";
+  import Avatar from "./components/Avatar.svelte";
   import { crcCards } from "./stores.js";
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
   import IconButton from '@smui/icon-button';
@@ -70,6 +71,8 @@ import { onMount } from 'svelte';
   $: console.log(crcCards);
 
   let google_signed_in = false;
+  let userName;
+  let profileIcon;
   
   let user = null;
   onMount(()=>{
@@ -77,6 +80,8 @@ import { onMount } from 'svelte';
     if(googleToken){
       google_signed_in = true;
       user = JSON.parse(googleToken);
+      profileIcon = user.picture;
+      userName = user.name;
     }
   })
 
@@ -100,18 +105,14 @@ import { onMount } from 'svelte';
     <Row>
       <Section>
         <IconButton class="material-icons">menu</IconButton>
-        <Title>Flex Static</Title>
+        <Title>CRC Cards</Title>
       </Section>
       <Section align="end" toolbar>
         <IconButton class="material-icons" aria-label="Download"
-          >file_download</IconButton
+          >save</IconButton
         >
-        <IconButton class="material-icons" aria-label="Print this page"
-          >print</IconButton
-        >
-        <IconButton class="material-icons" aria-label="Bookmark this page"
-          >bookmark</IconButton
-        >
+        <Avatar width="48" round={true} userFullName={userName} src={profileIcon}/>	
+
       </Section>
     </Row>
     </TopAppBar>
