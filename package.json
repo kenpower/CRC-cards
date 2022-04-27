@@ -23,7 +23,5 @@
     "svelte": "^3.0.0",
     "svelte-dnd-action": "^0.9.18"
   },
-  "dependencies": {
-   
-  }
+  "dependencies": {}
 }
