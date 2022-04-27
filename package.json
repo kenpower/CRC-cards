@@ -5,7 +5,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
+    "start": "sirv public --no-clear",
+    "deploy": "cp -a public/. docs",
   },
   "devDependencies": {
     "@iconify/icons-mdi": "^1.2.7",
