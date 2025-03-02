@@ -1,13 +1,15 @@
 <script>
+  import { stopPropagation } from 'svelte/legacy';
+
   import { createEventDispatcher } from 'svelte';
   import { fade } from 'svelte/transition';
   import Icon from "@iconify/svelte";
   //import dragIcon from "@iconify/icons-mdi/drag";
   import dragDropLine from '@iconify/icons-ri/drag-drop-line';
   import dragIcon from '@iconify/icons-mdi/drag';
-  export let data = {};
+  let { data = {}, children } = $props();
 
-  let dragIconVisible = false;
+  let dragIconVisible = $state(false);
 
   const dispatch = createEventDispatcher();
 
@@ -33,18 +35,18 @@
   const mouseover = () => dragIconVisible = true;
   const mouseout = () => dragIconVisible = false;
 
-  $: iconVisibleStyle = dragIconVisible ? "visibility: visible" : "visibility: hidden";
+  let iconVisibleStyle = $derived(dragIconVisible ? "visibility: visible" : "visibility: hidden");
 
-  $: iconStyle = "font-size: 1.5rem; cursor: move;" + iconVisibleStyle;
+  let iconStyle = $derived("font-size: 1.5rem; cursor: move;" + iconVisibleStyle);
 
 </script>
 
-<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div draggable={true} 
-  on:mouseover = "{mouseover}" 
-  on:mouseout = "{mouseout}" 
-  on:dragstart|stopPropagation={(e) => dragStart(e)}
-  on:dragend={dragEnd}>
+  onmouseover={mouseover} 
+  onmouseout={mouseout} 
+  ondragstart={stopPropagation((e) => dragStart(e))}
+  ondragend={dragEnd}>
   <div style="min-width:25px">
     {#if dragIconVisible}
       <div transition:fade ={{duration:500}} >
@@ -54,8 +56,8 @@
   </div>
   <div
     draggable={true}
-    on:dragstart={catchAndPreventDragStartEventGettingToParent}>
-  <slot />
+    ondragstart={catchAndPreventDragStartEventGettingToParent}>
+  {@render children?.()}
   </div>
 </div>
 

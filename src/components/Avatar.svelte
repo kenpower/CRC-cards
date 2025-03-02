@@ -1,6 +1,18 @@
 <script>
-    export let userFullName;
-    export let avatarColors = [
+    import { onMount } from "svelte";
+    /**
+     * @typedef {Object} Props
+     * @property {any} userFullName
+     * @property {any} [avatarColors]
+     * @property {number} [width]
+     * @property {boolean} [round]
+     * @property {string} [src]
+     */
+
+    /** @type {Props} */
+    let {
+        userFullName,
+        avatarColors = [
         "#1abc9c",
         "#2ecc71",
         "#3498db",
@@ -21,12 +33,12 @@
         "#c0392b",
         "#bdc3c7",
         "#7f8c8d",
-    ];
-    import { onMount } from "svelte";
-    export let width = 32;
-    export let round = true;
-    export let src = "";
-    let avatarImage;
+    ],
+        width = 32,
+        round = true,
+        src = ""
+    } = $props();
+    let avatarImage = $state();
 
     /*
      * LetterAvatar

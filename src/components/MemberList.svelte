@@ -1,4 +1,6 @@
 <script>
+  import { preventDefault } from 'svelte/legacy';
+
   // import Draggable from "./Draggable.svelte";
   // import EditableText from "./EditableText.svelte";
   // import { flip } from "svelte/animate";
@@ -40,12 +42,12 @@
 
 <div
   class="memberList"
-  on:mouseover={() => (focused = true)}
-  on:focus={() => (focused = true)}
-  on:blur={() => (focused = false)}
-  on:mouseleave={() => (focused = false)}
-  on:dragover|preventDefault={(_) => false}
-  on:drop|preventDefault={onDrop}
+  onmouseover={() => (focused = true)}
+  onfocus={() => (focused = true)}
+  onblur={() => (focused = false)}
+  onmouseleave={() => (focused = false)}
+  ondragover={preventDefault((_) => false)}
+  ondrop={preventDefault(onDrop)}
 >
   {#each members as member, idx (member.id)}
     <div animate:flip="{{delay: 250, duration: 250}}" >
@@ -62,7 +64,7 @@
     class:focused
     contenteditable="true"
     placeholder={newMemberPlaceholder}
-    on:change={(e) => {
+    onchange={(e) => {
       add(e.target.value);
       e.target.value = "";
     }}

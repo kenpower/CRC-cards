@@ -1,14 +1,21 @@
 <script>
-  let isDragging = false;
+  let isDragging = $state(false);
 
-  let lastOffsetX = 0;
-  let lastOffsetY = 0;
+  let lastOffsetX = $state(0);
+  let lastOffsetY = $state(0);
 
-  export let pos;
 
-  export let updateDrag = null;
+  /**
+   * @typedef {Object} Props
+   * @property {any} pos
+   * @property {any} [updateDrag]
+   * @property {import('svelte').Snippet} [children]
+   */
 
-  let grabbingFrame;
+  /** @type {Props} */
+  let { pos = $bindable(), updateDrag = null, children } = $props();
+
+  let grabbingFrame = $state();
 
   const pointerdown = (e) => {
     const bringToTop = (elem) => {
@@ -48,27 +55,27 @@
     isDragging = false;
   }
 
-  $: positionStyle = pos
+  let positionStyle = $derived(pos
     ? `left: ${pos.left}px; top: ${pos.top}px; position: absolute;`
-    : "";
+    : "");
 
-  $:rotateAboutMouseStyle = isDragging
+  let rotateAboutMouseStyle = $derived(isDragging
     ? `transform-origin: ${lastOffsetX}px ${lastOffsetY}px;`
-    : "";
+    : "");
 
   
 </script>
 
 <div bind:this={grabbingFrame}
-  on:pointerdown={pointerdown}
-  on:pointermove={pointermove}
-  on:pointerup={pointerup}
+  onpointerdown={pointerdown}
+  onpointermove={pointermove}
+  onpointerup={pointerup}
 
   class="drag"
   class:isDragging
   style = {positionStyle + rotateAboutMouseStyle}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

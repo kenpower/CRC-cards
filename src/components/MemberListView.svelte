@@ -7,13 +7,12 @@
     import dragIcon from '@iconify/icons-mdi/drag';
     import { fade } from 'svelte/transition';
     
-    export let newMemberPlaceholder;
-    export let items;
+  let { newMemberPlaceholder, items = $bindable() } = $props();
     
     const flipDurationMs = 200;
-	  let dragDisabled = true;
+	  let dragDisabled = $state(true);
     let dragIconVisible = true;
-    let focused = false;
+    let focused = $state(false);
   
   	function handleConsider(e) {
       const {items: newItems, info: {source, trigger}} = e.detail;
@@ -49,22 +48,22 @@
       items = [...items, {name: newMember, id: id}];
     };
 
-    $: iconVisibleStyle = focused ? "visibility: visible" : "visibility: hidden";
+    let iconVisibleStyle = $derived(focused ? "visibility: visible" : "visibility: hidden");
 
-    $: iconStyle = "font-size: 1.5rem; cursor: move;" + iconVisibleStyle;
+    let iconStyle = $derived("font-size: 1.5rem; cursor: move;" + iconVisibleStyle);
   
   </script>
   
 <div class="memberList"
-    on:mouseover={() => (focused = true)}
-    on:focus={() => (focused = true)}
-    on:blur={() => (focused = false)}
-    on:mouseleave={() => (focused = false)}
+    onmouseover={() => (focused = true)}
+    onfocus={() => (focused = true)}
+    onblur={() => (focused = false)}
+    onmouseleave={() => (focused = false)}
 >
     <section class="draggableItems"
       use:dndzone="{{ items, dragDisabled, flipDurationMs, dropTargetStyle:"" }}"
-      on:consider="{handleConsider}"
-      on:finalize="{handleFinalize}">
+      onconsider={handleConsider}
+      onfinalize={handleFinalize}>
             {#each items as item (item.id)}
                 <div class="member-wrapper" 
                     animate:flip="{{duration: flipDurationMs}}">
@@ -72,9 +71,9 @@
                       aria-label="drag-handle"
                       class="handle" 
                       style={dragDisabled ? 'cursor: grab' : 'cursor: grabbing'}
-                      on:mousedown={startDrag} 
-                      on:touchstart={startDrag}
-                      on:keydown={handleKeyDown}
+                      onmousedown={startDrag} 
+                      ontouchstart={startDrag}
+                      onkeydown={handleKeyDown}
                       >
                           <Icon icon={dragIcon} style={iconStyle} inline={true} />
                     </div>
@@ -88,7 +87,7 @@
         class:focused
         contenteditable="true"
         placeholder={newMemberPlaceholder}
-        on:change={(e) => {
+        onchange={(e) => {
         add(e.target.value);
         e.target.value = "";
         }}

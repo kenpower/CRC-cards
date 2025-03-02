@@ -1,36 +1,33 @@
 <script>
-  import Fab, { Label, Icon } from '@smui/fab';
+  import { run } from "svelte/legacy";
+
+  import Fab, { Label, Icon } from "@smui/fab";
   import Signin from "./Signin.svelte";
   import Moveable from "./components/Moveable.svelte";
   import CRCCardView from "./components/CRCCardView.svelte";
   import CRCCard from "./components/CRCCard.js";
   import Avatar from "./components/Avatar.svelte";
   import { crcCards } from "./stores.js";
-  import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
-  import IconButton from '@smui/icon-button';
-  import Checkbox from '@smui/checkbox';
-  import FormField from '@smui/form-field';
-import { onMount } from 'svelte';
-
-
+  import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
+  import IconButton from "@smui/icon-button";
+  import Checkbox from "@smui/checkbox";
+  import FormField from "@smui/form-field";
+  import { onMount } from "svelte";
+  import { supabase } from "./lib/supabase";
 
   let prominent = false;
   let dense = false;
   let secondaryColor = true;
 
+  let innerWidth = $state();
+  let innerHeight = $state();
 
-  let innerWidth;
-  let innerHeight;
-  
   const clean = (s) => s.replace(/<\/?[^>]+(>|$)/g, "");
   const split = (s) => s.split(/\r\n|\r|\n/g);
-  
+
   function createCRCFromForm() {
-    createCRC(
-      "New Card",
-      [],
-      []
-    );
+    createCRC("New Card", [], []);
+    console.log("New Card Created!");
   }
 
   const createCRC = (title, responsibilities, collaborators) => {
@@ -42,7 +39,6 @@ import { onMount } from 'svelte';
 
     console.log(crcCards);
   };
-
 
   //todo rename and be more robust
   function positionSticky(sticky) {
@@ -60,80 +56,150 @@ import { onMount } from 'svelte';
     //partial function
     const movedCardidx = $crcCards.findIndex((c) => c.id == card.id);
     return function (left, top) {
-      
       $crcCards[movedCardidx].top = top;
       $crcCards[movedCardidx].left = left;
     };
   };
 
-  $: console.log("refresh!", $crcCards);
+  run(() => {
+    console.log("refresh!", $crcCards);
+  });
 
-  $: console.log(crcCards);
+  run(() => {
+    console.log(crcCards);
+  });
 
-  let google_signed_in = false;
-  let userName;
-  let profileIcon;
-  
+  let google_signed_in = $state(false);
+  let userName = $state();
+  let profileIcon = $state();
+
   let user = null;
-  onMount(()=>{
+  onMount(() => {
     const googleToken = localStorage.getItem("google-token");
-    if(googleToken){
+
+    //fetchDocument();
+    //listenForChanges();
+    text = document.content;
+    if (googleToken) {
       google_signed_in = true;
       user = JSON.parse(googleToken);
       profileIcon = user.picture;
       userName = user.name;
     }
-  })
+  });
 
+  let document = $state({
+    title: "",
+    content: "",
+  });
+
+  let text = $state("");
+
+  let loading = true;
+  let docId = 1; // This will be dynamic based on the document being accessed
+
+  // Fetch document on load
+  // const fetchDocument = async () => {
+  //   const { data, error } = await supabase
+  //     .from("documents")
+  //     .select("*")
+  //     .eq("id", docId)
+  //     .single();
+
+  //   if (error) console.error(error);
+  //   else document = data;
+  // };
+
+  // // Real-time subscription to listen for document changes
+  // const listenForChanges = () => {
+  //   const channel = supabase
+  //     .channel("realtime:documents")
+  //     .on(
+  //       "postgres_changes",
+  //       { event: "UPDATE", schema: "public", table: "documents" },
+  //       (payload) => {
+  //         if (payload.new.id === docId) {
+  //           document = payload.new;
+  //           text = document.content;
+  //         }
+  //         console.log("Change received!", payload);
+  //       }
+  //     )
+  //     .subscribe();
+  // };
+  // // Update document content
+  // const updateDocument = async () => {
+  //   const { error } = await supabase
+  //     .from("documents")
+  //     .update({ content: document.content })
+  //     .eq("id", docId);
+
+  //   if (error) console.error(error);
+  // };
+
+  function handleKeyUp(event) {
+    //   if (event.key === "Enter") {
+    //     // Update on Enter key press
+    //     console.log("Text updated:", text);
+    //     document.content = text;
+    //     updateDocument();
+    //   } else if (event.key === "Escape") {
+    //     // Undo typing on Escape key press
+    //     text = document.content;
+    //     console.log("Text reverted to original:", text);
+    //   }
+  }
 </script>
-
-
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
 {#if !google_signed_in}
-  <Signin/>
+  <Signin />
 {:else}
-<div class="flexy full-screen ">
-  <div class="top-app-bar-container flexor">
-    <TopAppBar
-      variant="static"
-      {prominent}
-      {dense}
-      color={secondaryColor ? 'secondary-variant' : 'primary'}
-    >
-    <Row>
-      <Section>
-        <IconButton class="material-icons">menu</IconButton>
-        <Title>CRC Cards</Title>
-      </Section>
-      <Section align="end" toolbar>
-        <IconButton class="material-icons" aria-label="Download"
-          >save</IconButton
-        >
-        <Avatar width="48" round={true} userFullName={userName} src={profileIcon}/>	
-
-      </Section>
-    </Row>
-    </TopAppBar>
-
- 
-      <div
-        class="flexor-content">
-          <div class="sticky-form flexy margins">
-            <Fab color="secondary-variant" on:click={createCRCFromForm} extended>
-              <Icon class="material-icons">add_circle_outline</Icon>
-              <Label>New Card</Label>
-            </Fab>
-          </div>
-          {#each $crcCards as card}
-            <Moveable
-              pos={{ left: card.left, top: card.top }}
-              updateDrag={updateCardPosition(card)}
+  <!-- <h1>{document.title}</h1>
+  <textarea bind:value={text} onkeyup={handleKeyUp}></textarea> -->
+  <div class="flexy full-screen">
+    <div class="top-app-bar-container flexor">
+      <TopAppBar
+        variant="static"
+        {prominent}
+        {dense}
+        color={secondaryColor ? "secondary-variant" : "primary"}
+      >
+        <Row>
+          <Section>
+            <IconButton class="material-icons">menu</IconButton>
+            <Title>CRC Cards</Title>
+          </Section>
+          <Section align="end" toolbar>
+            <IconButton class="material-icons" aria-label="Download"
+              >save</IconButton
             >
-              <CRCCardView bind:card />
-            </Moveable>
-          {/each}
+            <Avatar
+              width="48"
+              round={true}
+              userFullName={userName}
+              src={profileIcon}
+            />
+          </Section>
+        </Row>
+      </TopAppBar>
+
+      <div class="flexor-content">
+        <div class="sticky-form flexy margins">
+          <Fab color="secondary-variant" onclick={createCRCFromForm} extended>
+            <Icon class="material-icons">add_circle_outline</Icon>
+            <Label>New Card</Label>
+          </Fab>
+        </div>
+        {#each $crcCards as card, index}
+          <Moveable
+            pos={{ left: card.left, top: card.top }}
+            updateDrag={updateCardPosition(card)}
+          >
+            <CRCCardView bind:card={$crcCards[index]} />
+          </Moveable>
+        {/each}
       </div>
 
       <!-- <div class="sticky-form">
@@ -141,11 +207,8 @@ import { onMount } from 'svelte';
           >New Card!</button
         >
       -->
-
-
-
+    </div>
   </div>
-</div>
 {/if}
 
 <svelte:head>
@@ -168,6 +231,7 @@ import { onMount } from 'svelte';
   <!-- SMUI -->
   <link rel="stylesheet" href="https://unpkg.com/svelte-material-ui/bare.css" />
 </svelte:head>
+
 <style>
   :global(html) {
     box-sizing: border-box;
@@ -178,7 +242,7 @@ import { onMount } from 'svelte';
     padding: 0px;
     margin: 0;
     position: relative;
-    
+
     /* overflow: hidden; */
   }
   #stickies-container {
@@ -211,7 +275,7 @@ import { onMount } from 'svelte';
 
   .top-app-bar-container {
     width: 100%;
-		background-color: var(--mdc-theme-background, #fff);
+    background-color: var(--mdc-theme-background, #fff);
     display: inline-block;
     position: relative;
   }

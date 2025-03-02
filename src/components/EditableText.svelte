@@ -1,10 +1,16 @@
 <script>
 
-  export let text = "";
-  export let edit;
-  export let classes = "";
+  /**
+   * @typedef {Object} Props
+   * @property {string} [text]
+   * @property {any} edit
+   * @property {string} [classes]
+   */
 
-  let originalText = text;
+  /** @type {Props} */
+  let { text = $bindable(""), edit, classes = "" } = $props();
+
+  let originalText = $state(text);
   let is_editing = false;
 
   function handleKeyUp(event) {
@@ -27,10 +33,10 @@
   class:is_editing
   class:empty={!text}
   bind:value={text}
-  on:change={(e) =>
+  onchange={(e) =>
     console.log(e, text != originalText && edit(e.target.value))}
-  on:keyup={handleKeyUp}
-  on:focus={() => (originalText = text)}
+  onkeyup={handleKeyUp}
+  onfocus={() => (originalText = text)}
 />
 
 <style>

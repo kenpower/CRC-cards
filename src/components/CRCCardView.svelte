@@ -1,10 +1,13 @@
 <script>
+  import { createBubbler, stopPropagation } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { crcCards} from "../stores.js";
   import { onMount } from 'svelte';
   import MemberListView from "./MemberListView.svelte";
   import EditableText from "./EditableText.svelte";
 
-  export let card;
+  let { card = $bindable() } = $props();
 
   const deleteCard = () => {
     $crcCards = $crcCards.filter((c) => c !== card);
@@ -36,8 +39,8 @@
 </script>
 
 <div class="card">
-  <div class="ignore-pointer-down" on:pointerdown|stopPropagation>
-    <span class="delete" on:click={deleteCard}>&times;</span>
+  <div class="ignore-pointer-down" onpointerdown={stopPropagation(bubble('pointerdown'))}>
+    <span class="delete" onclick={deleteCard}>&times;</span>
     <div class="title-area">
       <EditableText bind:text={card.title} classes="title" />
     </div>
@@ -46,7 +49,7 @@
         bind:items={card.responsibilities.members}
         newMemberPlaceholder={"+responsibility"}
       />
-      <div class="vline" />
+      <div class="vline"></div>
       <MemberListView
         bind:items={card.collaborators.members}
         newMemberPlaceholder={"+collaborator"}
