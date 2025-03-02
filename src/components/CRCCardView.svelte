@@ -1,9 +1,9 @@
 <script>
-  import { createBubbler, stopPropagation } from 'svelte/legacy';
+  import { createBubbler, stopPropagation } from "svelte/legacy";
 
   const bubble = createBubbler();
-  import { crcCards} from "../stores.js";
-  import { onMount } from 'svelte';
+  import { crcCards } from "../stores.js";
+  import { onMount } from "svelte";
   import MemberListView from "./MemberListView.svelte";
   import EditableText from "./EditableText.svelte";
 
@@ -39,7 +39,10 @@
 </script>
 
 <div class="card">
-  <div class="ignore-pointer-down" onpointerdown={stopPropagation(bubble('pointerdown'))}>
+  <div
+    class="ignore-pointer-down"
+    onpointerdown={stopPropagation(bubble("pointerdown"))}
+  >
     <span class="delete" onclick={deleteCard}>&times;</span>
     <div class="title-area">
       <EditableText bind:text={card.title} classes="title" />
@@ -71,8 +74,9 @@
     border-radius: 0.5rem;
   }
 
-  .card:hover, .card:active {
-    border: 2rem solid  #99e5a2dd;
+  .card:hover,
+  .card:active {
+    border: 2rem solid #99e5a2dd;
     padding: 0;
   }
 
@@ -112,7 +116,7 @@
     width: 0px;
   }
 
-  .ignore-pointer-down{
+  .ignore-pointer-down {
     cursor: default;
   }
 </style>
