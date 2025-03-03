@@ -139,7 +139,10 @@
             pos={{ left: card.left, top: card.top }}
             updateDrag={updateCardPosition(card)}
           >
-            <CRCCardView bind:card={crcProject.cards[index]} />
+            <CRCCardView
+              bind:card={crcProject.cards[index]}
+              deleteCard={() => crcProject.deleteCard(card.id)}
+            />
           </Moveable>
         {/each}
       </div>

@@ -7,11 +7,7 @@
   import MemberListView from "./MemberListView.svelte";
   import EditableText from "./EditableText.svelte";
 
-  let { card = $bindable() } = $props();
-
-  const deleteCard = () => {
-    $crcCards = $crcCards.filter((c) => c !== card);
-  };
+  let { card = $bindable(), deleteCard } = $props();
 
   // const removeEmpty = list => list.filter(s => s && s.trim() !== "");
 
@@ -43,7 +39,7 @@
     class="ignore-pointer-down"
     onpointerdown={stopPropagation(bubble("pointerdown"))}
   >
-    <span class="delete" onclick={deleteCard}>&times;</span>
+    <span class="delete" onclick={() => deleteCard()}>&times;</span>
     <div class="title-area">
       <EditableText bind:text={card.name} classes="title" />{card.id}
     </div>
