@@ -7,13 +7,14 @@
   import CRCCardView from "./components/CRCCardView.svelte";
   import CRCCard from "./components/CRCCard.js";
   import Avatar from "./components/Avatar.svelte";
-  import { crcCards } from "./stores.js";
   import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
   import IconButton from "@smui/icon-button";
   import Checkbox from "@smui/checkbox";
   import FormField from "@smui/form-field";
   import { onMount } from "svelte";
   import { supabase } from "./lib/supabase";
+
+  import { crcProject } from "./lib/crcProject.svelte.js";
 
   let prominent = false;
   let dense = false;
@@ -25,49 +26,14 @@
   const clean = (s) => s.replace(/<\/?[^>]+(>|$)/g, "");
   const split = (s) => s.split(/\r\n|\r|\n/g);
 
-  function createCRCFromForm() {
-    createCRC("New Card", [], []);
-    console.log("New Card Created!");
-  }
+  const randomPositionNearCentreScreen = () => ({
+    left: innerWidth / 2 - (-100 + Math.round(Math.random() * 100)),
 
-  const createCRC = (title, responsibilities, collaborators) => {
-    let newCRC = new CRCCard(title, responsibilities, collaborators);
-
-    positionSticky(newCRC);
-
-    $crcCards = [...$crcCards, newCRC];
-
-    console.log(crcCards);
-  };
-
-  //todo rename and be more robust
-  function positionSticky(sticky) {
-    sticky.left =
-      innerWidth / 2 -
-      // sticky.clientWidth / 2 +
-      (-100 + Math.round(Math.random() * 100));
-    sticky.top =
-      innerHeight / 2 -
-      // sticky.clientHeight / 2 +
-      (-100 + Math.round(Math.random() * 100));
-  }
-
-  const updateCardPosition = (card) => {
-    //partial function
-    const movedCardidx = $crcCards.findIndex((c) => c.id == card.id);
-    return function (left, top) {
-      $crcCards[movedCardidx].top = top;
-      $crcCards[movedCardidx].left = left;
-    };
-  };
-
-  run(() => {
-    console.log("refresh!", $crcCards);
+    top: innerHeight / 2 - (-100 + Math.round(Math.random() * 100)),
   });
 
-  run(() => {
-    console.log(crcCards);
-  });
+  const createCRCCard = () =>
+    crcProject.addCard("New Card", randomPositionNearCentreScreen());
 
   let google_signed_in = $state(false);
   let userName = $state();
@@ -79,7 +45,7 @@
 
     //fetchDocument();
     //listenForChanges();
-    text = document.content;
+
     if (googleToken) {
       google_signed_in = true;
       user = JSON.parse(googleToken);
@@ -88,15 +54,10 @@
     }
   });
 
-  let document = $state({
-    title: "",
-    content: "",
-  });
-
-  let text = $state("");
-
-  let loading = true;
-  let docId = 1; // This will be dynamic based on the document being accessed
+  const updateCardPosition = (card) => (pos) => {
+    card.left = pos.left;
+    card.top = pos.top;
+  };
 
   // Fetch document on load
   // const fetchDocument = async () => {
@@ -187,17 +148,19 @@
 
       <div class="flexor-content">
         <div class="sticky-form flexy margins">
-          <Fab color="secondary-variant" onclick={createCRCFromForm} extended>
+          <Fab color="secondary-variant" onclick={createCRCCard} extended>
             <Icon class="material-icons">add_circle_outline</Icon>
             <Label>New Card</Label>
           </Fab>
         </div>
-        {#each $crcCards as card, index}
+        {crcProject.cards.length === 0 && "<p>No cards yet!</p>"}
+        {#each crcProject.cards as card, index}
+          {card.name}
           <Moveable
             pos={{ left: card.left, top: card.top }}
             updateDrag={updateCardPosition(card)}
           >
-            <CRCCardView bind:card={$crcCards[index]} />
+            <CRCCardView bind:card={crcProject.cards[index]} />
           </Moveable>
         {/each}
       </div>

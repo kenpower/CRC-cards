@@ -45,16 +45,16 @@
   >
     <span class="delete" onclick={deleteCard}>&times;</span>
     <div class="title-area">
-      <EditableText bind:text={card.title} classes="title" />
+      <EditableText bind:text={card.name} classes="title" />
     </div>
     <div class="body">
       <MemberListView
-        bind:items={card.responsibilities.members}
+        bind:items={card.responsibilities}
         newMemberPlaceholder={"+responsibility"}
       />
       <div class="vline"></div>
       <MemberListView
-        bind:items={card.collaborators.members}
+        bind:items={card.collaborators}
         newMemberPlaceholder={"+collaborator"}
       />
     </div>
