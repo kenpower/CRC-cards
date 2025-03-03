@@ -1,5 +1,5 @@
 <script>
-  import { preventDefault } from 'svelte/legacy';
+  import { preventDefault } from "svelte/legacy";
 
   // import Draggable from "./Draggable.svelte";
   // import EditableText from "./EditableText.svelte";
@@ -37,7 +37,7 @@
   //   members = members.filter((s) => s.id  !== toRemove.id);
   // };
 
-  // const partial_edit = (idx) => (newText) => edit(newText, idx);
+  //const partial_edit = (idx) => (newText) => edit(newText, idx);
 </script>
 
 <div
@@ -50,8 +50,11 @@
   ondrop={preventDefault(onDrop)}
 >
   {#each members as member, idx (member.id)}
-    <div animate:flip="{{delay: 250, duration: 250}}" >
-      <Draggable data={{ text: member.name, idx }} on:dragFinish = {()=>remove(member)}>
+    <div animate:flip={{ delay: 250, duration: 250 }}>
+      <Draggable
+        data={{ text: member.name, idx }}
+        on:dragFinish={() => remove(member)}
+      >
         <!-- TODO blur editable when dragging starts <div draggable=true on:dragstart={e=>console.log(e, e.target.blur())}> -->
         <EditableText text={member.name} edit={partial_edit(idx)} />
         <!-- </div> -->

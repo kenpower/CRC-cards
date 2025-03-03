@@ -2,7 +2,6 @@
   import { createBubbler, stopPropagation } from "svelte/legacy";
 
   const bubble = createBubbler();
-  import { crcCards } from "../stores.js";
   import { onMount } from "svelte";
   import MemberListView from "./MemberListView.svelte";
   import EditableText from "./EditableText.svelte";
@@ -32,6 +31,11 @@
   //   // if(newTitle) card.title = newTitle;
   //   // $crcCards = $crcCards;
   // };
+
+  const edit = (newTitle) => {
+    if (newTitle) card.name = newTitle;
+    card.update();
+  };
 </script>
 
 <div class="card">
@@ -41,7 +45,7 @@
   >
     <span class="delete" onclick={() => deleteCard()}>&times;</span>
     <div class="title-area">
-      <EditableText bind:text={card.name} classes="title" />{card.id}
+      <EditableText bind:text={card.name} classes="title" {edit} />{card.id}
     </div>
     <div class="body">
       <MemberListView

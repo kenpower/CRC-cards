@@ -56,8 +56,8 @@
 
   const pointerup = (e) => {
     if (grabbingFrame) grabbingFrame.releasePointerCapture(e.pointerId);
+    if (isDragging) dropped();
     isDragging = false;
-    dropped();
   };
 
   let positionStyle = $derived(

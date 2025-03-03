@@ -81,6 +81,11 @@ class Card {
     card.id = record.card_id;
     return card;
   }
+
+  update() {
+    DBupdateCard(this);
+    console.log("Updated card:", this);
+  }
 }
 
 class CRCProject {
