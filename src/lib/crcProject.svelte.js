@@ -49,6 +49,21 @@ const DBdeleteCard = async (cardId) => {
   }
 };
 
+const DBupdateCard = async (card) => {
+  const response = await supabase
+    .from("cards")
+    .update({
+      style: card.style,
+      name: card.name,
+      // collaborators: card.collaborators,
+      // responsibilities: card.responsibilities,
+    })
+    .eq("card_id", card.id);
+
+  if (response.error) reportSupabseError(response, "updateCard");
+  else console.log("Updated card:", card.id);
+};
+
 class Card {
   style = $state({ position: { left: 0, top: 0 } });
   name = $state("");
@@ -86,6 +101,11 @@ class CRCProject {
     console.log("Deleting card:", id);
     if (DBdeleteCard(id))
       this.cards = this.cards.filter((card) => card.id !== id);
+  }
+
+  updateCard(card) {
+    DBupdateCard(card);
+    console.log("Updated card:", card);
   }
 }
 

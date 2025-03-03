@@ -4,7 +4,6 @@
   let lastOffsetX = $state(0);
   let lastOffsetY = $state(0);
 
-
   /**
    * @typedef {Object} Props
    * @property {any} pos
@@ -13,7 +12,12 @@
    */
 
   /** @type {Props} */
-  let { pos = $bindable(), updateDrag = null, children } = $props();
+  let {
+    pos = $bindable(),
+    updateDrag = null,
+    dropped = null,
+    children,
+  } = $props();
 
   let grabbingFrame = $state();
 
@@ -28,7 +32,7 @@
     };
 
     grabbingFrame.setPointerCapture(e.pointerId);
-    
+
     const thisEl = e.currentTarget;
     bringToTop(thisEl);
 
@@ -43,37 +47,36 @@
   const pointermove = (e) => {
     if (!isDragging) return;
 
-    pos.left = e.clientX - lastOffsetX;
-    pos.top = e.clientY - lastOffsetY;
-
-    updateDrag(pos.left, pos.top);
+    const position = {
+      left: e.clientX - lastOffsetX,
+      top: e.clientY - lastOffsetY,
+    };
+    updateDrag(position);
   };
 
   const pointerup = (e) => {
-    if(grabbingFrame)
-      grabbingFrame.releasePointerCapture(e.pointerId);
+    if (grabbingFrame) grabbingFrame.releasePointerCapture(e.pointerId);
     isDragging = false;
-  }
+    dropped();
+  };
 
-  let positionStyle = $derived(pos
-    ? `left: ${pos.left}px; top: ${pos.top}px; position: absolute;`
-    : "");
+  let positionStyle = $derived(
+    pos ? `left: ${pos.left}px; top: ${pos.top}px; position: absolute;` : ""
+  );
 
-  let rotateAboutMouseStyle = $derived(isDragging
-    ? `transform-origin: ${lastOffsetX}px ${lastOffsetY}px;`
-    : "");
-
-  
+  let rotateAboutMouseStyle = $derived(
+    isDragging ? `transform-origin: ${lastOffsetX}px ${lastOffsetY}px;` : ""
+  );
 </script>
 
-<div bind:this={grabbingFrame}
+<div
+  bind:this={grabbingFrame}
   onpointerdown={pointerdown}
   onpointermove={pointermove}
   onpointerup={pointerup}
-
   class="drag"
   class:isDragging
-  style = {positionStyle + rotateAboutMouseStyle}
+  style={positionStyle + rotateAboutMouseStyle}
 >
   {@render children?.()}
 </div>

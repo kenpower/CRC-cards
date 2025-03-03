@@ -57,6 +57,8 @@
   const updateCardPosition = (card) => (pos) => {
     card.style.position.left = pos.left;
     card.style.position.top = pos.top;
+    console.log("updateCardPosition", card);
+    console.log("updateCardPosition", pos);
   };
 
   // // Real-time subscription to listen for document changes
@@ -141,6 +143,7 @@
               top: card.style.position.top,
             }}
             updateDrag={updateCardPosition(card)}
+            dropped={() => crcProject.updateCard(card)}
           >
             <CRCCardView
               bind:card={crcProject.cards[index]}
