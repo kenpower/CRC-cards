@@ -45,7 +45,7 @@
   >
     <span class="delete" onclick={deleteCard}>&times;</span>
     <div class="title-area">
-      <EditableText bind:text={card.name} classes="title" />
+      <EditableText bind:text={card.name} classes="title" />{card.id}
     </div>
     <div class="body">
       <MemberListView

@@ -59,18 +59,6 @@
     card.top = pos.top;
   };
 
-  // Fetch document on load
-  // const fetchDocument = async () => {
-  //   const { data, error } = await supabase
-  //     .from("documents")
-  //     .select("*")
-  //     .eq("id", docId)
-  //     .single();
-
-  //   if (error) console.error(error);
-  //   else document = data;
-  // };
-
   // // Real-time subscription to listen for document changes
   // const listenForChanges = () => {
   //   const channel = supabase
@@ -87,15 +75,6 @@
   //       }
   //     )
   //     .subscribe();
-  // };
-  // // Update document content
-  // const updateDocument = async () => {
-  //   const { error } = await supabase
-  //     .from("documents")
-  //     .update({ content: document.content })
-  //     .eq("id", docId);
-
-  //   if (error) console.error(error);
   // };
 
   function handleKeyUp(event) {
@@ -155,7 +134,7 @@
         </div>
         {crcProject.cards.length === 0 && "<p>No cards yet!</p>"}
         {#each crcProject.cards as card, index}
-          {card.name}
+          {index}-{card.name}-{card.id}
           <Moveable
             pos={{ left: card.left, top: card.top }}
             updateDrag={updateCardPosition(card)}
