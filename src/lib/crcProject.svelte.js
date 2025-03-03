@@ -14,7 +14,7 @@ const DBinsertCard = async (card) => {
     .insert({
       project_id: project_id,
       name: card.name,
-      style: { position: card.position },
+      style: card.style,
     })
     .select("*");
 
@@ -50,7 +50,7 @@ const DBdeleteCard = async (cardId) => {
 };
 
 class Card {
-  position = $state({ left: 0, top: 0 });
+  style = $state({ position: { left: 0, top: 0 } });
   name = $state("");
   collaborators = $state([]);
   responsibilities = $state([]);
@@ -62,7 +62,7 @@ class Card {
 
   static fromDBRecord(record) {
     var card = new Card(record.name);
-    card.position = record.style.position;
+    card.style = record.style;
     card.id = record.card_id;
     return card;
   }
@@ -73,11 +73,13 @@ class CRCProject {
 
   addCard(name, position) {
     var card = new Card(name);
-    card.left = position.left;
-    card.top = position.top;
+    card.style.position.left = position.left;
+    card.style.position.top = position.top;
     this.cards.push(card);
     DBinsertCard(card);
-    console.log(this.cards);
+
+    console.log("Added card with style:", card.style);
+    console.log("Added card with position:", card.style.position);
   }
 
   deleteCard(id) {

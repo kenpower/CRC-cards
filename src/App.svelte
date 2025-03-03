@@ -55,8 +55,8 @@
   });
 
   const updateCardPosition = (card) => (pos) => {
-    card.left = pos.left;
-    card.top = pos.top;
+    card.style.position.left = pos.left;
+    card.style.position.top = pos.top;
   };
 
   // // Real-time subscription to listen for document changes
@@ -132,11 +132,14 @@
             <Label>New Card</Label>
           </Fab>
         </div>
-        {crcProject.cards.length === 0 && "<p>No cards yet!</p>"}
+
         {#each crcProject.cards as card, index}
           {index}-{card.name}-{card.id}
           <Moveable
-            pos={{ left: card.left, top: card.top }}
+            pos={{
+              left: card.style.position.left,
+              top: card.style.position.top,
+            }}
             updateDrag={updateCardPosition(card)}
           >
             <CRCCardView
