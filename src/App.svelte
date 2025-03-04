@@ -5,7 +5,6 @@
   import Signin from "./Signin.svelte";
   import Moveable from "./components/Moveable.svelte";
   import CRCCardView from "./components/CRCCardView.svelte";
-  import CRCCard from "./components/CRCCard.js";
   import Avatar from "./components/Avatar.svelte";
   import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
   import IconButton from "@smui/icon-button";

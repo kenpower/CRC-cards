@@ -8,30 +8,6 @@
 
   let { card = $bindable(), deleteCard } = $props();
 
-  // const removeEmpty = list => list.filter(s => s && s.trim() !== "");
-
-  // const updateCard = _ =>  {
-  //     console.log("update card");
-  //     card.responsibilities = removeEmpty(card.responsibilities)
-  //     card.collaborators = removeEmpty(card.collaborators)
-  //     refresh();
-  // }
-
-  // const addResponsibility = (newResponsibility) => {
-  //     card.responsibilities = [...card.responsibilities, newResponsibility]
-  //     refresh();
-  // }
-
-  // const addCollaborator = (newCollaborator) => {
-  //   card.collaborators = [...card.collaborators, newCollaborator];
-  //   refresh();
-  // };
-
-  // const save = (newTitle) => {
-  //   // if(newTitle) card.title = newTitle;
-  //   // $crcCards = $crcCards;
-  // };
-
   const edit = (newTitle) => {
     if (newTitle) card.name = newTitle;
     card.update();

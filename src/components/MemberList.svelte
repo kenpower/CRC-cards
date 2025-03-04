@@ -1,42 +1,6 @@
 <script>
   import { preventDefault } from "svelte/legacy";
 
-  // import Draggable from "./Draggable.svelte";
-  // import EditableText from "./EditableText.svelte";
-  // import { flip } from "svelte/animate";
-  // export let newMemberPlaceholder;
-  // export let members;
-
-  // let draggedMember = null;
-  // let focused = false;
-
-  // const onDrop = (event) => {
-  //   const data = JSON.parse(event.dataTransfer.getData("text/plain"));
-  //   //event.target.textContent = data;
-  //   console.log(data.text);
-  //   add(data.text);
-  // };
-
-  // const edit = (newText, idx) => {
-  //   const removeEmpty = (list) => list.filter((s) => s.name && s.name.trim() !== "");
-  //   members[idx].name = newText;
-  //   console.log("update!");
-  //   members = removeEmpty(members);
-
-  // };
-
-  // const add = (newMember) => {
-  //   let id =  self.crypto.randomUUID();
-  //   console.log(members)
-
-  //   members = [...members, {name: newMember, id: id}];
-  // };
-
-  // const remove = (toRemove) => {
-  //   console.log("remove", toRemove);
-  //   members = members.filter((s) => s.id  !== toRemove.id);
-  // };
-
   const partial_edit = (idx) => (newText) => edit(newText, idx);
 </script>
 
