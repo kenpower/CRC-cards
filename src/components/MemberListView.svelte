@@ -5,6 +5,7 @@
   import { flip } from "svelte/animate";
   import Icon from "@iconify/svelte";
   import dragIcon from "@iconify/icons-mdi/drag";
+  import deleteIcon from "@iconify/icons-mdi/delete";
   import { fade } from "svelte/transition";
 
   let {
@@ -12,6 +13,7 @@
     items = $bindable(),
     addItem,
     updateItem,
+    deleteItem,
   } = $props();
 
   const flipDurationMs = 200;
@@ -109,6 +111,14 @@
           text={item.name}
           edit={(newText) => updateItemName(item, newText)}
         ></EditableText>
+        <button
+          class="delete-btn"
+          aria-label="Delete item"
+          onclick={() => deleteItem(item)}
+          transition:fade={{ duration: 100 }}
+        >
+          <Icon icon={deleteIcon} style="font-size: 1.5rem;" inline={true} />
+        </button>
       </div>
     {/each}
   </section>
@@ -162,5 +172,24 @@
 
   :global(input.editable:hover) {
     background-color: azure;
+  }
+
+  /* Delete button styles */
+  .delete-btn {
+    visibility: hidden; /* Hidden by default */
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    color: #ff4444; /* Red color for delete */
+  }
+
+  .member-wrapper:hover .delete-btn {
+    visibility: visible; /* Show delete button on hover */
+  }
+
+  .delete-btn:hover {
+    color: #cc0000; /* Darker red on hover */
   }
 </style>

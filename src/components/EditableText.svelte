@@ -48,13 +48,13 @@
     display: block;
     cursor: text;
     background-color: transparent;
-    border: none;
+    border: black 1px solid;
     padding: 0.1rem;
     margin: 0;
     border: 0 none;
   }
   input:hover {
-    font-weight: 600;
+    /* font-weight: 600; */
   }
 
   .empty {

@@ -28,6 +28,7 @@
         bind:items={card.responsibilities}
         addItem={card.addResponsibility}
         updateItem={card.updateResponsibility}
+        deleteItem={card.deleteResponsibility}
         newMemberPlaceholder={"+responsibility"}
       />
       <div class="vline"></div>
@@ -35,6 +36,7 @@
         bind:items={card.collaborators}
         addItem={card.addCollaborator}
         updateItem={card.updateCollaborator}
+        deleteItem={card.deleteCollaborator}
         newMemberPlaceholder={"+collaborator"}
       />
     </div>

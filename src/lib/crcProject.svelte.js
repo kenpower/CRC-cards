@@ -93,6 +93,17 @@ const DBaddRow = async (table, row) => {
   }
 };
 
+const DBdeleteRow = async (table, row) => {
+  console.log("Deleting row in" + table + ":", row);
+  const response = await supabase.from(table).delete().eq("id", row.id);
+
+  if (response.error) reportSupabaseError(response, "deleteRow:" + table);
+  else {
+    console.log("Deleted row in" + table + ":", row);
+    return true;
+  }
+};
+
 const DBupdateRow = async (table, row) => {
   const response = await supabase.from(table).update(row).eq("id", row.id);
 
@@ -145,19 +156,24 @@ class Card {
     console.log("Updated collaborator:", collaborator);
   };
 
-  addResponsibility = async (name) => {
+  deleteResponsibility = async (responsibility) => {
     // Arrow function ensures `this` stays bound
-    console.log("Adding responsibility in card:", this);
-    const responsibility = {
-      name: name,
-      display_order: 0,
-      card_id: this.id,
-    };
+    if (DBdeleteRow("responsibilities", responsibility)) {
+      this.responsibilities = this.responsibilities.filter(
+        (resp) => resp.id !== responsibility.id
+      );
+      console.log("deleted responsibility:", responsibility);
+    }
+  };
 
-    const newResponsibility = await DBaddRow(responsibility);
-    console.log("Added responsibility:", newResponsibility);
-    //todo: add repsonsibility optimistically before the db call
-    this.responsibilities.push(newResponsibility);
+  deleteCollaborator = async (collaborator) => {
+    // Arrow function ensures `this` stays bound
+    if (DBdeleteRow("collaborators", collaborator)) {
+      this.collaborators = this.collaborators.filter(
+        (collab) => collab.id !== collaborator.id
+      );
+      console.log("deleted collaborator:", collaborator);
+    }
   };
 
   addResponsibility = async (name) => {
@@ -169,10 +185,7 @@ class Card {
       card_id: this.id,
     };
 
-    const newResponsibility = await DBaddRow(
-      "responsibilities",
-      responsibility
-    );
+    const newResponsibility = await DBaddRow(responsibility);
     console.log("Added responsibility:", newResponsibility);
     //todo: add repsonsibility optimistically before the db call
     this.responsibilities.push(newResponsibility);
