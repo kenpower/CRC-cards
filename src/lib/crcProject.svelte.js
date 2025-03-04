@@ -43,6 +43,35 @@ const DBfetchCRCProject = async () => {
   }
 };
 
+const DBfetchCRCProjectCards = async (project_id) => {
+  const response = await supabase
+    .from("cards")
+    .select(
+      `
+      *,
+      collaborators (
+        id,
+        name,
+        display_order
+      ),
+      responsibilities (
+        id,
+        name,
+        display_order
+      )
+    `
+    )
+    .eq("project_id", project_id);
+
+  if (response.error) {
+    reportSupabseError(response, "fetchCRCProjectCards");
+    return null;
+  } else {
+    console.log("Fetched cards with relationships:", response.data);
+    return response.data.map((record) => Card.fromDBRecord(record));
+  }
+};
+
 const DBdeleteCard = async (cardId) => {
   const response = await supabase.from("cards").delete().eq("id", cardId);
 
@@ -93,8 +122,18 @@ class Card {
 
   static fromDBRecord(record) {
     var card = new Card(record.name);
-    card.style = record.style;
+    card.style = card.style || { position: { left: 0, top: 0 } };
     card.id = record.id;
+    card.collaborators = record.collaborators.map((collab) => ({
+      id: collab.id,
+      name: collab.name,
+      display_order: collab.display_order,
+    }));
+    card.responsibilities = record.responsibilities.map((resp) => ({
+      id: resp.id,
+      name: resp.name,
+      display_order: resp.display_order,
+    }));
     return card;
   }
 
@@ -146,10 +185,10 @@ class CRCProject {
 }
 
 const getProject = async (project_id) => {
-  const cardsData = await DBfetchCRCProject();
-
   var project = $state(new CRCProject());
-  project.cards = cardsData.map((record) => Card.fromDBRecord(record));
+  // project.cards = cardsData.map((record) => Card.fromDBRecord(record));
+  // project.cards =
+  project.cards = await DBfetchCRCProjectCards(project_id);
 
   console.log("Fetched project:", $state.snapshot(project));
   return project;
