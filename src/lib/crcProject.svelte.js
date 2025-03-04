@@ -122,7 +122,7 @@ class Card {
 
   static fromDBRecord(record) {
     var card = new Card(record.name);
-    card.style = card.style || { position: { left: 0, top: 0 } };
+    card.style = record.style || { position: { left: 0, top: 0 } };
     card.id = record.id;
     card.collaborators = record.collaborators.map((collab) => ({
       id: collab.id,
