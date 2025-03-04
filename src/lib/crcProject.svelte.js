@@ -6,7 +6,7 @@ function getTempInt4() {
   return Math.floor(Math.random() * 2_000_000_000); // Avoids the max int4 limit
 }
 
-const reportSupabseError = ({ error, status, statusText }, operation) => {
+const reportSupabaseError = ({ error, status, statusText }, operation) => {
   console.error("Error:", operation, error);
   console.error("Status:", status);
   console.error("Status Text:", statusText);
@@ -22,7 +22,7 @@ const DBinsertCard = async (card) => {
     })
     .select("*");
 
-  if (response.error) reportSupabseError(response, "insertCard");
+  if (response.error) reportSupabaseError(response, "insertCard");
   else {
     const record = response.data[0];
     console.log("Inserted record:", record);
@@ -36,7 +36,7 @@ const DBfetchCRCProject = async () => {
     .select("*")
     .eq("project_id", project_id);
 
-  if (response.error) reportSupabseError(response, "fetchCRCProject");
+  if (response.error) reportSupabaseError(response, "fetchCRCProject");
   else {
     console.log("Fetched cards:", response.data);
     return response.data;
@@ -64,7 +64,7 @@ const DBfetchCRCProjectCards = async (project_id) => {
     .eq("project_id", project_id);
 
   if (response.error) {
-    reportSupabseError(response, "fetchCRCProjectCards");
+    reportSupabaseError(response, "fetchCRCProjectCards");
     return null;
   } else {
     console.log("Fetched cards with relationships:", response.data);
@@ -75,7 +75,7 @@ const DBfetchCRCProjectCards = async (project_id) => {
 const DBdeleteCard = async (cardId) => {
   const response = await supabase.from("cards").delete().eq("id", cardId);
 
-  if (response.error) reportSupabseError(response, "deleteCard");
+  if (response.error) reportSupabaseError(response, "deleteCard");
   else {
     console.log("Deleted card:", cardId);
     return true;
@@ -91,14 +91,14 @@ const DBupdateCard = async (card) => {
     })
     .eq("id", card.id);
 
-  if (response.error) reportSupabseError(response, "updateCard");
+  if (response.error) reportSupabaseError(response, "updateCard");
   else console.log("Updated card:", card.id);
 };
 
 const DBaddRow = async (table, row) => {
   const response = await supabase.from(table).insert(row).select("*");
 
-  if (response.error) reportSupabseError(response, "addRRow:" + table);
+  if (response.error) reportSupabaseError(response, "addRRow:" + table);
   else {
     const record = response.data[0];
     console.log("Inserted row into:" + table, record);
@@ -109,7 +109,7 @@ const DBaddRow = async (table, row) => {
 const DBupdateRow = async (table, row) => {
   const response = await supabase.from(table).update(row).eq("id", row.id);
 
-  if (response.error) reportSupabseError(response, "updateRow:" + table);
+  if (response.error) reportSupabaseError(response, "updateRow:" + table);
   else console.log("Updated row in" + table + ":", row);
 };
 
