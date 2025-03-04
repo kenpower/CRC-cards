@@ -95,28 +95,22 @@ const DBupdateCard = async (card) => {
   else console.log("Updated card:", card.id);
 };
 
-const DBaddResponsibility = async (responsibility) => {
-  const response = await supabase
-    .from("responsibilities")
-    .insert(responsibility)
-    .select("*");
+const DBaddRow = async (table, row) => {
+  const response = await supabase.from(table).insert(row).select("*");
 
-  if (response.error) reportSupabseError(response, "addResponsibility");
+  if (response.error) reportSupabseError(response, "addRRow:" + table);
   else {
     const record = response.data[0];
-    console.log("Inserted responsibility:", record);
+    console.log("Inserted row into:" + table, record);
     return record;
   }
 };
 
-const DBupdateResponsibility = async (responsibility) => {
-  const response = await supabase
-    .from("responsibilities")
-    .update(responsibility)
-    .eq("id", responsibility.id);
+const DBupdateRow = async (table, row) => {
+  const response = await supabase.from(table).update(row).eq("id", row.id);
 
-  if (response.error) reportSupabseError(response, "updateResponsibility");
-  else console.log("Updated responsibility:", responsibility.id);
+  if (response.error) reportSupabseError(response, "updateRow:" + table);
+  else console.log("Updated row in" + table + ":", row);
 };
 
 class Card {
@@ -154,9 +148,16 @@ class Card {
 
   updateResponsibility = async (responsibility) => {
     // Arrow function ensures `this` stays bound
-    DBupdateResponsibility(responsibility);
+    DBupdateRow("responsibilities", responsibility);
     console.log("Updated responsibility:", responsibility);
   };
+
+  updateCollaborator = async (collaborator) => {
+    // Arrow function ensures `this` stays bound
+    DBupdateRow("collaborators", collaborator);
+    console.log("Updated collaborator:", collaborator);
+  };
+
   addResponsibility = async (name) => {
     // Arrow function ensures `this` stays bound
     console.log("Adding responsibility in card:", this);
@@ -166,10 +167,41 @@ class Card {
       card_id: this.id,
     };
 
-    const newResponsibility = await DBaddResponsibility(responsibility);
+    const newResponsibility = await DBaddRow(responsibility);
     console.log("Added responsibility:", newResponsibility);
     //todo: add repsonsibility optimistically before the db call
     this.responsibilities.push(newResponsibility);
+  };
+
+  addResponsibility = async (name) => {
+    // Arrow function ensures `this` stays bound
+    console.log("Adding responsibility in card:", this);
+    const responsibility = {
+      name: name,
+      display_order: 0,
+      card_id: this.id,
+    };
+
+    const newResponsibility = await DBaddRow(
+      "responsibilities",
+      responsibility
+    );
+    console.log("Added responsibility:", newResponsibility);
+    //todo: add repsonsibility optimistically before the db call
+    this.responsibilities.push(newResponsibility);
+  };
+
+  addCollaborator = async (name) => {
+    console.log("Adding collaborator in card:", this);
+    const collaborator = {
+      name: name,
+      display_order: 0,
+      card_id: this.id,
+    };
+
+    const newCollaborator = await DBaddRow("collaborators", collaborator);
+    console.log("Added collaborator:", newCollaborator);
+    this.collaborators.push(newCollaborator);
   };
 }
 

@@ -33,6 +33,8 @@
       <div class="vline"></div>
       <MemberListView
         bind:items={card.collaborators}
+        addItem={card.addCollaborator}
+        updateItem={card.updateCollaborator}
         newMemberPlaceholder={"+collaborator"}
       />
     </div>
