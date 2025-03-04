@@ -7,7 +7,12 @@
   import dragIcon from "@iconify/icons-mdi/drag";
   import { fade } from "svelte/transition";
 
-  let { newMemberPlaceholder, items = $bindable(), addItem } = $props();
+  let {
+    newMemberPlaceholder,
+    items = $bindable(),
+    addItem,
+    updateItem,
+  } = $props();
 
   const flipDurationMs = 200;
   let dragDisabled = $state(true);
@@ -55,6 +60,13 @@
     addItem(newMember);
   };
 
+  function updateItemName(item, newText) {
+    item.name = newText; // Update the item with the new text
+    console.log("Updated item:", item);
+    updateItem(item);
+    // Add your logic to persist the change (e.g., database update)
+  }
+
   let iconVisibleStyle = $derived(
     focused ? "visibility: visible" : "visibility: hidden"
   );
@@ -92,7 +104,11 @@
         >
           <Icon icon={dragIcon} style={iconStyle} inline={true} />
         </div>
-        <EditableText class="member-name" text={item.name}></EditableText>
+        <EditableText
+          class="member-name"
+          text={item.name}
+          edit={(newText) => updateItemName(item, newText)}
+        ></EditableText>
       </div>
     {/each}
   </section>

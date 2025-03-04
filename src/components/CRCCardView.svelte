@@ -27,6 +27,7 @@
       <MemberListView
         bind:items={card.responsibilities}
         addItem={card.addResponsibility}
+        updateItem={card.updateResponsibility}
         newMemberPlaceholder={"+responsibility"}
       />
       <div class="vline"></div>

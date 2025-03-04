@@ -109,6 +109,16 @@ const DBaddResponsibility = async (responsibility) => {
   }
 };
 
+const DBupdateResponsibility = async (responsibility) => {
+  const response = await supabase
+    .from("responsibilities")
+    .update(responsibility)
+    .eq("id", responsibility.id);
+
+  if (response.error) reportSupabseError(response, "updateResponsibility");
+  else console.log("Updated responsibility:", responsibility.id);
+};
+
 class Card {
   style = $state({ position: { left: 0, top: 0 } });
   name = $state("");
@@ -142,6 +152,11 @@ class Card {
     console.log("Updated card:", this);
   }
 
+  updateResponsibility = async (responsibility) => {
+    // Arrow function ensures `this` stays bound
+    DBupdateResponsibility(responsibility);
+    console.log("Updated responsibility:", responsibility);
+  };
   addResponsibility = async (name) => {
     // Arrow function ensures `this` stays bound
     console.log("Adding responsibility in card:", this);

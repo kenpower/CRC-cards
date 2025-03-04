@@ -1,5 +1,4 @@
 <script>
-
   /**
    * @typedef {Object} Props
    * @property {string} [text]
@@ -24,6 +23,12 @@
       event.target.blur();
     }
   }
+
+  function handleChange(event) {
+    if (text !== originalText) {
+      edit(text); // Pass the new text value explicitly
+    }
+  }
 </script>
 
 <input
@@ -33,8 +38,7 @@
   class:is_editing
   class:empty={!text}
   bind:value={text}
-  onchange={(e) =>
-    console.log(e, text != originalText && edit(e.target.value))}
+  onchange={handleChange}
   onkeyup={handleKeyUp}
   onfocus={() => (originalText = text)}
 />
@@ -49,10 +53,9 @@
     margin: 0;
     border: 0 none;
   }
-input:hover {
+  input:hover {
     font-weight: 600;
-}
-  
+  }
 
   .empty {
     color: #777;
