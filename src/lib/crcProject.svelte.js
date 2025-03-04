@@ -30,19 +30,6 @@ const DBinsertCard = async (card) => {
   }
 };
 
-const DBfetchCRCProject = async () => {
-  const response = await supabase
-    .from("cards")
-    .select("*")
-    .eq("project_id", project_id);
-
-  if (response.error) reportSupabaseError(response, "fetchCRCProject");
-  else {
-    console.log("Fetched cards:", response.data);
-    return response.data;
-  }
-};
-
 const DBfetchCRCProjectCards = async (project_id) => {
   const response = await supabase
     .from("cards")

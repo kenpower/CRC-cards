@@ -75,7 +75,7 @@
     "font-size: 1.5rem; cursor: move;" + iconVisibleStyle
   );
 
-  console.log("items", $inspect(items));
+  //console.log("items", $inspect(items));
 </script>
 
 <div
