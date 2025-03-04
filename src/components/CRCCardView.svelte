@@ -50,6 +50,7 @@
     <div class="body">
       <MemberListView
         bind:items={card.responsibilities}
+        addItem={card.addResponsibility}
         newMemberPlaceholder={"+responsibility"}
       />
       <div class="vline"></div>

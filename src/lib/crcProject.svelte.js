@@ -2,6 +2,10 @@ import { supabase } from "./supabase";
 
 const project_id = "0";
 
+function getTempInt4() {
+  return Math.floor(Math.random() * 2_000_000_000); // Avoids the max int4 limit
+}
+
 const reportSupabseError = ({ error, status, statusText }, operation) => {
   console.error("Error:", operation, error);
   console.error("Status:", status);
@@ -22,7 +26,7 @@ const DBinsertCard = async (card) => {
   else {
     const record = response.data[0];
     console.log("Inserted record:", record);
-    card.id = record.card_id;
+    card.id = record.id;
   }
 };
 
@@ -40,7 +44,7 @@ const DBfetchCRCProject = async () => {
 };
 
 const DBdeleteCard = async (cardId) => {
-  const response = await supabase.from("cards").delete().eq("card_id", cardId);
+  const response = await supabase.from("cards").delete().eq("id", cardId);
 
   if (response.error) reportSupabseError(response, "deleteCard");
   else {
@@ -55,13 +59,25 @@ const DBupdateCard = async (card) => {
     .update({
       style: card.style,
       name: card.name,
-      // collaborators: card.collaborators,
-      // responsibilities: card.responsibilities,
     })
-    .eq("card_id", card.id);
+    .eq("id", card.id);
 
   if (response.error) reportSupabseError(response, "updateCard");
   else console.log("Updated card:", card.id);
+};
+
+const DBaddResponsibility = async (responsibility) => {
+  const response = await supabase
+    .from("responsibilities")
+    .insert(responsibility)
+    .select("*");
+
+  if (response.error) reportSupabseError(response, "addResponsibility");
+  else {
+    const record = response.data[0];
+    console.log("Inserted responsibility:", record);
+    return record;
+  }
 };
 
 class Card {
@@ -78,7 +94,7 @@ class Card {
   static fromDBRecord(record) {
     var card = new Card(record.name);
     card.style = record.style;
-    card.id = record.card_id;
+    card.id = record.id;
     return card;
   }
 
@@ -86,6 +102,21 @@ class Card {
     DBupdateCard(this);
     console.log("Updated card:", this);
   }
+
+  addResponsibility = async (name) => {
+    // Arrow function ensures `this` stays bound
+    console.log("Adding responsibility in card:", this);
+    const responsibility = {
+      name: name,
+      display_order: 0,
+      card_id: this.id,
+    };
+
+    const newResponsibility = await DBaddResponsibility(responsibility);
+    console.log("Added responsibility:", newResponsibility);
+    //todo: add repsonsibility optimistically before the db call
+    this.responsibilities.push(newResponsibility);
+  };
 }
 
 class CRCProject {
@@ -120,6 +151,7 @@ const getProject = async (project_id) => {
   var project = $state(new CRCProject());
   project.cards = cardsData.map((record) => Card.fromDBRecord(record));
 
+  console.log("Fetched project:", $state.snapshot(project));
   return project;
 };
 

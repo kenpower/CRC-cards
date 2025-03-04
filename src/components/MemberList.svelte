@@ -37,7 +37,7 @@
   //   members = members.filter((s) => s.id  !== toRemove.id);
   // };
 
-  //const partial_edit = (idx) => (newText) => edit(newText, idx);
+  const partial_edit = (idx) => (newText) => edit(newText, idx);
 </script>
 
 <div
