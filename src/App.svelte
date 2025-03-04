@@ -1,10 +1,7 @@
 <script>
   import { run } from "svelte/legacy";
-
-  import Fab, { Label, Icon } from "@smui/fab";
   import Signin from "./Signin.svelte";
-  import Moveable from "./components/Moveable.svelte";
-  import CRCCardView from "./components/CRCCardView.svelte";
+
   import Avatar from "./components/Avatar.svelte";
   import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
   import IconButton from "@smui/icon-button";
@@ -14,6 +11,7 @@
   import { supabase } from "./lib/supabase";
 
   import { crcProject } from "./lib/crcProject.svelte.js";
+  import CardArea from "./components/CardArea.svelte";
 
   let prominent = false;
   let dense = false;
@@ -24,15 +22,6 @@
 
   const clean = (s) => s.replace(/<\/?[^>]+(>|$)/g, "");
   const split = (s) => s.split(/\r\n|\r|\n/g);
-
-  const randomPositionNearCentreScreen = () => ({
-    left: innerWidth / 2 - (-100 + Math.round(Math.random() * 100)),
-
-    top: innerHeight / 2 - (-100 + Math.round(Math.random() * 100)),
-  });
-
-  const createCRCCard = () =>
-    crcProject.addCard("New Card", randomPositionNearCentreScreen());
 
   let google_signed_in = $state(false);
   let userName = $state();
@@ -52,13 +41,6 @@
       userName = user.name;
     }
   });
-
-  const updateCardPosition = (card) => (pos) => {
-    card.style.position.left = pos.left;
-    card.style.position.top = pos.top;
-    console.log("updateCardPosition", card);
-    console.log("updateCardPosition", pos);
-  };
 
   // // Real-time subscription to listen for document changes
   // const listenForChanges = () => {
@@ -126,37 +108,7 @@
         </Row>
       </TopAppBar>
 
-      <div class="flexor-content">
-        <div class="sticky-form flexy margins">
-          <Fab color="secondary-variant" onclick={createCRCCard} extended>
-            <Icon class="material-icons">add_circle_outline</Icon>
-            <Label>New Card</Label>
-          </Fab>
-        </div>
-
-        {#each crcProject.cards as card, index}
-          {index}-{card.name}-{card.id}
-          <Moveable
-            pos={{
-              left: card.style.position.left,
-              top: card.style.position.top,
-            }}
-            updateDrag={updateCardPosition(card)}
-            dropped={() => crcProject.updateCard(card)}
-          >
-            <CRCCardView
-              bind:card={crcProject.cards[index]}
-              deleteCard={() => crcProject.deleteCard(card.id)}
-            />
-          </Moveable>
-        {/each}
-      </div>
-
-      <!-- <div class="sticky-form">
-        <button class="button" id="createsticky" on:click={createCRCFromForm}
-          >New Card!</button
-        >
-      -->
+      <CardArea {crcProject} />
     </div>
   </div>
 {/if}
@@ -195,14 +147,9 @@
 
     /* overflow: hidden; */
   }
+
   #stickies-container {
     padding: 0rem;
-  }
-
-  .sticky-form {
-    left: 1rem;
-    position: absolute;
-    top: 5rem;
   }
   button.button {
     -moz-user-select: none;
@@ -237,11 +184,5 @@
   .flexor {
     display: inline-flex;
     flex-direction: column;
-  }
-  .flexor-content {
-    flex-basis: 0;
-    height: 0;
-    flex-grow: 1;
-    overflow: auto;
   }
 </style>
