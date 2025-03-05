@@ -97,35 +97,7 @@
   <!-- <h1>{document.title}</h1>
   <textarea bind:value={text} onkeyup={handleKeyUp}></textarea> -->
   <div class="flexy full-screen">
-    <div class="top-app-bar-container flexor">
-      <TopAppBar
-        variant="static"
-        {prominent}
-        {dense}
-        color={secondaryColor ? "secondary-variant" : "primary"}
-      >
-        <Row>
-          <Section>
-            <IconButton onclick={() => (projectId = null)}
-              ><i class="material-icons custom-icon-button"
-                >dashboard_customize</i
-              ></IconButton
-            >
-            <Title>CRC Cards</Title>
-          </Section>
-          <Section align="end" toolbar>
-            <IconButton class="material-icons" aria-label="Download"
-              >save</IconButton
-            >
-            <Avatar
-              width="48"
-              round={true}
-              userFullName={userName}
-              src={profileIcon}
-            />
-          </Section>
-        </Row>
-      </TopAppBar>
+    <TopBar {userName} {profileIcon} {setProjectId} />
 
     {#if crcProject}
       <CardArea {crcProject} />
