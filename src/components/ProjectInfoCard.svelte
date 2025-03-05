@@ -9,7 +9,7 @@
    */
 
   /** @type {Project} */
-  let { project } = $props();
+  let { project, onclick } = $props();
 
   // Format the last edit date for display
   let formattedLastEdit = $derived(
@@ -23,7 +23,7 @@
   );
 </script>
 
-<div class="project-card">
+<div role="button" class="project-card" {onclick}>
   <div class="card-content">
     <i class="material-symbols-outlined project_icon">note_stack</i>
     <div class="text-content">
