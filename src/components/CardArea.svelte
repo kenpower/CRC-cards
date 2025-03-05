@@ -21,7 +21,7 @@
   };
 </script>
 
-<div class="flexor-content">
+<div class="flexor-content card-area">
   <div class="sticky-form flexy margins">
     <Fab color="secondary-variant" onclick={createCRCCard} extended>
       <Icon class="material-icons">add_circle_outline</Icon>
@@ -30,7 +30,6 @@
   </div>
 
   {#each crcProject.cards as card, index}
-    {index}-{card.name}-{card.id}
     <Moveable
       pos={{
         left: card.style.position.left,
@@ -63,5 +62,13 @@
   .flexy {
     display: flex;
     flex-wrap: wrap;
+  }
+  .card-area {
+    background: linear-gradient(to left bottom, #41d8dd, #5583ee);
+    /* padding: 0px; */
+    /* margin: 0; */
+    /* position: relative; */
+
+    /* overflow: hidden; */
   }
 </style>

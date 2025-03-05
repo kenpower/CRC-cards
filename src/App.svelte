@@ -1,36 +1,26 @@
 <script>
-  import { run } from "svelte/legacy";
   import Signin from "./Signin.svelte";
-
-  import Avatar from "./components/Avatar.svelte";
-  import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
-  import IconButton from "@smui/icon-button";
-  import Checkbox from "@smui/checkbox";
-  import FormField from "@smui/form-field";
   import { onMount } from "svelte";
-  import { supabase } from "./lib/supabase";
-
   import { getProject } from "./lib/crcProject.svelte.js";
   import CardArea from "./components/CardArea.svelte";
 
   import ProjectList from "./components/ProjectList.svelte";
+  import TopBar from "./components/TopBar.svelte";
 
   let projectId = $state(0);
   let crcProject = $state(null);
 
   $effect(() => {
+    console.log("Project ID changed to", projectId);
     if (projectId != null) {
       getProject(projectId).then((project) => {
+        console.log("Project fetched", project);
         crcProject = project;
       });
     } else {
       crcProject = null;
     }
   });
-
-  let prominent = false;
-  let dense = false;
-  let secondaryColor = true;
 
   let innerWidth = $state();
   let innerHeight = $state();
@@ -87,6 +77,11 @@
     //     console.log("Text reverted to original:", text);
     //   }
   }
+
+  function setProjectId(value) {
+    console.log("Setting project ID to", value);
+    projectId = value;
+  }
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -94,8 +89,6 @@
 {#if !google_signed_in}
   <Signin />
 {:else}
-  <!-- <h1>{document.title}</h1>
-  <textarea bind:value={text} onkeyup={handleKeyUp}></textarea> -->
   <div class="flexy full-screen">
     <TopBar {userName} {profileIcon} {setProjectId} />
 
@@ -133,36 +126,10 @@
     box-sizing: border-box;
     font-family: "Courier New", Courier, monospace;
   }
-  :global(body) {
-    background: linear-gradient(to left bottom, #41d8dd, #5583ee);
-    padding: 0px;
-    margin: 0;
-    position: relative;
 
-    /* overflow: hidden; */
-  }
-
-  #stickies-container {
-    padding: 0rem;
-  }
-
-  .top-app-bar-container {
-    width: 100%;
-    background-color: var(--mdc-theme-background, #fff);
-    display: inline-block;
-    position: relative;
-  }
-
-  .flexy {
+  .full-screen {
+    height: 100vh;
     display: flex;
-    flex-wrap: wrap;
-  }
-  .flexor {
-    display: inline-flex;
     flex-direction: column;
-  }
-
-  .custom-icon-button {
-    font-size: 48px; /* Controls icon size */
   }
 </style>
