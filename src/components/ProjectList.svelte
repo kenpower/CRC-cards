@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { DBfetchProjects } from "../lib/crcProject.svelte.js";
+  import ProjectInfoCard from "./ProjectInfoCard.svelte";
 
   var { projectId = $bindable() } = $props();
 
@@ -16,11 +17,28 @@
   });
 </script>
 
-<h1>CRC Project List</h1>
-<ul>
+<main>
+  <h1>Existing CRC Card Projects</h1>
   {#each projects as project}
-    <li onclick={() => setProjectId(project.id)}>
-      {project.id}: {project.name}
-    </li>
+    <ProjectInfoCard {project} onclick={() => setProjectId(project.id)} />
   {/each}
-</ul>
+</main>
+
+<style>
+  main {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    cursor: pointer;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+  }
+</style>
