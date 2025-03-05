@@ -1,7 +1,5 @@
 import { supabase } from "./supabase";
 
-const project_id = "0";
-
 function getTempInt4() {
   return Math.floor(Math.random() * 2_000_000_000); // Avoids the max int4 limit
 }
@@ -231,7 +229,7 @@ class CRCProject {
   }
 }
 
-const getProject = async (project_id) => {
+export const getProject = async (project_id) => {
   var project = $state(new CRCProject());
   // project.cards = cardsData.map((record) => Card.fromDBRecord(record));
   // project.cards =
@@ -240,5 +238,3 @@ const getProject = async (project_id) => {
   console.log("Fetched project:", $state.snapshot(project));
   return project;
 };
-
-export const crcProject = await getProject(project_id);

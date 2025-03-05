@@ -10,8 +10,23 @@
   import { onMount } from "svelte";
   import { supabase } from "./lib/supabase";
 
-  import { crcProject } from "./lib/crcProject.svelte.js";
+  import { getProject } from "./lib/crcProject.svelte.js";
   import CardArea from "./components/CardArea.svelte";
+
+  import ProjectList from "./components/ProjectList.svelte";
+
+  let projectId = $state(0);
+  let crcProject = $state(null);
+
+  $effect(() => {
+    if (projectId != null) {
+      getProject(projectId).then((project) => {
+        crcProject = project;
+      });
+    } else {
+      crcProject = null;
+    }
+  });
 
   let prominent = false;
   let dense = false;
@@ -91,7 +106,11 @@
       >
         <Row>
           <Section>
-            <IconButton class="material-icons">menu</IconButton>
+            <IconButton onclick={() => (projectId = null)}
+              ><i class="material-icons custom-icon-button"
+                >dashboard_customize</i
+              ></IconButton
+            >
             <Title>CRC Cards</Title>
           </Section>
           <Section align="end" toolbar>
@@ -108,7 +127,11 @@
         </Row>
       </TopAppBar>
 
-      <CardArea {crcProject} />
+      {#if crcProject}
+        <CardArea {crcProject} />
+      {:else}
+        <ProjectList />
+      {/if}
     </div>
   </div>
 {/if}
@@ -151,24 +174,6 @@
   #stickies-container {
     padding: 0rem;
   }
-  button.button {
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
-    background-color: #d4fc78;
-    border-radius: 0.25rem;
-    border: 1px solid transparent;
-    color: #0065b3;
-    display: inline-block;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 2rem;
-    font-weight: 600;
-    line-height: 1.5;
-    padding: 0.375rem 0.75rem;
-    text-align: center;
-    user-select: none;
-    vertical-align: middle;
-  }
 
   .top-app-bar-container {
     width: 100%;
@@ -184,5 +189,9 @@
   .flexor {
     display: inline-flex;
     flex-direction: column;
+  }
+
+  .custom-icon-button {
+    font-size: 48px; /* Controls icon size */
   }
 </style>
