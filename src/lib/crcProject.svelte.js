@@ -10,6 +10,31 @@ const reportSupabaseError = ({ error, status, statusText }, operation) => {
   console.error("Status Text:", statusText);
 };
 
+export const DBinsertProject = async (projectData) => {
+  // Default values for a new project
+  const defaultProject = {
+    name: projectData.name || "New Project",
+    // owner: projectData.owner || "Unknown",
+    // cardCount: projectData.cardCount || 0,
+    // lastEdit: projectData.lastEdit || new Date().toISOString(),
+  };
+
+  const response = await supabase
+    .from("projects")
+    .insert(defaultProject)
+    .select("*")
+    .single(); // Use .single() since we expect one row
+
+  if (response.error) {
+    reportSupabaseError(response, "insertProject");
+    return null;
+  } else {
+    const record = response.data;
+    console.log("Inserted project:", record);
+    return record; // Return the inserted project data (including the generated ID)
+  }
+};
+
 export const DBfetchProjects = async () => {
   const response = await supabase.from("projects").select("*");
   if (response.error) {
@@ -19,11 +44,12 @@ export const DBfetchProjects = async () => {
   console.log("Fetched projects:", response.data);
   return response.data;
 };
+
 const DBinsertCard = async (card) => {
   const response = await supabase
     .from("cards")
     .insert({
-      project_id: project_id,
+      project_id: card.projectId,
       name: card.name,
       style: card.style,
     })
@@ -124,6 +150,7 @@ class Card {
   collaborators = $state([]);
   responsibilities = $state([]);
   id = $state(-1);
+  projectId = $state(null);
 
   constructor(name) {
     this.name = name;
@@ -215,8 +242,13 @@ class Card {
 class CRCProject {
   cards = $state([]);
 
+  constructor(id) {
+    this.id = id;
+  }
+
   addCard(name, position) {
     var card = new Card(name);
+    card.projectId = this.id;
     card.style.position.left = position.left;
     card.style.position.top = position.top;
     this.cards.push(card);
@@ -239,7 +271,7 @@ class CRCProject {
 }
 
 export const getProject = async (project_id) => {
-  var project = $state(new CRCProject());
+  var project = $state(new CRCProject(project_id));
   // project.cards = cardsData.map((record) => Card.fromDBRecord(record));
   // project.cards =
   project.cards = await DBfetchCRCProjectCards(project_id);

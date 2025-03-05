@@ -2,12 +2,11 @@
   import Signin from "./Signin.svelte";
   import { onMount } from "svelte";
   import { getProject } from "./lib/crcProject.svelte.js";
-  import CardArea from "./components/CardArea.svelte";
-
-  import ProjectList from "./components/ProjectList.svelte";
   import TopBar from "./components/TopBar.svelte";
+  import CardArea from "./components/CardArea.svelte";
+  import ProjectList from "./components/ProjectList.svelte";
 
-  let projectId = $state(0);
+  let projectId = $state(null);
   let crcProject = $state(null);
 
   $effect(() => {

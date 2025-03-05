@@ -31,7 +31,7 @@ body {
   min-height: 100vh;
   height: 100%; /* Ensure body spans the entire viewport */
   width: 100%;
-}
+  background: linear-gradient(to left bottom, #41d8dd, #5583ee);
 
 h1 {
   font-size: 3.2em;

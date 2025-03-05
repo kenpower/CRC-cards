@@ -46,7 +46,6 @@
     margin: 0.5rem 0;
     display: flex;
     align-items: center;
-    width: 100%;
     max-width: 40rem; /* Adjust based on design needs */
     min-width: 20rem;
     overflow: hidden;
@@ -120,5 +119,9 @@
       /* 0 = outlined, 1 = filled */ "wght" 700,
       /* Weight (100 to 700) */ "GRAD" 0,
       /* Gradient (-50 to 200) */ "opsz" 80; /* Optical size (20 to 48) */
+  }
+
+  .material-symbols-outlined {
+    color: #333;
   }
 </style>
