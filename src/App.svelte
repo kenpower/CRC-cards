@@ -127,12 +127,11 @@
         </Row>
       </TopAppBar>
 
-      {#if crcProject}
-        <CardArea {crcProject} />
-      {:else}
-        <ProjectList />
-      {/if}
-    </div>
+    {#if crcProject}
+      <CardArea {crcProject} />
+    {:else}
+      <ProjectList bind:projectId />
+    {/if}
   </div>
 {/if}
 

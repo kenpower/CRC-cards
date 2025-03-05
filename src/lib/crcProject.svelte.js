@@ -10,6 +10,15 @@ const reportSupabaseError = ({ error, status, statusText }, operation) => {
   console.error("Status Text:", statusText);
 };
 
+export const DBfetchProjects = async () => {
+  const response = await supabase.from("projects").select("*");
+  if (response.error) {
+    reportSupabaseError(response, "fetchProjects");
+    return [];
+  }
+  console.log("Fetched projects:", response.data);
+  return response.data;
+};
 const DBinsertCard = async (card) => {
   const response = await supabase
     .from("cards")
