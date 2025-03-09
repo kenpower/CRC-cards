@@ -1,7 +1,7 @@
 <script>
   import Signin from "./Signin.svelte";
   import { onMount } from "svelte";
-  import { getProject } from "./lib/crcProject.svelte.js";
+  import { getProject, listenForProjectChanges, stopListeningForProjectChanges } from "./lib/crcProject.svelte.js";
   import TopBar from "./components/TopBar.svelte";
   import CardArea from "./components/CardArea.svelte";
   import ProjectList from "./components/ProjectList.svelte";
@@ -9,15 +9,36 @@
   let projectId = $state(null);
   let crcProject = $state(null);
 
+  let projectNeedsUpdate = $state(false);
+
+  const updateProject = () => {
+    projectNeedsUpdate = true;
+  };
+
   $effect(() => {
     console.log("Project ID changed to", projectId);
     if (projectId != null) {
-      getProject(projectId).then((project) => {
-        console.log("Project fetched", project);
-        crcProject = project;
-      });
+      getProject(projectId, updateProject)
+        .then((project) => {
+          console.log("Project fetched", project);
+          listenForProjectChanges(projectId, updateProject);
+          crcProject = project;
+        });
     } else {
       crcProject = null;
+      stopListeningForProjectChanges();
+    }
+  });
+
+  $effect(() => {
+    console.log("Project updated");
+    if (projectNeedsUpdate) {
+      getProject(projectId, updateProject)
+        .then((project) => {
+          console.log("Project fetched", project);
+          crcProject = project;
+          projectNeedsUpdate = false;
+        });
     }
   });
 

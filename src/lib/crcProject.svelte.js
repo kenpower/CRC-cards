@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { listenForChanges } from "./listenForChanges";
 
 function getTempInt4() {
   return Math.floor(Math.random() * 2_000_000_000); // Avoids the max int4 limit
@@ -160,6 +161,7 @@ class Card {
     var card = new Card(record.name);
     card.style = record.style || { position: { left: 0, top: 0 } };
     card.id = record.id;
+    card.projectId = record.project_id;
     card.collaborators = record.collaborators.map((collab) => ({
       id: collab.id,
       name: collab.name,
@@ -217,9 +219,12 @@ class Card {
       name: name,
       display_order: 0,
       card_id: this.id,
+      project_id: this.projectId,
     };
 
-    const newResponsibility = await DBaddRow(responsibility);
+    console.log("Adding responsibility:", responsibility);
+
+    const newResponsibility = await DBaddRow("responsibilities", responsibility);
     console.log("Added responsibility:", newResponsibility);
     //todo: add repsonsibility optimistically before the db call
     this.responsibilities.push(newResponsibility);
@@ -231,6 +236,7 @@ class Card {
       name: name,
       display_order: 0,
       card_id: this.id,
+      project_id: this.projectId,
     };
 
     const newCollaborator = await DBaddRow("collaborators", collaborator);
@@ -279,3 +285,9 @@ export const getProject = async (project_id) => {
   console.log("Fetched project:", $state.snapshot(project));
   return project;
 };
+
+export const listenForProjectChanges = async(project_id, updateProject) =>
+  listenForChanges(project_id, supabase, updateProject);
+
+export const stopListeningForProjectChanges = () => 
+  supabase.removeAllChannels();
