@@ -67,37 +67,6 @@
     }
   });
 
-  // // Real-time subscription to listen for document changes
-  // const listenForChanges = () => {
-  //   const channel = supabase
-  //     .channel("realtime:documents")
-  //     .on(
-  //       "postgres_changes",
-  //       { event: "UPDATE", schema: "public", table: "documents" },
-  //       (payload) => {
-  //         if (payload.new.id === docId) {
-  //           document = payload.new;
-  //           text = document.content;
-  //         }
-  //         console.log("Change received!", payload);
-  //       }
-  //     )
-  //     .subscribe();
-  // };
-
-  function handleKeyUp(event) {
-    //   if (event.key === "Enter") {
-    //     // Update on Enter key press
-    //     console.log("Text updated:", text);
-    //     document.content = text;
-    //     updateDocument();
-    //   } else if (event.key === "Escape") {
-    //     // Undo typing on Escape key press
-    //     text = document.content;
-    //     console.log("Text reverted to original:", text);
-    //   }
-  }
-
   function setProjectId(value) {
     console.log("Setting project ID to", value);
     projectId = value;

@@ -37,12 +37,18 @@ export const DBinsertProject = async (projectData) => {
 };
 
 export const DBfetchProjects = async () => {
-  const response = await supabase.from("projects").select("*");
+  const response = await supabase.from("projects")
+  .select("*, cards(count)");
   if (response.error) {
     reportSupabaseError(response, "fetchProjects");
     return [];
   }
-  console.log("Fetched projects:", response.data);
+  
+  const data  = response.data.map((record) => {
+    record.cardCount = record.cards[0].count;
+    return record;
+  });
+  console.log("Fetched projects:", data);
   return response.data;
 };
 
