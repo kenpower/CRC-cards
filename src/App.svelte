@@ -56,10 +56,10 @@
   let user = $state(null);
   
   
-  onMount(() => {
+  onMount(async () => {
 
     console.log("App mounted, user is", user);
-    user = loginUser();
+    user = await loginUser();
     if (user) {
       console.log("User logged in", user);
       userName = user.name;
