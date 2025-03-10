@@ -2,8 +2,9 @@
   import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
   import IconButton from "@smui/icon-button";
   import Avatar from "./Avatar.svelte";
+  import ProfileCircle from "./ProfileCircle.svelte";
 
-  var { setProjectId, userName, profileIcon } = $props();
+  var { setProjectId, user, profileIcon = null } = $props();
 
   let prominent = false;
   let dense = false;
@@ -28,12 +29,16 @@
         <IconButton class="material-icons" aria-label="Download"
           >save</IconButton
         >
-        <Avatar
-          width="48"
-          round={true}
-          userFullName={userName}
-          src={profileIcon}
-        />
+        {#if profileIcon}
+          <Avatar
+            width="48"
+            round={true}
+            userFullName={userName}
+            src={profileIcon}
+          />
+        {:else}
+          <ProfileCircle  fullname={user.display_name} forename={user.foreanme} surname={user.surname} email={user.email}/>
+        {/if}
       </Section>
     </Row>
   </TopAppBar>

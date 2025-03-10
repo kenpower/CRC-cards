@@ -10,7 +10,6 @@ const user_from_login_token = (event) => {
 
     if (token) {
       console.log('token found, decoding'); //decode the jwt token
-      const AUTH_SERVICE_JWT_SECRET_KEY = import.meta.env.AUTH_SERVICE_JWT_SECRET_KEY;
 
       try {
         // Decode the JWT without verifying it (on the client-side)
@@ -32,22 +31,22 @@ const user_from_login_token = (event) => {
 
 
 export const loginUser = () => {    
-    const user = localStorage.getItem("user");
-        
-    if (!user) {
-    console.log('No user found in local storage');
-    const user = user_from_login_token();
+    let user = localStorage.getItem("user");
     if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-        debugger;
-        return user;
+      console.log('User found in local storage');
+      return JSON.parse(user);
     }
-    else{
-        console.log('No auth token found, redirecting to login service');
-        const home_url = import.meta.env.PUBLIC_URL || window.location.origin;
-        const redirect_url = home_url;
-        debugger;
-        window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${redirect_url}`;
+        
+    console.log('No user found in local storage, checking for a auth token in url');
+    user = user_from_login_token();
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+      window.location = window.location.origin;
+      return user;
     }
-    }
+
+    console.log('No auth token found, redirecting to login service');
+    const home_url = import.meta.env.PUBLIC_URL || window.location.origin;
+    const redirect_url = home_url;
+    window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${redirect_url}`;
 };

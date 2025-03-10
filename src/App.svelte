@@ -58,6 +58,7 @@
   
   onMount(() => {
 
+    console.log("App mounted, user is", user);
     user = loginUser();
     if (user) {
       console.log("User logged in", user);
@@ -82,7 +83,7 @@
   Redirecting to authentication...
 {:else}
   <div class="flexy full-screen">
-    <TopBar {userName} {profileIcon} {setProjectId} />
+    <TopBar {user} {profileIcon} {setProjectId} />
 
     {#if crcProject}
       <CardArea {crcProject} />
