@@ -1,3 +1,4 @@
+import {jwtDecode} from "jwt-decode";
 
 // grok instruction fo integrating with supabase auth
 // https://grok.com/share/bGVnYWN5_083fe517-8d97-49c3-9e1d-e727c21b9093
@@ -12,7 +13,8 @@ const user_from_login_token = (event) => {
       const AUTH_SERVICE_JWT_SECRET_KEY = import.meta.env.AUTH_SERVICE_JWT_SECRET_KEY;
 
       try {
-        const user = jwt.verify(token, AUTH_SERVICE_JWT_SECRET_KEY);
+        // Decode the JWT without verifying it (on the client-side)
+        const user = jwtDecode(token);
 
         user.auth_service_id = user.user_id; //rename user_id to auth_service_id to match the database schema and avoid confusion over which id is which
         delete user.user_id;
@@ -37,12 +39,14 @@ export const loginUser = () => {
     const user = user_from_login_token();
     if (user) {
         localStorage.setItem("user", JSON.stringify(user));
-        window.location.href = window.location.origin;
+        debugger;
+        return user;
     }
     else{
         console.log('No auth token found, redirecting to login service');
         const home_url = import.meta.env.PUBLIC_URL || window.location.origin;
         const redirect_url = home_url;
+        debugger;
         window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${redirect_url}`;
     }
     }

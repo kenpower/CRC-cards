@@ -2,7 +2,7 @@
   import Signin from "./Signin.svelte";
   import { onMount } from "svelte";
   import { getProject, listenForProjectChanges, stopListeningForProjectChanges } from "./lib/crcProject.svelte.js";
-  import {loginUser} from "./lib/login.loginjs";
+  import {loginUser} from "./lib/login.js";
   import TopBar from "./components/TopBar.svelte";
   import CardArea from "./components/CardArea.svelte";
   import ProjectList from "./components/ProjectList.svelte";
@@ -60,6 +60,7 @@
 
     user = loginUser();
     if (user) {
+      console.log("User logged in", user);
       userName = user.name;
       profileIcon = user.profileIcon;
     }
