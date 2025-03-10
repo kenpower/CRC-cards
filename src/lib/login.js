@@ -32,7 +32,7 @@ const user_from_login_token = (event) => {
 
 
 export const loginUser = async() => {    
-    debugger;
+
     let user = localStorage.getItem("user");
     if (user) {
       console.log('User found in local storage', user);
@@ -42,12 +42,11 @@ export const loginUser = async() => {
     console.log('No user found in local storage, checking for a auth token in url');
     user = user_from_login_token();
     if (user) {
-      const newUser = await insertUser(user.email, user.forename, user.surname, user.display_name);
-      if(newUser){
-        user.id=newUser.id;
-        localStorage.setItem("user", JSON.stringify(user));
+      const newOrExistingUser = await insertUser(user.email, user.forename, user.surname, user.display_name);
+      if(newOrExistingUser){
+        localStorage.setItem("user", JSON.stringify(newOrExistingUser));
         window.location = window.location.origin;
-        return user;
+        return newOrExistingUser;
       }
       console.error('Error inserting user into database');
       return null;

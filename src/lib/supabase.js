@@ -6,7 +6,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const insertUser = async(email, forename, surname, display_name) =>{
-    debugger;
+
     const { data, error } = await supabase
       .from('users')
       .upsert([{ email, forename, surname, display_name}], { onConflict: ['email'] })
