@@ -7,6 +7,8 @@
   import CardArea from "./components/CardArea.svelte";
   import ProjectList from "./components/ProjectList.svelte";
 
+  import { DBinsertProject } from "./lib/crcProject.svelte.js";
+
   let projectId = $state(null);
   let crcProject = $state(null);
 
@@ -14,6 +16,15 @@
 
   const updateProject = () => {
     projectNeedsUpdate = true;
+  };
+
+  const createNewProject = async (projectName) => {
+    console.log("Creating new project with name", projectName);
+    const newProject = await DBinsertProject({ name: projectName , owner_id: user.id});
+    console.log("New project created", newProject);
+    if (newProject) {
+      projectId = newProject.id;
+    }
   };
 
   $effect(() => {
@@ -88,7 +99,7 @@
     {#if crcProject}
       <CardArea {crcProject} />
     {:else}
-      <ProjectList bind:projectId />
+      <ProjectList {createNewProject}/>
     {/if}
   </div>
 {/if}

@@ -15,7 +15,7 @@ export const DBinsertProject = async (projectData) => {
   // Default values for a new project
   const defaultProject = {
     name: projectData.name || "New Project",
-    // owner: projectData.owner || "Unknown",
+    owner_id: projectData.owner_id || null,
     // cardCount: projectData.cardCount || 0,
     // lastEdit: projectData.lastEdit || new Date().toISOString(),
   };
@@ -38,7 +38,7 @@ export const DBinsertProject = async (projectData) => {
 
 export const DBfetchProjects = async () => {
   const response = await supabase.from("projects")
-  .select("*, cards(count)");
+  .select("*, cards(count), users(display_name) ");
   if (response.error) {
     reportSupabaseError(response, "fetchProjects");
     return [];

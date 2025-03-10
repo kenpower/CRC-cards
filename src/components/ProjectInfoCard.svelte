@@ -30,7 +30,7 @@
       <h3 class="project-name">{project.name}</h3>
 
       <p class="details">
-        Owner: {project.owner} | Cards: {project.cardCount} | Last Edit: {formattedLastEdit}
+        Owner: {project.users?.display_name ?? 'Unknown'} | Cards: {project.cardCount} | Last Edit: {formattedLastEdit}
       </p>
     </div>
     <i class="material-symbols-outlined">more_horiz</i>

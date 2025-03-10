@@ -4,9 +4,9 @@
   import ProjectInfoCard from "./ProjectInfoCard.svelte";
   import AddProjectModal from "./AddProjectModal.svelte";
 
-  import { DBinsertProject } from "../lib/crcProject.svelte.js";
 
-  var { projectId = $bindable() } = $props();
+
+  var { createNewProject } = $props();
 
   var projects = $state([]);
 
@@ -22,12 +22,7 @@
   });
 
   const handleNewProjectSubmit = async (name) => {
-    console.log("Creating new project with name", name);
-    const newProject = await DBinsertProject({ name: name });
-    console.log("New project created", newProject);
-    if (newProject) {
-      projectId = newProject.id;
-    }
+    createNewProject(name);
     isNewProjectModalOpen = false;
   };
 
