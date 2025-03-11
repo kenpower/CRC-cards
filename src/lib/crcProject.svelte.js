@@ -52,6 +52,16 @@ export const DBfetchProjects = async () => {
   return response.data;
 };
 
+export const DBdeleteProject = async (project_id) => {
+  const response = await supabase.from("projects").delete().eq("id", project_id);
+
+  if (response.error) reportSupabaseError(response, "deleteProject");
+  else {
+    console.log("Deleted project:", project_id);
+    return true;
+  }
+};
+
 const DBinsertCard = async (card) => {
   const response = await supabase
     .from("cards")
@@ -297,3 +307,10 @@ export const listenForProjectChanges = async(project_id, updateProject) =>
 
 export const stopListeningForProjectChanges = () => 
   supabase.removeAllChannels();
+
+export const deleteProject = async (project_id) => {
+  if (DBdeleteProject(project_id)) {
+    console.log("Deleted project:", project_id);
+    return true;
+  }
+};

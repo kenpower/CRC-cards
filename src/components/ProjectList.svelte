@@ -1,14 +1,12 @@
 <script>
   import { onMount } from "svelte";
-  import { DBfetchProjects } from "../lib/crcProject.svelte.js";
   import ProjectInfoCard from "./ProjectInfoCard.svelte";
   import AddProjectModal from "./AddProjectModal.svelte";
 
 
 
-  var { createNewProject, gotoProject } = $props();
+  var { projects, createNewProject, gotoProject, deleteProject } = $props();
 
-  var projects = $state([]);
 
   let isNewProjectModalOpen = $state(false);
 
@@ -32,14 +30,13 @@
   };
 
   onMount(async () => {
-    projects = await DBfetchProjects();
   });
 </script>
 
 <main>
   <h1>Projects</h1>
   {#each projects as project}
-    <ProjectInfoCard {project} onclick={() => setProjectId(project.id)} />
+    <ProjectInfoCard {project} onclick={() => setProjectId(project.id)} {deleteProject}/>
   {/each}
   <button id="add_button" onclick={openNewProjectModal}>
     <i class="material-symbols-outlined project_icon">add_box</i>

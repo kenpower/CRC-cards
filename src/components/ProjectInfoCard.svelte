@@ -14,7 +14,7 @@
    */
 
   /** @type {Project} */
-  let { project, onclick } = $props();
+  let { project, onclick, deleteProject } = $props();
 
   // Format the last edit date for display
   let formattedLastEdit = $derived(
@@ -79,23 +79,31 @@
   
 
 </div>
-
+<div class = "menu_container">
 <Menu bind:this={menu} anchor={false} anchorElement={anchor}  anchorCorner="TOP_END"
 quick={true}>
   <List>
-    <Item onSMUIAction={() => (alert("Cut"))}>
+    <Item onSMUIAction={() => (alert("Cut"))} disabled>
       <Text>Share</Text>
     </Item>
+    <Item onSMUIAction={() => (alert("Cut"))} disabled>
+      <Text>Clone</Text>
+    </Item>
+    <Item onSMUIAction={() => (alert("Cut"))} disabled>
+      <Text>Export</Text>
+    </Item>
     <Separator />
-    <Item  onSMUIAction={() => (alert(""))}>
+    <Item  onSMUIAction={() => (deleteProject(project.id) )} class = "delete">
       <Text>
         <PrimaryText>Delete</PrimaryText>
-        <SecondaryText>Remove project forever</SecondaryText>
+        <SecondaryText class = "delete">Remove project forever</SecondaryText>
       </Text>
+      <i class="material-symbols-outlined delete">delete</i>
     </Item>
   </List>
 </Menu>
 
+</div>
 
 <style>
   .project-card {
@@ -183,5 +191,16 @@ quick={true}>
 
   .material-symbols-outlined {
     color: #333;
+  }
+
+  .menu_container{
+    text-align: left; 
+  }
+
+  /* Accessing the class with "*" in front limits
+    the scope to anything under this component's
+    elements. */
+  * :global(.delete) {
+    color: red;
   }
 </style>

@@ -1,7 +1,7 @@
 <script>
   import Signin from "./Signin.svelte";
   import { onMount } from "svelte";
-  import { getProject, listenForProjectChanges, stopListeningForProjectChanges } from "./lib/crcProject.svelte.js";
+  import { getProject, listenForProjectChanges, stopListeningForProjectChanges, deleteProject , DBfetchProjects} from "./lib/crcProject.svelte.js";
   import {loginUser} from "./lib/login.js";
   import TopBar from "./components/TopBar.svelte";
   import CardArea from "./components/CardArea.svelte";
@@ -11,9 +11,12 @@
 
   let projectId = $state(null);
   let crcProject = $state(null);
+  let projects= $state([]);
 
   let projectNeedsUpdate = $state(false);
 
+  let projectListNeedsUpdate = $state(false); 
+  
   const updateProject = () => {
     projectNeedsUpdate = true;
   };
@@ -58,6 +61,8 @@
     }
   });
 
+  
+
   let innerWidth = $state();
   let innerHeight = $state();
 
@@ -79,6 +84,7 @@
       console.log("User logged in", user);
       userName = user.name;
       profileIcon = user.profileIcon;
+      projects = await DBfetchProjects(user.id);
     }
    
 
@@ -103,7 +109,7 @@
     {#if crcProject}
       <CardArea {crcProject} />
     {:else}
-      <ProjectList {createNewProject} {gotoProject}/>
+      <ProjectList {projects} {createNewProject} {gotoProject} {deleteProject}/>
     {/if}
   </div>
 {/if}
