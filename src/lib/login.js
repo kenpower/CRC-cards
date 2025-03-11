@@ -38,6 +38,8 @@ export const loginUser = async() => {
       console.log('User found in local storage', user);
       return JSON.parse(user);
     }
+
+    const home_url = import.meta.env.VITE_PUBLIC_URL || (window.location.origin + window.location.pathname);
         
     console.log('No user found in local storage, checking for a auth token in url');
     user = user_from_login_token();
@@ -45,7 +47,7 @@ export const loginUser = async() => {
       const newOrExistingUser = await insertUser(user.email, user.forename, user.surname, user.display_name);
       if(newOrExistingUser){
         localStorage.setItem("user", JSON.stringify(newOrExistingUser));
-        window.location = window.location.origin;
+        window.location =home_url;
         return newOrExistingUser;
       }
       console.error('Error inserting user into database');
@@ -53,7 +55,6 @@ export const loginUser = async() => {
     }
 
     console.log('No auth token found, redirecting to login service');
-    const home_url = import.meta.env.VITE_PUBLIC_URL || (window.location.origin + window.location.pathname);
-    const redirect_url = home_url;
-    window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${redirect_url}`;
+
+    window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${home_url}`;
 };
