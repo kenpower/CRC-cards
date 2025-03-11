@@ -1,6 +1,7 @@
 <script>
   import Signin from "./Signin.svelte";
   import { onMount } from "svelte";
+  import { setContext } from 'svelte';
   import { getProject, listenForProjectChanges, stopListeningForProjectChanges, deleteProject , DBfetchProjects} from "./lib/crcProject.svelte.js";
   import {loginUser} from "./lib/login.js";
   import TopBar from "./components/TopBar.svelte";
@@ -14,8 +15,6 @@
   let projects= $state([]);
 
   let projectNeedsUpdate = $state(false);
-
-  let projectListNeedsUpdate = $state(false); 
   
   const updateProject = () => {
     projectNeedsUpdate = true;
@@ -23,12 +22,17 @@
 
   const createNewProject = async (projectName) => {
     console.log("Creating new project with name", projectName);
-    const newProject = await DBinsertProject({ name: projectName , owner_id: user.id});
-    console.log("New project created", newProject);
-    if (newProject) {
-      projectId = newProject.id;
-    }
-    projects = await DBfetchProjects(user.id);
+    DBinsertProject({ name: projectName , owner_id: user.id})
+      .then((newProject) => {  
+        console.log("New project created", newProject);
+        if (newProject) {
+          projectId = newProject.id;
+        }
+        DBfetchProjects(user.id).then((_projects) => {
+          projects = _projects;
+        });
+    });
+    //TODO: what if create fails?
   };
 
   const gotoProject = (id) => {
@@ -62,19 +66,15 @@
     }
   });
 
-  
-
   let innerWidth = $state();
   let innerHeight = $state();
-
-  const clean = (s) => s.replace(/<\/?[^>]+(>|$)/g, "");
-  const split = (s) => s.split(/\r\n|\r|\n/g);
 
 
   let userName = $state();
   let profileIcon = $state();
 
   let user = $state(null);
+  setContext('user', user); 
   
   
   onMount(async () => {
@@ -86,14 +86,13 @@
       userName = user.name;
       profileIcon = user.profileIcon;
       projects = await DBfetchProjects(user.id);
+
     }
-   
-
-
   });
 
-  function setProjectId(value) {
+  function showProject(value) {
     console.log("Setting project ID to", value);
+    setContext('currentProject', project); 
     projectId = value;
   }
 
@@ -105,7 +104,7 @@
   Redirecting to authentication...
 {:else}
   <div class="flexy full-screen">
-    <TopBar {user} {profileIcon} {setProjectId} />
+    <TopBar {user} {profileIcon} {showProject} />
 
     {#if crcProject}
       <CardArea {crcProject} />

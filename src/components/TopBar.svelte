@@ -4,7 +4,7 @@
   import Avatar from "./Avatar.svelte";
   import ProfileCircle from "./ProfileCircle.svelte";
 
-  var { setProjectId, user, profileIcon = null } = $props();
+  var { showProject, user, profileIcon = null } = $props();
 
   let prominent = false;
   let dense = false;
@@ -20,7 +20,7 @@
   >
     <Row>
       <Section>
-        <IconButton onclick={() => setProjectId(null)}>
+        <IconButton onclick={() => showProject(null)}>
           <i class="material-icons custom-icon-button">dashboard_customize</i>
         </IconButton>
         <Title>CRC Cards</Title>

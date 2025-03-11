@@ -11,6 +11,7 @@
     console.log("Deleting project with id", id);
     projects = projects.filter((p) => p.id !== id);
     dBDeleteProject(id);
+    //TODO: what if delete fails?
   };
 
   let isNewProjectModalOpen = $state(false);

@@ -1,6 +1,7 @@
 <script>
   import Menu from '@smui/menu';
   import List, { Item, Separator, Text, PrimaryText, SecondaryText } from '@smui/list';
+  import { getContext } from 'svelte';
 
 
   let menu;
@@ -28,6 +29,7 @@
       : ""
   );
 
+  let deleteMenuEnabled = $derived( getContext('user')?.id == project.owner_id);
 
   $effect(() => {
     if (menu) {
@@ -58,6 +60,13 @@
       console.error("Menu or anchor not initialized:", { menu, anchor });
     }
   }
+
+  function deleteHandler() {
+    if (menu) {
+      menu.setOpen(false);
+    }
+    deleteProject(project.id) 
+  } 
 </script>
 
 <div role="button" tabindex="0" class="project-card" {onclick} >
@@ -94,7 +103,7 @@ quick={true}>
       <Text>Export</Text>
     </Item>
     <Separator />
-    <Item  onSMUIAction={() => (deleteProject(project.id) )} class = "delete">
+    <Item  onSMUIAction={deleteHandler} disabled = {deleteMenuEnabled} class = "delete">
       <Text>
         <PrimaryText>Delete</PrimaryText>
         <SecondaryText class = "delete">Remove project forever</SecondaryText>
