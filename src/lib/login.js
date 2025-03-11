@@ -47,7 +47,7 @@ export const loginUser = async() => {
       const newOrExistingUser = await insertUser(user.email, user.forename, user.surname, user.display_name);
       if(newOrExistingUser){
         localStorage.setItem("user", JSON.stringify(newOrExistingUser));
-        window.location =home_url;
+        window.location = home_url; //remove the token from query string
         return newOrExistingUser;
       }
       console.error('Error inserting user into database');
