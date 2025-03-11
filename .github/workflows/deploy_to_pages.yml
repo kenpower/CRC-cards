@@ -31,7 +31,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: npm run build && ls dist
+        run: npm run build -- --base=/CRC-cards/ && ls dist
 
       - name: Upload static files as artifact
         id: upload_artifact
