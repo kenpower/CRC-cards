@@ -34,7 +34,7 @@ jobs:
         run: npm run build && ls dist
 
       - name: Upload static files as artifact
-        id: deployment
+        id: upload_artifact
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
           path: dist/
@@ -45,7 +45,8 @@ jobs:
     needs: build
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy_step.outputs.page_url }} # Updated reference
     steps:
       - name: Deploy to GitHub Pages
+        id: deploy_step # Add ID to capture output
         uses: actions/deploy-pages@v4
