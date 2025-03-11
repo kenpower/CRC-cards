@@ -2,11 +2,16 @@
   import { onMount } from "svelte";
   import ProjectInfoCard from "./ProjectInfoCard.svelte";
   import AddProjectModal from "./AddProjectModal.svelte";
+  import { fade } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
 
+  var { projects, createNewProject, gotoProject, deleteProject :dBDeleteProject } = $props();
 
-
-  var { projects, createNewProject, gotoProject, deleteProject } = $props();
-
+  const deleteProject = async (id) => {
+    console.log("Deleting project with id", id);
+    projects = projects.filter((p) => p.id !== id);
+    dBDeleteProject(id);
+  };
 
   let isNewProjectModalOpen = $state(false);
 
@@ -35,8 +40,10 @@
 
 <main>
   <h1>Projects</h1>
-  {#each projects as project}
-    <ProjectInfoCard {project} onclick={() => setProjectId(project.id)} {deleteProject}/>
+  {#each projects as project (project.id)}
+  <div animate:flip transition:fade>
+        <ProjectInfoCard {project} onclick={() => setProjectId(project.id)} {deleteProject}  />
+  </div>
   {/each}
   <button id="add_button" onclick={openNewProjectModal}>
     <i class="material-symbols-outlined project_icon">add_box</i>

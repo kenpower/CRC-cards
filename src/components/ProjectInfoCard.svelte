@@ -2,6 +2,7 @@
   import Menu from '@smui/menu';
   import List, { Item, Separator, Text, PrimaryText, SecondaryText } from '@smui/list';
 
+
   let menu;
   let anchor;
   /**
@@ -59,7 +60,7 @@
   }
 </script>
 
-<div role="button" tabindex="0" class="project-card" {onclick}>
+<div role="button" tabindex="0" class="project-card" {onclick} >
   <div class="card-content">
     <i class="material-symbols-outlined project_icon">note_stack</i>
     <div class="text-content">
