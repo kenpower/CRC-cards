@@ -28,6 +28,7 @@
     if (newProject) {
       projectId = newProject.id;
     }
+    projects = await DBfetchProjects(user.id);
   };
 
   const gotoProject = (id) => {

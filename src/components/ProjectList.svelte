@@ -5,7 +5,7 @@
   import { fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
-  var { projects, createNewProject, gotoProject, deleteProject :dBDeleteProject } = $props();
+  var { projects, createNewProject, gotoProject, deleteProject : dBDeleteProject } = $props();
 
   const deleteProject = async (id) => {
     console.log("Deleting project with id", id);
