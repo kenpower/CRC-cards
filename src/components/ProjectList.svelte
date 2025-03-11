@@ -6,7 +6,7 @@
 
 
 
-  var { createNewProject } = $props();
+  var { createNewProject, gotoProject } = $props();
 
   var projects = $state([]);
 
@@ -28,7 +28,7 @@
 
   const setProjectId = (id) => {
     console.log("Setting project ID to", id);
-    projectId = id;
+    gotoProject(id);
   };
 
   onMount(async () => {
@@ -37,11 +37,11 @@
 </script>
 
 <main>
-  <h1>Existing CRC Card Projects</h1>
+  <h1>Projects</h1>
   {#each projects as project}
     <ProjectInfoCard {project} onclick={() => setProjectId(project.id)} />
   {/each}
-  <button id="add_button" on:click={openNewProjectModal}>
+  <button id="add_button" onclick={openNewProjectModal}>
     <i class="material-symbols-outlined project_icon">add_box</i>
     New CRC Card Project
   </button>

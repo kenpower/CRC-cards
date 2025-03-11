@@ -1,4 +1,9 @@
 <script>
+  import Menu from '@smui/menu';
+  import List, { Item, Separator, Text, PrimaryText, SecondaryText } from '@smui/list';
+
+  let menu;
+  let anchor;
   /**
    * @typedef {Object} Project
    * @property {string} name - Project name
@@ -21,21 +26,76 @@
         })
       : ""
   );
+
+
+  $effect(() => {
+    if (menu) {
+      console.log("Menu is bound:", menu);
+    }
+    if (anchor) {
+      console.log("Anchor is bound:", anchor);
+    }
+  });
+
+  // Function to open and position the menu
+  function openMenu(e) {
+    e.stopPropagation();
+    if (menu && anchor) {
+      menu.setOpen(true);
+      // Use setTimeout to ensure the menu is rendered before positioning
+      setTimeout(() => {
+        const menuEl = menu.getElement();// Access the DOM element of the menu
+        const anchorRect = anchor.getBoundingClientRect(); // Get button's position
+        // Position the menu to the right of the button
+        console.log("Menu:", menuEl);
+        menuEl.style.position = 'absolute';
+        menuEl.style.left = `${anchorRect.left}px`; // 10px right of button
+        menuEl.style.top = `${anchorRect.top}px`; // Align with button top
+        console.log("Menu positioned at:", menuEl.style.left, menuEl.style.top);
+      }, 0);
+    } else {
+      console.error("Menu or anchor not initialized:", { menu, anchor });
+    }
+  }
 </script>
 
-<div role="button" class="project-card" {onclick}>
+<div role="button" tabindex="0" class="project-card" {onclick}>
   <div class="card-content">
     <i class="material-symbols-outlined project_icon">note_stack</i>
     <div class="text-content">
       <h3 class="project-name">{project.name}</h3>
 
       <p class="details">
-        Owner: {project.users?.display_name ?? 'Unknown'} | Cards: {project.cardCount} | Last Edit: {formattedLastEdit}
+        Owner: {project.users?.display_name ?? 'Unknown'} | Cards: {project.cardCount} 
       </p>
     </div>
-    <i class="material-symbols-outlined">more_horiz</i>
+    <span>
+    <button bind:this={anchor} onclick={(e) => openMenu(e)}>
+      <i class="material-symbols-outlined">more_horiz</i>
+    </button>
+
+    </span>
   </div>
+  
+
 </div>
+
+<Menu bind:this={menu} anchor={false} anchorElement={anchor}  anchorCorner="TOP_END"
+quick={true}>
+  <List>
+    <Item onSMUIAction={() => (alert("Cut"))}>
+      <Text>Share</Text>
+    </Item>
+    <Separator />
+    <Item  onSMUIAction={() => (alert(""))}>
+      <Text>
+        <PrimaryText>Delete</PrimaryText>
+        <SecondaryText>Remove project forever</SecondaryText>
+      </Text>
+    </Item>
+  </List>
+</Menu>
+
 
 <style>
   .project-card {
@@ -47,7 +107,7 @@
     display: flex;
     align-items: center;
     max-width: 40rem; /* Adjust based on design needs */
-    min-width: 20rem;
+    min-width: 30rem;
     overflow: hidden;
     border: 1px solid #e0e0e0;
     box-shadow: 0px 8px 8px 0px rgba(33, 36, 44, 0.08);

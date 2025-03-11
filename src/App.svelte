@@ -27,6 +27,10 @@
     }
   };
 
+  const gotoProject = (id) => {
+    projectId = id;
+  };
+
   $effect(() => {
     console.log("Project ID changed to", projectId);
     if (projectId != null) {
@@ -99,7 +103,7 @@
     {#if crcProject}
       <CardArea {crcProject} />
     {:else}
-      <ProjectList {createNewProject}/>
+      <ProjectList {createNewProject} {gotoProject}/>
     {/if}
   </div>
 {/if}
