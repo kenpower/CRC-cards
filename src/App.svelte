@@ -74,7 +74,8 @@
   let profileIcon = $state();
 
   let user = $state(null);
-  setContext('user', user); 
+
+  setContext('user', {user}); 
   
   
   onMount(async () => {
@@ -90,11 +91,14 @@
     }
   });
 
-  function showProject(value) {
-    console.log("Setting project ID to", value);
-    setContext('currentProject', project); 
-    projectId = value;
+  function showProjectList() {
+    console.log("Setting project ID to", null);
+    crcProject = null;
+    projectId = null;
   }
+
+
+  $inspect(crcProject, "crcProject");
 
 </script>
 
@@ -104,7 +108,7 @@
   Redirecting to authentication...
 {:else}
   <div class="flexy full-screen">
-    <TopBar {user} {profileIcon} {showProject} />
+    <TopBar project={crcProject} {user} {profileIcon} {showProjectList} />
 
     {#if crcProject}
       <CardArea {crcProject} />

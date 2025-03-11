@@ -4,11 +4,18 @@
   import Avatar from "./Avatar.svelte";
   import ProfileCircle from "./ProfileCircle.svelte";
 
-  var { showProject, user, profileIcon = null } = $props();
+
+  var { project, showProjectList, user, profileIcon = null } = $props();
 
   let prominent = false;
   let dense = false;
   let secondaryColor = true;
+
+  let projectName = $derived(project ? project.name : "No project selected");
+
+  $inspect(project, "project");
+  $inspect(projectName, "projectName");
+
 </script>
 
 <div class="top-app-bar-container flexor">
@@ -20,15 +27,13 @@
   >
     <Row>
       <Section>
-        <IconButton onclick={() => showProject(null)}>
+        <IconButton onclick={showProjectList}>
           <i class="material-icons custom-icon-button">dashboard_customize</i>
         </IconButton>
-        <Title>CRC Cards</Title>
+        <Title>Project: {projectName}</Title>
       </Section>
       <Section align="end" toolbar>
-        <IconButton class="material-icons" aria-label="Download"
-          >save</IconButton
-        >
+
         {#if profileIcon}
           <Avatar
             width="48"

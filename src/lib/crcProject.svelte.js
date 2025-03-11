@@ -264,8 +264,11 @@ class Card {
 class CRCProject {
   cards = $state([]);
 
-  constructor(id) {
+  constructor(id, name, owner_id, ownerDisplayName=display_name) {
     this.id = id;
+    this.name = name;
+    this.owner_id = owner_id;
+    this.ownerDisplayName = ownerDisplayName;
   }
 
   addCard(name, position) {
@@ -293,12 +296,28 @@ class CRCProject {
 }
 
 export const getProject = async (project_id) => {
-  var project = $state(new CRCProject(project_id));
+  const {data, error} = await supabase
+    .from("projects")
+    .select("*, cards(count), users(display_name) ")
+    .eq("id", project_id)
+    .single();
+
+  if (error) {
+    reportSupabaseError(response, "fetchProjects");
+    return null;
+  }
+  
+  const ownerDisplayName = data?.users?.display_name ?? "Unknown";
+
+  console.log(data);
+  const {id, name, owner_id, cards} = data;
+
+  var project = new CRCProject(id, name, owner_id, ownerDisplayName);
   // project.cards = cardsData.map((record) => Card.fromDBRecord(record));
   // project.cards =
   project.cards = await DBfetchCRCProjectCards(project_id);
 
-  console.log("Fetched project:", $state.snapshot(project));
+  console.log("Fetched project:", project);
   return project;
 };
 
