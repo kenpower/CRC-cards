@@ -53,7 +53,7 @@ export const loginUser = async() => {
     }
 
     console.log('No auth token found, redirecting to login service');
-    const home_url = import.meta.env.PUBLIC_URL || window.location.origin;
+    const home_url = import.meta.env.VITE_PUBLIC_URL || (window.location.origin + window.location.pathname);
     const redirect_url = home_url;
     window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${redirect_url}`;
 };
