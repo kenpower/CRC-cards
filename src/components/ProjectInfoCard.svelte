@@ -1,7 +1,7 @@
 <script>
   import Menu from '@smui/menu';
   import List, { Item, Separator, Text, PrimaryText, SecondaryText } from '@smui/list';
-  import { getContext } from 'svelte';
+  import {user} from "../lib/stores.js";
 
 
   let menu;
@@ -29,7 +29,9 @@
       : ""
   );
 
-  let deleteMenuEnabled = $derived( getContext('user')?.id == project.owner_id);
+
+
+  let deleteMenuEnabled = $derived( $user?.id == project.owner_id);
 
   $effect(() => {
     if (menu) {
@@ -59,6 +61,10 @@
     } else {
       console.error("Menu or anchor not initialized:", { menu, anchor });
     }
+    console.log("Project:", $state.snapshot(project));
+    console.log("User:",$user); 
+    console.log("Delete enabled:", deleteMenuEnabled);
+
   }
 
   function deleteHandler() {
@@ -103,7 +109,7 @@ quick={true}>
       <Text>Export</Text>
     </Item>
     <Separator />
-    <Item  onSMUIAction={deleteHandler} disabled = {deleteMenuEnabled} class = "delete">
+    <Item  onSMUIAction={deleteHandler} disabled = {!deleteMenuEnabled} class = "delete">
       <Text>
         <PrimaryText>Delete</PrimaryText>
         <SecondaryText class = "delete">Remove project forever</SecondaryText>

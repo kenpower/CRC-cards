@@ -4,6 +4,7 @@
   import { setContext } from 'svelte';
   import { getProject, listenForProjectChanges, stopListeningForProjectChanges, deleteProject , DBfetchProjects} from "./lib/crcProject.svelte.js";
   import {loginUser} from "./lib/login.js";
+  import {user} from "./lib/stores.js";
   import TopBar from "./components/TopBar.svelte";
   import CardArea from "./components/CardArea.svelte";
   import ProjectList from "./components/ProjectList.svelte";
@@ -22,13 +23,13 @@
 
   const createNewProject = async (projectName) => {
     console.log("Creating new project with name", projectName);
-    DBinsertProject({ name: projectName , owner_id: user.id})
+    DBinsertProject({ name: projectName , owner_id: $user.id})
       .then((newProject) => {  
         console.log("New project created", newProject);
         if (newProject) {
           projectId = newProject.id;
         }
-        DBfetchProjects(user.id).then((_projects) => {
+        DBfetchProjects($user.id).then((_projects) => {
           projects = _projects;
         });
     });
@@ -69,24 +70,21 @@
   let innerWidth = $state();
   let innerHeight = $state();
 
-
   let userName = $state();
   let profileIcon = $state();
 
-  let user = $state(null);
-
-  setContext('user', {user}); 
-  
+  //let user = $state(null);
+  //setContext('user', user); 
   
   onMount(async () => {
-
-    console.log("App mounted, user is", user);
-    user = await loginUser();
-    if (user) {
-      console.log("User logged in", user);
-      userName = user.name;
-      profileIcon = user.profileIcon;
-      projects = await DBfetchProjects(user.id);
+    
+    console.log("App mounted, user is", $user);
+    $user = await loginUser();
+    if ($user) {
+      console.log("User logged in", $user);
+      userName = $user.name;
+      profileIcon = $user.profileIcon;
+      projects = await DBfetchProjects($user.id);
 
     }
   });
