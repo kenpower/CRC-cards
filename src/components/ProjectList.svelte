@@ -35,21 +35,21 @@
     gotoProject(id);
   };
 
-  onMount(async () => {
-  });
 </script>
 
 <main>
   <h1>Projects</h1>
+  <div>
+      <button id="add_button" onclick={openNewProjectModal}>
+      <i class="material-symbols-outlined project_icon">add_box</i>
+      New CRC Card Project
+    </button>
+  </div>
   {#each projects as project (project.id)}
   <div animate:flip transition:fade>
         <ProjectInfoCard {project} onclick={() => setProjectId(project.id)} {deleteProject}  />
   </div>
   {/each}
-  <button id="add_button" onclick={openNewProjectModal}>
-    <i class="material-symbols-outlined project_icon">add_box</i>
-    New CRC Card Project
-  </button>
 </main>
 <AddProjectModal
   bind:isOpen={isNewProjectModalOpen}
@@ -66,13 +66,18 @@
     padding: 2px 6px;
     border-radius: 4px; /* Soft rounded edges */
     text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
-    display: inline;
+
     line-height: 1.5;
   }
+
+  div #add_button {
+    display: flex;
+    margin-left: auto;
+  }
+
   #add_button {
     display: flex;
     align-items: center;
-    float: right;
     background-color: "secondary-variant";
   }
 </style>
