@@ -15,6 +15,7 @@
 
   $inspect(project, "project");
   $inspect(projectName, "projectName");
+  console.log("TAB user", user);
 
 </script>
 
@@ -42,7 +43,7 @@
             src={profileIcon}
           />
         {:else}
-          <ProfileCircle  fullname={user.display_name} forename={user.foreanme} surname={user.surname} email={user.email}/>
+          <ProfileCircle  fullname={user?.display_name} forename={user?.forename} surname={user?.surname} email={user?.email}/>
         {/if}
       </Section>
     </Row>

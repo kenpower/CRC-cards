@@ -79,13 +79,12 @@
   onMount(async () => {
     
     console.log("App mounted, user is", $user);
-    $user = await loginUser();
+    user.set(await loginUser());
     if ($user) {
       console.log("User logged in", $user);
       userName = $user.name;
       profileIcon = $user.profileIcon;
       projects = await DBfetchProjects($user.id);
-
     }
   });
 
@@ -106,7 +105,7 @@
   Redirecting to authentication...
 {:else}
   <div class="flexy full-screen">
-    <TopBar project={crcProject} {user} {profileIcon} {showProjectList} />
+    <TopBar project={crcProject} user={$user} {profileIcon} {showProjectList} />
 
     {#if crcProject}
       <CardArea {crcProject} />
@@ -116,26 +115,6 @@
   </div>
 {/if}
 
-<svelte:head>
-  <!-- Fonts -->
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-  />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700"
-  />
-
-  <!-- Material Typography -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/@material/typography@13.0.0/dist/mdc.typography.css"
-  />
-
-  <!-- SMUI -->
-  <link rel="stylesheet" href="https://unpkg.com/svelte-material-ui/bare.css" />
-</svelte:head>
 
 <style>
   :global(html) {
