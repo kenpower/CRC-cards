@@ -2,6 +2,8 @@
   import Fab, { Label, Icon } from "@smui/fab";
   import Moveable from "./Moveable.svelte";
   import CRCCardView from "./CRCCardView.svelte";
+  import Draggable from "./Draggable.svelte";
+  import Draggable2 from "./Draggable2.svelte";
   let { crcProject } = $props();
 
   const randomPositionNearCentreScreen = () => ({
@@ -19,6 +21,13 @@
     console.log("updateCardPosition", card);
     console.log("updateCardPosition", pos);
   };
+
+  const updateCard = (card) => (x, y) => {
+    card.style.position.left = x;
+    card.style.position.top = y;
+    console.log("updateCardPosition", $state.snapshot(card));
+    crcProject.updateCard(card);
+  };
 </script>
 
 <div class="flexor-content card-area">
@@ -30,7 +39,7 @@
   </div>
 
   {#each crcProject.cards as card, index}
-    <Moveable
+    <!-- <Moveable
       pos={{
         left: card.style.position.left,
         top: card.style.position.top,
@@ -42,7 +51,13 @@
         bind:card={crcProject.cards[index]}
         deleteCard={() => crcProject.deleteCard(card.id)}
       />
-    </Moveable>
+    </Moveable> -->
+    <Draggable2 dropped={updateCard(card)} {card}>
+      <CRCCardView
+        bind:card={crcProject.cards[index]}
+        deleteCard={() => crcProject.deleteCard(card.id)}
+      />
+    </Draggable2>
   {/each}
 </div>
 

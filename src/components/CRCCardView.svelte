@@ -54,6 +54,7 @@
     box-sizing: border-box;
     background-clip: padding-box;
     border-radius: 0.5rem;
+
   }
 
   .card:hover,
