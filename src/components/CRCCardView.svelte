@@ -17,7 +17,12 @@
 <div class="card">
   <div
     class="ignore-pointer-down"
-    onpointerdown={stopPropagation(bubble("pointerdown"))}
+    onpointerdown={(e) => {
+      e.stopPropagation();
+    }}
+    onmousedown={(e) => {
+      e.stopPropagation();
+    }}
   >
     <span class="delete" onclick={() => deleteCard()}>&times;</span>
     <div class="title-area">
@@ -54,7 +59,6 @@
     box-sizing: border-box;
     background-clip: padding-box;
     border-radius: 0.5rem;
-
   }
 
   .card:hover,
