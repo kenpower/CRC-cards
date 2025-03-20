@@ -52,6 +52,7 @@
     padding: 0.1rem;
     margin: 0;
     border: 0 none;
+    color: black;
   }
   input:hover {
     /* font-weight: 600; */
