@@ -38,13 +38,13 @@ export const DBinsertProject = async (projectData) => {
 
 export const DBfetchProjects = async () => {
   const response = await supabase.from("projects")
-  .select("*, cards(count), users(display_name) ");
+    .select("*, cards(count), users(display_name) ");
   if (response.error) {
     reportSupabaseError(response, "fetchProjects");
     return [];
   }
-  
-  const data  = response.data.map((record) => {
+
+  const data = response.data.map((record) => {
     record.cardCount = record.cards[0].count;
     return record;
   });
@@ -264,11 +264,12 @@ class Card {
 class CRCProject {
   cards = $state([]);
 
-  constructor(id, name, owner_id, ownerDisplayName=display_name) {
-    this.id = id;
-    this.name = name;
-    this.owner_id = owner_id;
-    this.ownerDisplayName = ownerDisplayName;
+  constructor(projectData) {
+    this.id = projectData.id;
+    this.name = projectData.name;
+    this.owner_id = projectData.owner_id;
+    this.base32_id = projectData.base32_id;
+    this.ownerDisplayName = projectData.ownerDisplayName;
   }
 
   addCard(name, position) {
@@ -296,7 +297,7 @@ class CRCProject {
 }
 
 export const getProject = async (project_id) => {
-  const {data, error} = await supabase
+  const { data, error } = await supabase
     .from("projects")
     .select("*, cards(count), users(display_name) ")
     .eq("id", project_id)
@@ -306,13 +307,12 @@ export const getProject = async (project_id) => {
     reportSupabaseError(response, "fetchProjects");
     return null;
   }
-  
+
   const ownerDisplayName = data?.users?.display_name ?? "Unknown";
 
   console.log(data);
-  const {id, name, owner_id, cards} = data;
 
-  var project = new CRCProject(id, name, owner_id, ownerDisplayName);
+  var project = new CRCProject(data);
   // project.cards = cardsData.map((record) => Card.fromDBRecord(record));
   // project.cards =
   project.cards = await DBfetchCRCProjectCards(project_id);
@@ -321,10 +321,10 @@ export const getProject = async (project_id) => {
   return project;
 };
 
-export const listenForProjectChanges = async(project_id, updateProject) =>
+export const listenForProjectChanges = async (project_id, updateProject) =>
   listenForChanges(project_id, supabase, updateProject);
 
-export const stopListeningForProjectChanges = () => 
+export const stopListeningForProjectChanges = () =>
   supabase.removeAllChannels();
 
 export const deleteProject = async (project_id) => {

@@ -4,6 +4,8 @@
   import CRCCardView from "./CRCCardView.svelte";
   import Draggable from "./Draggable.svelte";
   import Draggable2 from "./Draggable2.svelte";
+  import { onMount } from "svelte";
+
   let { crcProject } = $props();
 
   const randomPositionNearCentreScreen = () => ({
@@ -28,6 +30,12 @@
     console.log("updateCardPosition", $state.snapshot(card));
     crcProject.updateCard(card);
   };
+
+  onMount(() => {
+    console.log("CardArea mounted", crcProject);
+    const newUrl = `/?id=${crcProject.base32_id}`;
+    window.history.replaceState({}, "", newUrl);
+  });
 </script>
 
 <div class="flexor-content card-area">

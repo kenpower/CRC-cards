@@ -1,10 +1,16 @@
 <script>
   import Signin from "./Signin.svelte";
   import { onMount } from "svelte";
-  import { setContext } from 'svelte';
-  import { getProject, listenForProjectChanges, stopListeningForProjectChanges, deleteProject , DBfetchProjects} from "./lib/crcProject.svelte.js";
-  import {loginUser} from "./lib/login.js";
-  import {user} from "./lib/stores.js";
+  import { setContext } from "svelte";
+  import {
+    getProject,
+    listenForProjectChanges,
+    stopListeningForProjectChanges,
+    deleteProject,
+    DBfetchProjects,
+  } from "./lib/crcProject.svelte.js";
+  import { loginUser } from "./lib/login.js";
+  import { user } from "./lib/stores.js";
   import TopBar from "./components/TopBar.svelte";
   import CardArea from "./components/CardArea.svelte";
   import ProjectList from "./components/ProjectList.svelte";
@@ -13,18 +19,18 @@
 
   let projectId = $state(null);
   let crcProject = $state(null);
-  let projects= $state([]);
+  let projects = $state([]);
 
   let projectNeedsUpdate = $state(false);
-  
+
   const updateProject = () => {
     projectNeedsUpdate = true;
   };
 
   const createNewProject = async (projectName) => {
     console.log("Creating new project with name", projectName);
-    DBinsertProject({ name: projectName , owner_id: $user.id})
-      .then((newProject) => {  
+    DBinsertProject({ name: projectName, owner_id: $user.id }).then(
+      (newProject) => {
         console.log("New project created", newProject);
         if (newProject) {
           projectId = newProject.id;
@@ -32,7 +38,8 @@
         DBfetchProjects($user.id).then((_projects) => {
           projects = _projects;
         });
-    });
+      },
+    );
     //TODO: what if create fails?
   };
 
@@ -43,12 +50,11 @@
   $effect(() => {
     console.log("Project ID changed to", projectId);
     if (projectId != null) {
-      getProject(projectId, updateProject)
-        .then((project) => {
-          console.log("Project fetched", project);
-          listenForProjectChanges(projectId, updateProject);
-          crcProject = project;
-        });
+      getProject(projectId, updateProject).then((project) => {
+        console.log("Project fetched", project);
+        listenForProjectChanges(projectId, updateProject);
+        crcProject = project;
+      });
     } else {
       crcProject = null;
       stopListeningForProjectChanges();
@@ -58,12 +64,11 @@
   $effect(() => {
     console.log("Project updated");
     if (projectNeedsUpdate) {
-      getProject(projectId, updateProject)
-        .then((project) => {
-          console.log("Project fetched", project);
-          crcProject = project;
-          projectNeedsUpdate = false;
-        });
+      getProject(projectId, updateProject).then((project) => {
+        console.log("Project fetched", project);
+        crcProject = project;
+        projectNeedsUpdate = false;
+      });
     }
   });
 
@@ -74,10 +79,9 @@
   let profileIcon = $state();
 
   //let user = $state(null);
-  //setContext('user', user); 
-  
+  //setContext('user', user);
+
   onMount(async () => {
-    
     console.log("App mounted, user is", $user);
     user.set(await loginUser());
     if ($user) {
@@ -94,9 +98,7 @@
     projectId = null;
   }
 
-
   $inspect(crcProject, "crcProject");
-
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -110,11 +112,15 @@
     {#if crcProject}
       <CardArea {crcProject} />
     {:else}
-      <ProjectList {projects} {createNewProject} {gotoProject} {deleteProject}/>
+      <ProjectList
+        {projects}
+        {createNewProject}
+        {gotoProject}
+        {deleteProject}
+      />
     {/if}
   </div>
 {/if}
-
 
 <style>
   :global(html) {
