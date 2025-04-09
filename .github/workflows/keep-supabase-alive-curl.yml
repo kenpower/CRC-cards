@@ -14,5 +14,5 @@ jobs:
         run: |
           RANDOM_ID=X$((RANDOM % 3600))  # Random delay between 0 and 3600 seconds
           echo "Random ID: $RANDOM_ID<"
-          curl -X DELETE -H "apikey: ${{ secrets.SUPABASE_KEY }}" ${{ secrets.SUPABASE_URL }}/rest/v1/cards?id=eq.$(RANDOM_ID)"
+          curl -X DELETE -H "apikey: ${{ secrets.SUPABASE_KEY }}" ${{ secrets.SUPABASE_URL }}/rest/v1/cards?id=eq.$(RANDOM_ID)
 
