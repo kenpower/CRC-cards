@@ -2,7 +2,7 @@ name: Daily Curl Command
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # This runs the action at midnight (UTC) every day.
+    - cron: '0 */2 * * *'  # This runs the action every two hours
   workflow_dispatch: 
     
 jobs:
@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         
-      - name: Run curl command
+      - name: Delete a random non-existant card to keep supabase thinkig it is active
         run: |
-          curl -H "apikey: ${{ secrets.SUPABASE_KEY }}" ${{ secrets.SUPABASE_URL }}/rest/v1/projects?select=*%2Ccards%28count%29%2Cusers%28display_name%29
+          RANDOM_ID=X$((RANDOM % 3600))  # Random delay between 0 and 3600 seconds
+          echo "Random ID: $RANDOM_ID<"
+          curl -X DELETE -H "apikey: ${{ secrets.SUPABASE_KEY }}" ${{ secrets.SUPABASE_URL }}/rest/v1/cards?id=eq.$(RANDOM_ID)"
+
