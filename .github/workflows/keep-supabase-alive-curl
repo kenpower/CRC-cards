@@ -1,0 +1,17 @@
+name: Daily Curl Command
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # This runs the action at midnight (UTC) every day.
+  workflow_dispatch: 
+    
+jobs:
+  run_curl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Run curl command
+        run: |
+          curl -H "apikey: ${{ secrets.SUPABASE_KEY }}" ${{ secrets.SUPABASE_URL }}/rest/v1/projects?select=*%2Ccards%28count%29%2Cusers%28display_name%29
