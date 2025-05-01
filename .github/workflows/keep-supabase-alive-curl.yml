@@ -12,7 +12,5 @@ jobs:
         
       - name: Delete a random non-existant card to keep supabase thinkig it is active
         run: |
-          RANDOM_ID=-$((RANDOM % 3600))  # Random delay between 0 and 3600 seconds
-          echo "Random ID: $RANDOM_ID<"
-          curl -X DELETE -H "apikey: ${{ secrets.SUPABASE_KEY }}" ${{ secrets.SUPABASE_URL }}/rest/v1/cards?id=eq.$(RANDOM_ID)
+          curl -s -H "apikey: ${{ secrets.SUPABASE_KEY }}" -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" "${{ secrets.SUPABASE_URL }}/rest/v1/cards?select=id&limit=1"
 
