@@ -2,7 +2,7 @@ name: Daily Curl Command
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  # This runs the action every two hours
+    - cron: '0 */8 * * *'  # This runs the action every 4 hours
   workflow_dispatch: 
     
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         
-      - name: Delete a random non-existant card to keep supabase thinkig it is active
+      - name: Ping Supabase with SELECT to keep it alive
         run: |
           curl -s -H "apikey: ${{ secrets.SUPABASE_KEY }}" -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" "${{ secrets.SUPABASE_URL }}/rest/v1/cards?select=id&limit=1"
 
