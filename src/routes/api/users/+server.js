@@ -1,13 +1,12 @@
 import { json } from '@sveltejs/kit';
-import { supabase } from '$lib/server/supabase';
+import { userRepository } from '$lib/server/repositories/UserRepository';
 
 export async function POST({ request }) {
+  try {
     const userData = await request.json();
-    const { data, error } = await supabase
-      .from('users')
-      .upsert([userData], { onConflict: ['email'] })
-      .select('*');
-
-    if (error) return json({ error: error.message }, { status: 500 });
-    return json(data[0]);
+    const user = await userRepository.upsert(userData);
+    return json(user);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }

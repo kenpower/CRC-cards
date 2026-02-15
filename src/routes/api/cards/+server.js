@@ -1,74 +1,46 @@
 import { json } from '@sveltejs/kit';
-import { supabase } from '$lib/server/supabase';
+import { cardRepository } from '$lib/server/repositories/CardRepository';
 
 export async function GET({ url }) {
-    const project_id = url.searchParams.get('project_id');
-    if (!project_id) {
-        return json({ error: 'Missing project_id' }, { status: 400 });
-    }
+  const project_id = url.searchParams.get('project_id');
+  if (!project_id) return json({ error: 'Missing project_id' }, { status: 400 });
 
-    const { data, error } = await supabase
-        .from("cards")
-        .select(`
-            *,
-            collaborators (id, name, display_order),
-            responsibilities (id, name, display_order)
-        `)
-        .eq("project_id", project_id);
-
-    if (error) {
-        return json({ error: error.message }, { status: 500 });
-    }
-
-    return json(data);
+  try {
+    const cards = await cardRepository.getByProjectId(project_id);
+    return json(cards);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST({ request }) {
+  try {
     const cardData = await request.json();
-    const { data, error } = await supabase
-        .from("cards")
-        .insert(cardData)
-        .select("*")
-        .single();
-
-    if (error) {
-        return json({ error: error.message }, { status: 500 });
-    }
-
-    return json(data);
+    const card = await cardRepository.create(cardData);
+    return json(card);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function PATCH({ request }) {
-    const { id, ...updateData } = await request.json();
-    if (!id) {
-        return json({ error: 'Missing id' }, { status: 400 });
-    }
-
-    const { data, error } = await supabase
-        .from("cards")
-        .update(updateData)
-        .eq("id", id)
-        .select("*")
-        .single();
-
-    if (error) {
-        return json({ error: error.message }, { status: 500 });
-    }
-
-    return json(data);
+  try {
+    const { id, ...updates } = await request.json();
+    const card = await cardRepository.update(id, updates);
+    return json(card);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function DELETE({ url }) {
-    const id = url.searchParams.get('id');
-    if (!id) {
-        return json({ error: 'Missing id' }, { status: 400 });
-    }
+  const id = url.searchParams.get('id');
+  if (!id) return json({ error: 'Missing id' }, { status: 400 });
 
-    const { error } = await supabase.from("cards").delete().eq("id", id);
-
-    if (error) {
-        return json({ error: error.message }, { status: 500 });
-    }
-
-    return json({ success: true });
+  try {
+    const result = await cardRepository.delete(id);
+    return json(result);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }

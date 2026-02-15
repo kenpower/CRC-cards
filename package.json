@@ -32,9 +32,8 @@
   "dependencies": {
     "@smui/common": "^8.0.0-beta.3",
     "@smui/ripple": "^8.0.0-beta.3",
-    "@supabase/supabase-js": "^2.48.1",
-    "@sveltejs/adapter-static": "^3.0.8",
     "jwt-decode": "^4.0.0",
+    "mysql2": "^3.17.1",
     "svelte-material-ui": "^8.0.0-beta.3"
   }
 }

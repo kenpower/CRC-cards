@@ -1,6 +1,3 @@
-import { supabase } from "./supabase";
-import { listenForChanges } from "./listenForChanges";
-
 function getTempInt4() {
   return Math.floor(Math.random() * 2_000_000_000); // Avoids the max int4 limit
 }
@@ -278,11 +275,11 @@ export const getProject = async (project_id) => {
   return project;
 };
 
-export const listenForProjectChanges = async (project_id, updateProject) =>
-  listenForChanges(project_id, supabase, updateProject);
+export const listenForProjectChanges = async (project_id, updateProject) => {
+  console.warn("Real-time updates are currently disabled.");
+};
 
-export const stopListeningForProjectChanges = () =>
-  supabase.removeAllChannels();
+export const stopListeningForProjectChanges = () => {};
 
 export const deleteProject = async (project_id) => {
   return await DBdeleteProject(project_id);

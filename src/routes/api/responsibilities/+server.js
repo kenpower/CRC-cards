@@ -1,25 +1,34 @@
 import { json } from '@sveltejs/kit';
-import { supabase } from '$lib/server/supabase';
+import { responsibilityRepository } from '$lib/server/repositories/ResponsibilityRepository';
 
 export async function POST({ request }) {
-    const row = await request.json();
-    const { data, error } = await supabase.from("responsibilities").insert(row).select("*").single();
-    if (error) return json({ error: error.message }, { status: 500 });
-    return json(data);
+  try {
+    const data = await request.json();
+    const responsibility = await responsibilityRepository.create(data);
+    return json(responsibility);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function PATCH({ request }) {
-    const { id, ...updateData } = await request.json();
-    if (!id) return json({ error: 'Missing id' }, { status: 400 });
-    const { data, error } = await supabase.from("responsibilities").update(updateData).eq("id", id).select("*").single();
-    if (error) return json({ error: error.message }, { status: 500 });
-    return json(data);
+  try {
+    const { id, ...updates } = await request.json();
+    const responsibility = await responsibilityRepository.update(id, updates);
+    return json(responsibility);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function DELETE({ url }) {
-    const id = url.searchParams.get('id');
-    if (!id) return json({ error: 'Missing id' }, { status: 400 });
-    const { error } = await supabase.from("responsibilities").delete().eq("id", id);
-    if (error) return json({ error: error.message }, { status: 500 });
-    return json({ success: true });
+  const id = url.searchParams.get('id');
+  if (!id) return json({ error: 'Missing id' }, { status: 400 });
+
+  try {
+    const result = await responsibilityRepository.delete(id);
+    return json(result);
+  } catch (error) {
+    return json({ error: error.message }, { status: 500 });
+  }
 }

@@ -1,5 +1,4 @@
 <script>
-  import Signin from "../Signin.svelte";
   import { onMount } from "svelte";
   import {
     getProject,
