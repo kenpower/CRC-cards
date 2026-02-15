@@ -107,3 +107,4 @@ build/
 public/
 
 .temp/
+/.svelte-kit
