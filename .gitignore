@@ -108,3 +108,7 @@ public/
 
 .temp/
 /.svelte-kit
+
+.env
+.env.*
+
