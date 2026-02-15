@@ -1,21 +1,19 @@
 <script>
-  import Signin from "./Signin.svelte";
+  import Signin from "../Signin.svelte";
   import { onMount } from "svelte";
-  import { setContext } from "svelte";
   import {
     getProject,
     listenForProjectChanges,
     stopListeningForProjectChanges,
     deleteProject,
     DBfetchProjects,
-  } from "./lib/crcProject.svelte.js";
-  import { loginUser } from "./lib/login.js";
-  import { user } from "./lib/stores.js";
-  import TopBar from "./components/TopBar.svelte";
-  import CardArea from "./components/CardArea.svelte";
-  import ProjectList from "./components/ProjectList.svelte";
-
-  import { DBinsertProject } from "./lib/crcProject.svelte.js";
+    DBinsertProject,
+  } from "$lib/crcProject.svelte.js";
+  import { loginUser } from "$lib/login.js";
+  import { user } from "$lib/stores.js";
+  import TopBar from "../components/TopBar.svelte";
+  import CardArea from "../components/CardArea.svelte";
+  import ProjectList from "../components/ProjectList.svelte";
 
   let projectId = $state(null);
   let crcProject = $state(null);
@@ -78,9 +76,6 @@
   let userName = $state();
   let profileIcon = $state();
 
-  //let user = $state(null);
-  //setContext('user', user);
-
   onMount(async () => {
     console.log("App mounted, user is", $user);
     user.set(await loginUser());
@@ -103,7 +98,7 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-{#if !user}
+{#if !$user}
   Redirecting to authentication...
 {:else}
   <div class="flexy full-screen">
@@ -123,11 +118,6 @@
 {/if}
 
 <style>
-  :global(html) {
-    box-sizing: border-box;
-    font-family: "Courier New", Courier, monospace;
-  }
-
   .full-screen {
     height: 100vh;
     display: flex;

@@ -1,9 +1,4 @@
 import {jwtDecode} from "jwt-decode";
-import {insertUser} from "./supabase";
-
-// grok instruction fo integrating with supabase auth
-// https://grok.com/share/bGVnYWN5_083fe517-8d97-49c3-9e1d-e727c21b9093
-
 
 const user_from_login_token = (event) => {
     const params = new URLSearchParams(window.location.search);
@@ -25,8 +20,6 @@ const user_from_login_token = (event) => {
       }
     }
     console.log('No token found in URL');
-    console.log('url', window.location);
-
     return null;
 };
 
@@ -44,10 +37,21 @@ export const loginUser = async() => {
     console.log('No user found in local storage, checking for a auth token in url');
     user = user_from_login_token();
     if (user) {
-      const newOrExistingUser = await insertUser(user.email, user.forename, user.surname, user.display_name);
-      if(newOrExistingUser){
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: user.email,
+          forename: user.forename,
+          surname: user.surname,
+          display_name: user.display_name
+        })
+      });
+
+      if(response.ok){
+        const newOrExistingUser = await response.json();
         localStorage.setItem("user", JSON.stringify(newOrExistingUser));
-        window.location = home_url; //remove the token from query string
+        window.location.href = home_url; //remove the token from query string
         return newOrExistingUser;
       }
       console.error('Error inserting user into database');
