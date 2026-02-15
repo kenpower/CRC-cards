@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: crc-cards-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: crc_cards
+      MYSQL_USER: crc_user
+      MYSQL_PASSWORD: crc_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: crc-cards-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=crc_user
+      - DB_PASSWORD=crc_password
+      - DB_NAME=crc_cards
+      - VITE_PUBLIC_URL=http://localhost:3000
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:

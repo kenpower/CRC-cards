@@ -82,7 +82,7 @@
       <h3 class="project-name">{project.name}</h3>
 
       <p class="details">
-        Owner: {project.users?.display_name ?? 'Unknown'} | Cards: {project.cardCount} 
+        Owner: {project.ownerDisplayName ?? 'Unknown'} | Cards: {project.cardCount}
       </p>
     </div>
     <span>

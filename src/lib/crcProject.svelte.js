@@ -252,8 +252,8 @@ class CRCProject {
     DBinsertCard(card);
   }
 
-  deleteCard(id) {
-    if (DBdeleteCard(id))
+  async deleteCard(id) {
+    if (await DBdeleteCard(id))
       this.cards = this.cards.filter((card) => card.id !== id);
   }
 

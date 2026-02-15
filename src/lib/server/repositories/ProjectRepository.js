@@ -13,8 +13,10 @@ export class ProjectRepository {
   async getAll(owner_id) {
     let query = `
       SELECT p.*,
+             u.display_name as ownerDisplayName,
              (SELECT COUNT(*) FROM cards c WHERE c.project_id = p.id) as cardCount
       FROM projects p
+      LEFT JOIN users u ON p.owner_id = u.id
     `;
     let params = [];
 
