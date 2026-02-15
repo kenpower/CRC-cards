@@ -1,8 +1,8 @@
-import db from '../db';
+import db from "../db";
 
 function generateBase32Id() {
-  const chars = '0123456789abcdefghjkmnpqrstvwxyz';
-  let result = '';
+  const chars = "0123456789abcdefghjkmnpqrstvwxyz";
+  let result = "";
   for (let i = 0; i < 8; i++) {
     result += chars.charAt(Math.floor(Math.random() * 32));
   }
@@ -21,11 +21,11 @@ export class ProjectRepository {
     let params = [];
 
     if (owner_id) {
-      query += ' WHERE p.owner_id = ?';
+      query += " WHERE p.owner_id = ?";
       params.push(owner_id);
     }
 
-    query += ' ORDER BY p.created_at DESC';
+    query += " ORDER BY p.created_at DESC";
 
     const [rows] = await db.execute(query, params);
     return rows;
@@ -33,20 +33,26 @@ export class ProjectRepository {
 
   async getById(id) {
     // Attempt to find by UUID first, then by base32_id
-    let [rows] = await db.execute(`
+    let [rows] = await db.execute(
+      `
       SELECT p.*, u.display_name as ownerDisplayName
       FROM projects p
       LEFT JOIN users u ON p.owner_id = u.id
       WHERE p.id = ?
-    `, [id]);
+    `,
+      [id],
+    );
 
     if (rows.length === 0) {
-      [rows] = await db.execute(`
+      [rows] = await db.execute(
+        `
         SELECT p.*, u.display_name as ownerDisplayName
         FROM projects p
         LEFT JOIN users u ON p.owner_id = u.id
         WHERE p.base32_id = ?
-      `, [id]);
+      `,
+        [id],
+      );
     }
 
     return rows[0];
@@ -57,14 +63,14 @@ export class ProjectRepository {
     const id = crypto.randomUUID();
     const base32_id = generateBase32Id();
     await db.execute(
-      'INSERT INTO projects (id, name, description, owner_id, base32_id) VALUES (?, ?, ?, ?, ?)',
-      [id, name, description || null, owner_id || null, base32_id]
+      "INSERT INTO projects (id, name, description, owner_id, base32_id) VALUES (?, ?, ?, ?, ?)",
+      [id, name, description || null, owner_id || null, base32_id],
     );
     return this.getById(id);
   }
 
   async delete(id) {
-    await db.execute('DELETE FROM projects WHERE id = ?', [id]);
+    await db.execute("DELETE FROM projects WHERE id = ?", [id]);
     return { success: true };
   }
 }

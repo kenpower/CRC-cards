@@ -21,7 +21,7 @@ export const DBinsertProject = async (projectData) => {
         owner_id: projectData.owner_id || null,
       }),
     }),
-    "insertProject"
+    "insertProject",
   );
 
   if (error) return null;
@@ -31,7 +31,10 @@ export const DBinsertProject = async (projectData) => {
 
 export const DBfetchProjects = async (owner_id) => {
   const url = owner_id ? `/api/projects?owner_id=${owner_id}` : "/api/projects";
-  const { data, error } = await handleResponse(await fetch(url), "fetchProjects");
+  const { data, error } = await handleResponse(
+    await fetch(url),
+    "fetchProjects",
+  );
 
   if (error) return [];
   console.log("Fetched projects:", data);
@@ -41,7 +44,7 @@ export const DBfetchProjects = async (owner_id) => {
 export const DBdeleteProject = async (project_id) => {
   const { data, error } = await handleResponse(
     await fetch(`/api/projects?id=${project_id}`, { method: "DELETE" }),
-    "deleteProject"
+    "deleteProject",
   );
 
   if (error) return false;
@@ -60,7 +63,7 @@ const DBinsertCard = async (card) => {
         style: card.style,
       }),
     }),
-    "insertCard"
+    "insertCard",
   );
 
   if (error) return;
@@ -71,7 +74,7 @@ const DBinsertCard = async (card) => {
 const DBfetchCRCProjectCards = async (project_id) => {
   const { data, error } = await handleResponse(
     await fetch(`/api/cards?project_id=${project_id}`),
-    "fetchCRCProjectCards"
+    "fetchCRCProjectCards",
   );
 
   if (error) return null;
@@ -82,7 +85,7 @@ const DBfetchCRCProjectCards = async (project_id) => {
 const DBdeleteCard = async (cardId) => {
   const { data, error } = await handleResponse(
     await fetch(`/api/cards?id=${cardId}`, { method: "DELETE" }),
-    "deleteCard"
+    "deleteCard",
   );
 
   if (error) return false;
@@ -101,7 +104,7 @@ const DBupdateCard = async (card) => {
         name: card.name,
       }),
     }),
-    "updateCard"
+    "updateCard",
   );
 
   if (!error) console.log("Updated card:", card.id);
@@ -114,7 +117,7 @@ const DBaddRow = async (table, row) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(row),
     }),
-    `addRow:${table}`
+    `addRow:${table}`,
   );
 
   if (error) return null;
@@ -125,7 +128,7 @@ const DBaddRow = async (table, row) => {
 const DBdeleteRow = async (table, row) => {
   const { data, error } = await handleResponse(
     await fetch(`/api/${table}?id=${row.id}`, { method: "DELETE" }),
-    `deleteRow:${table}`
+    `deleteRow:${table}`,
   );
 
   if (error) return false;
@@ -140,7 +143,7 @@ const DBupdateRow = async (table, row) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(row),
     }),
-    `updateRow:${table}`
+    `updateRow:${table}`,
   );
 
   if (!error) console.log(`Updated row in ${table}:`, row.id);
@@ -192,7 +195,7 @@ class Card {
   deleteResponsibility = async (responsibility) => {
     if (await DBdeleteRow("responsibilities", responsibility)) {
       this.responsibilities = this.responsibilities.filter(
-        (resp) => resp.id !== responsibility.id
+        (resp) => resp.id !== responsibility.id,
       );
     }
   };
@@ -200,7 +203,7 @@ class Card {
   deleteCollaborator = async (collaborator) => {
     if (await DBdeleteRow("collaborators", collaborator)) {
       this.collaborators = this.collaborators.filter(
-        (collab) => collab.id !== collaborator.id
+        (collab) => collab.id !== collaborator.id,
       );
     }
   };
@@ -212,7 +215,10 @@ class Card {
       card_id: this.id,
       project_id: this.projectId,
     };
-    const newResponsibility = await DBaddRow("responsibilities", responsibility);
+    const newResponsibility = await DBaddRow(
+      "responsibilities",
+      responsibility,
+    );
     if (newResponsibility) {
       this.responsibilities.push(newResponsibility);
     }
@@ -265,7 +271,7 @@ class CRCProject {
 export const getProject = async (project_id) => {
   const { data, error } = await handleResponse(
     await fetch(`/api/projects?id=${project_id}`),
-    "getProject"
+    "getProject",
   );
 
   if (error) return null;

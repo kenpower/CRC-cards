@@ -1,8 +1,13 @@
 <script>
-  import Menu from '@smui/menu';
-  import List, { Item, Separator, Text, PrimaryText, SecondaryText } from '@smui/list';
-  import {user} from "../lib/stores.js";
-
+  import Menu from "@smui/menu";
+  import List, {
+    Item,
+    Separator,
+    Text,
+    PrimaryText,
+    SecondaryText,
+  } from "@smui/list";
+  import { user } from "../lib/stores.js";
 
   let menu;
   let anchor;
@@ -26,12 +31,10 @@
           month: "long",
           day: "numeric",
         })
-      : ""
+      : "",
   );
 
-
-
-  let deleteMenuEnabled = $derived( $user?.id == project.owner_id);
+  let deleteMenuEnabled = $derived($user?.id == project.owner_id);
 
   $effect(() => {
     if (menu) {
@@ -49,11 +52,11 @@
       menu.setOpen(true);
       // Use setTimeout to ensure the menu is rendered before positioning
       setTimeout(() => {
-        const menuEl = menu.getElement();// Access the DOM element of the menu
+        const menuEl = menu.getElement(); // Access the DOM element of the menu
         const anchorRect = anchor.getBoundingClientRect(); // Get button's position
         // Position the menu to the right of the button
         console.log("Menu:", menuEl);
-        menuEl.style.position = 'absolute';
+        menuEl.style.position = "absolute";
         menuEl.style.left = `${anchorRect.left}px`; // 10px right of button
         menuEl.style.top = `${anchorRect.top}px`; // Align with button top
         console.log("Menu positioned at:", menuEl.style.left, menuEl.style.top);
@@ -62,63 +65,67 @@
       console.error("Menu or anchor not initialized:", { menu, anchor });
     }
     console.log("Project:", $state.snapshot(project));
-    console.log("User:",$user); 
+    console.log("User:", $user);
     console.log("Delete enabled:", deleteMenuEnabled);
-
   }
 
   function deleteHandler() {
     if (menu) {
       menu.setOpen(false);
     }
-    deleteProject(project.id) 
-  } 
+    deleteProject(project.id);
+  }
 </script>
 
-<div role="button" tabindex="0" class="project-card" {onclick} >
+<div role="button" tabindex="0" class="project-card" {onclick}>
   <div class="card-content">
     <i class="material-symbols-outlined project_icon">note_stack</i>
     <div class="text-content">
       <h3 class="project-name">{project.name}</h3>
 
       <p class="details">
-        Owner: {project.ownerDisplayName ?? 'Unknown'} | Cards: {project.cardCount}
+        Owner: {project.users?.display_name ?? "Unknown"} | Cards: {project.cardCount}
       </p>
     </div>
     <span>
-    <button bind:this={anchor} onclick={(e) => openMenu(e)}>
-      <i class="material-symbols-outlined">more_horiz</i>
-    </button>
-
+      <button bind:this={anchor} onclick={(e) => openMenu(e)}>
+        <i class="material-symbols-outlined">more_horiz</i>
+      </button>
     </span>
   </div>
-  
-
 </div>
-<div class = "menu_container">
-<Menu bind:this={menu} anchor={false} anchorElement={anchor}  anchorCorner="TOP_END"
-quick={true}>
-  <List>
-    <Item onSMUIAction={() => (alert("Cut"))} disabled>
-      <Text>Share</Text>
-    </Item>
-    <Item onSMUIAction={() => (alert("Cut"))} disabled>
-      <Text>Clone</Text>
-    </Item>
-    <Item onSMUIAction={() => (alert("Cut"))} disabled>
-      <Text>Export</Text>
-    </Item>
-    <Separator />
-    <Item  onSMUIAction={deleteHandler} disabled = {!deleteMenuEnabled} class = "delete">
-      <Text>
-        <PrimaryText>Delete</PrimaryText>
-        <SecondaryText class = "delete">Remove project forever</SecondaryText>
-      </Text>
-      <i class="material-symbols-outlined delete">delete</i>
-    </Item>
-  </List>
-</Menu>
-
+<div class="menu_container">
+  <Menu
+    bind:this={menu}
+    anchor={false}
+    anchorElement={anchor}
+    anchorCorner="TOP_END"
+    quick={true}
+  >
+    <List>
+      <Item onSMUIAction={() => alert("Cut")} disabled>
+        <Text>Share</Text>
+      </Item>
+      <Item onSMUIAction={() => alert("Cut")} disabled>
+        <Text>Clone</Text>
+      </Item>
+      <Item onSMUIAction={() => alert("Cut")} disabled>
+        <Text>Export</Text>
+      </Item>
+      <Separator />
+      <Item
+        onSMUIAction={deleteHandler}
+        disabled={!deleteMenuEnabled}
+        class="delete"
+      >
+        <Text>
+          <PrimaryText>Delete</PrimaryText>
+          <SecondaryText class="delete">Remove project forever</SecondaryText>
+        </Text>
+        <i class="material-symbols-outlined delete">delete</i>
+      </Item>
+    </List>
+  </Menu>
 </div>
 
 <style>
@@ -209,8 +216,8 @@ quick={true}>
     color: #333;
   }
 
-  .menu_container{
-    text-align: left; 
+  .menu_container {
+    text-align: left;
   }
 
   /* Accessing the class with "*" in front limits
