@@ -1,9 +1,9 @@
 name: Keep Supabase Alive 
 
 on:
-  schedule:
+  #schedule:
     # Runs every Monday and Thursday at 9:00 AM UTC (adjust as needed)
-    - cron: "0 9 * * 1,4"
+   # - cron: "0 9 * * 1,4"
   workflow_dispatch: # Allows manual triggering
 
 jobs:
@@ -41,3 +41,4 @@ jobs:
                 process.exit(1);
               });
           "
+
