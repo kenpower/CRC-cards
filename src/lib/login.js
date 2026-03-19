@@ -1,5 +1,22 @@
 import {jwtDecode} from "jwt-decode";
 
+export const safeLocalStorageGet = (key) => {
+    try {
+        return localStorage.getItem(key);
+    } catch (error) {
+        console.warn('localStorage.getItem blocked (Tracking Prevention may be active):', error);
+        return null;
+    }
+};
+
+export const safeLocalStorageSet = (key, value) => {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        console.warn('localStorage.setItem blocked (Tracking Prevention may be active):', error);
+    }
+};
+
 const user_from_login_token = (event) => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
@@ -26,7 +43,7 @@ const user_from_login_token = (event) => {
 
 export const loginUser = async() => {    
 
-    let user = localStorage.getItem("user");
+    let user = safeLocalStorageGet("user");
     if (user) {
       console.log('User found in local storage', user);
       return JSON.parse(user);
@@ -50,7 +67,7 @@ export const loginUser = async() => {
 
       if(response.ok){
         const newOrExistingUser = await response.json();
-        localStorage.setItem("user", JSON.stringify(newOrExistingUser));
+        safeLocalStorageSet("user", JSON.stringify(newOrExistingUser));
         window.location.href = home_url; //remove the token from query string
         return newOrExistingUser;
       }
