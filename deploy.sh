@@ -155,8 +155,13 @@ echo "Created archive: ${ARCHIVE_NAME}"
 
 # Step 3: Copy to remote folder
 echo "[4/7] Copying archive to remote server..."
-ssh "${REMOTE_USER}@${HOST}" "mkdir -p ${REMOTE_PATH}"
+echo "REMOTE_USER=${REMOTE_USER}"
+echo "HOST=${HOST}"
+echo "REMOTE_PATH=${REMOTE_PATH}"
+ssh "${REMOTE_USER}@${HOST}" "sudo mkdir -p ${REMOTE_PATH}"
+ssh "${REMOTE_USER}@${HOST}" "sudo chown ${REMOTE_USER}:${REMOTE_USER} ${REMOTE_PATH}"
 scp "${ARCHIVE_NAME}" "${REMOTE_USER}@${HOST}:${REMOTE_PATH}/"
+
 
 # Extract and setup on remote
 echo "[4/7b] Extracting archive on remote server..."
