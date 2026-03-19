@@ -25,9 +25,9 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ] || [ -z "$1" ]; then
     echo "Examples:"
     echo "  $0 prod                                    # Use prod.config"
     echo "  $0 dev                                     # Use dev.config"
-    echo "  $0 prod compucore2.setu.ie                 # Override host"
-    echo "  $0 prod compucore2.setu.ie ken             # Override host and user"
-    echo "  $0 prod compucore3.setu.ie ken /opt myapp  # Override all"
+    echo "  $0 prod compucore3.setu.ie                 # Override host"
+    echo "  $0 prod compucore3.setu.ie deployer        # Override host and user"
+    echo "  $0 prod compucore3.setu.ie deployer /opt crc  # Override all"
     exit 0
 fi
 
@@ -135,13 +135,10 @@ echo ""
 
 # Step 1: Run npm install and build
 echo "[1/7] Running npm install..."
-cd web
 npm install
 
 echo "[2/7] Building application..."
 npm run build
-
-cd ..
 
 # Step 2: Compress the folder
 echo "[3/7] Compressing folder (listing files as added)..."
@@ -150,14 +147,8 @@ COPYFILE_DISABLE=1 tar -cvzf "${ARCHIVE_NAME}" \
     --exclude=.git \
     --exclude=.venv \
     --exclude=venv \
-    --exclude=tokens/.env.local \
-    --exclude=Docker/MySQL/data \
-    --exclude=user_uploads \
-    --exclude=screenshots \
-    --exclude=test-results \
-    --exclude=temp \
-    --exclude=Skills \
-    --exclude=web/static/*.csv \
+    --exclude=build \
+    --exclude=.svelte-kit \
     .
 
 echo "Created archive: ${ARCHIVE_NAME}"
@@ -180,17 +171,20 @@ ssh "${REMOTE_USER}@${HOST}" "set -e && \
 
 # Step 4: Backup database
 echo "[4/7c] Backing up database..."
-ssh "${REMOTE_USER}@${HOST}" bash << 'EOF'
-    set -e
-    cd "${REMOTE_PATH}"
-    mkdir -p backups
-    BACKUP_FILE="backups/db_backup_${TIMESTAMP}.sql"
-    docker exec $(docker compose -f "${DOCKER_FILE}" ps -q mysql) \
-        mysqldump -u root -p"${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE:-WritingAnalytics}" \
-        > "${BACKUP_FILE}" 2>/dev/null && \
-    echo "Database backed up to ${BACKUP_FILE}" || \
-    echo "Warning: Database backup failed"
-EOF
+ssh "${REMOTE_USER}@${HOST}" "set -e && \
+    cd ${REMOTE_PATH} && \
+    mkdir -p backups && \
+    BACKUP_FILE=\"backups/db_backup_${TIMESTAMP}.sql\" && \
+    DB_CONTAINER=\$(docker compose -f ${DOCKER_FILE} ps -q db) && \
+    if [ -n \"\${DB_CONTAINER}\" ]; then \
+        docker exec \${DB_CONTAINER} \
+            mysqldump -u root -p\"${MYSQL_ROOT_PASSWORD}\" \"${MYSQL_DATABASE}\" \
+            > \${BACKUP_FILE} 2>/dev/null && \
+        echo \"Database backed up to \${BACKUP_FILE}\" || \
+        echo 'Warning: Database backup failed'; \
+    else \
+        echo 'Warning: Database container not running, skipping backup'; \
+    fi"
 
 # Step 5: Run docker compose up on remote
 echo "[5/7] Running docker compose up on remote server..."
