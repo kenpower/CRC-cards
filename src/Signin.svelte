@@ -44,7 +44,11 @@
       // localStorage.setItem('Image URL',responsePayload.picture);
       // localStorage.setItem('Email',responsePayload.email);
       if (typeof window !== "undefined") {
-        localStorage.setItem("google-token", JSON.stringify(responsePayload));
+        try {
+          localStorage.setItem("google-token", JSON.stringify(responsePayload));
+        } catch (error) {
+          console.warn('localStorage.setItem blocked (Tracking Prevention may be active):', error);
+        }
         window.location.reload();
       }
     }
