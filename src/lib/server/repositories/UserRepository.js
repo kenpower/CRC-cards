@@ -2,7 +2,8 @@ import db from '../db';
 
 export class UserRepository {
   async upsert(user) {
-    const { email, forename, surname, display_name } = user;
+    const { email, forename, surname } = user;
+    const display_name = user.display_name ?? null;
 
     const [existing] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
 

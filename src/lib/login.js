@@ -1,4 +1,5 @@
 import {jwtDecode} from "jwt-decode";
+import { base } from '$app/paths';
 
 const user_from_login_token = (event) => {
     const params = new URLSearchParams(window.location.search);
@@ -24,41 +25,55 @@ const user_from_login_token = (event) => {
 };
 
 
-export const loginUser = async() => {    
+const upsertUserInDB = async (userData) => {
+  const response = await fetch(`${base}/api/users`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: userData.email,
+      forename: userData.forename,
+      surname: userData.surname,
+      display_name: userData.display_name
+    })
+  });
+  if (!response.ok) return null;
+  return await response.json();
+};
 
-    let user = localStorage.getItem("user");
-    if (user) {
-      console.log('User found in local storage', user);
-      return JSON.parse(user);
-    }
-
+export const loginUser = async() => {
     const home_url = import.meta.env.VITE_PUBLIC_URL || (window.location.origin + window.location.pathname);
-        
-    console.log('No user found in local storage, checking for a auth token in url');
-    user = user_from_login_token();
-    if (user) {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: user.email,
-          forename: user.forename,
-          surname: user.surname,
-          display_name: user.display_name
-        })
-      });
 
-      if(response.ok){
-        const newOrExistingUser = await response.json();
-        localStorage.setItem("user", JSON.stringify(newOrExistingUser));
-        window.location.href = home_url; //remove the token from query string
-        return newOrExistingUser;
+    // Handle fresh login via token in URL
+    const tokenUser = user_from_login_token();
+    if (tokenUser) {
+      console.log('Auth token found, upserting user in database');
+      const dbUser = await upsertUserInDB(tokenUser);
+      if (dbUser) {
+        localStorage.setItem("user", JSON.stringify(dbUser));
+        window.location.href = home_url; // remove token from query string
+        return dbUser;
       }
       console.error('Error inserting user into database');
       return null;
     }
 
-    console.log('No auth token found, redirecting to login service');
+    // Re-verify stored user against DB (handles DB resets, stale IDs, etc.)
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      console.log('User found in local storage, re-verifying with database');
+      const cachedUser = JSON.parse(stored);
+      const dbUser = await upsertUserInDB(cachedUser);
+      if (dbUser) {
+        localStorage.setItem("user", JSON.stringify(dbUser));
+        return dbUser;
+      }
+      // Upsert failed — clear stale data and force re-authentication
+      console.warn('Could not verify user with database, clearing local storage and re-authenticating');
+      localStorage.removeItem("user");
+      window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${home_url}`;
+      return null;
+    }
 
+    console.log('No auth token found, redirecting to login service');
     window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${home_url}`;
 };

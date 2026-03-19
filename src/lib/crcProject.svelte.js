@@ -1,3 +1,5 @@
+import { base } from '$app/paths';
+
 function getTempInt4() {
   return Math.floor(Math.random() * 2_000_000_000); // Avoids the max int4 limit
 }
@@ -13,7 +15,7 @@ const handleResponse = async (response, operation) => {
 
 export const DBinsertProject = async (projectData) => {
   const { data, error } = await handleResponse(
-    await fetch("/api/projects", {
+    await fetch(`${base}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -30,7 +32,7 @@ export const DBinsertProject = async (projectData) => {
 };
 
 export const DBfetchProjects = async (owner_id) => {
-  const url = owner_id ? `/api/projects?owner_id=${owner_id}` : "/api/projects";
+  const url = owner_id ? `${base}/api/projects?owner_id=${owner_id}` : `${base}/api/projects`;
   const { data, error } = await handleResponse(
     await fetch(url),
     "fetchProjects",
@@ -43,7 +45,7 @@ export const DBfetchProjects = async (owner_id) => {
 
 export const DBdeleteProject = async (project_id) => {
   const { data, error } = await handleResponse(
-    await fetch(`/api/projects?id=${project_id}`, { method: "DELETE" }),
+    await fetch(`${base}/api/projects?id=${project_id}`, { method: "DELETE" }),
     "deleteProject",
   );
 
@@ -54,7 +56,7 @@ export const DBdeleteProject = async (project_id) => {
 
 const DBinsertCard = async (card) => {
   const { data, error } = await handleResponse(
-    await fetch("/api/cards", {
+    await fetch(`${base}/api/cards`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -73,7 +75,7 @@ const DBinsertCard = async (card) => {
 
 const DBfetchCRCProjectCards = async (project_id) => {
   const { data, error } = await handleResponse(
-    await fetch(`/api/cards?project_id=${project_id}`),
+    await fetch(`${base}/api/cards?project_id=${project_id}`),
     "fetchCRCProjectCards",
   );
 
@@ -84,7 +86,7 @@ const DBfetchCRCProjectCards = async (project_id) => {
 
 const DBdeleteCard = async (cardId) => {
   const { data, error } = await handleResponse(
-    await fetch(`/api/cards?id=${cardId}`, { method: "DELETE" }),
+    await fetch(`${base}/api/cards?id=${cardId}`, { method: "DELETE" }),
     "deleteCard",
   );
 
@@ -95,7 +97,7 @@ const DBdeleteCard = async (cardId) => {
 
 const DBupdateCard = async (card) => {
   const { data, error } = await handleResponse(
-    await fetch("/api/cards", {
+    await fetch(`${base}/api/cards`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -112,7 +114,7 @@ const DBupdateCard = async (card) => {
 
 const DBaddRow = async (table, row) => {
   const { data, error } = await handleResponse(
-    await fetch(`/api/${table}`, {
+    await fetch(`${base}/api/${table}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(row),
@@ -127,7 +129,7 @@ const DBaddRow = async (table, row) => {
 
 const DBdeleteRow = async (table, row) => {
   const { data, error } = await handleResponse(
-    await fetch(`/api/${table}?id=${row.id}`, { method: "DELETE" }),
+    await fetch(`${base}/api/${table}?id=${row.id}`, { method: "DELETE" }),
     `deleteRow:${table}`,
   );
 
@@ -138,7 +140,7 @@ const DBdeleteRow = async (table, row) => {
 
 const DBupdateRow = async (table, row) => {
   const { data, error } = await handleResponse(
-    await fetch(`/api/${table}`, {
+    await fetch(`${base}/api/${table}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(row),
@@ -270,7 +272,7 @@ class CRCProject {
 
 export const getProject = async (project_id) => {
   const { data, error } = await handleResponse(
-    await fetch(`/api/projects?id=${project_id}`),
+    await fetch(`${base}/api/projects?id=${project_id}`),
     "getProject",
   );
 
