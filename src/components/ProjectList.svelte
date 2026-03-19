@@ -41,7 +41,7 @@
   <h1>Projects</h1>
   <div>
       <button id="add_button" onclick={openNewProjectModal}>
-      <i class="material-symbols-outlined project_icon">add_box</i>
+      <i class="material-icons project_icon">add_box</i>
       New CRC Card Project
     </button>
   </div>

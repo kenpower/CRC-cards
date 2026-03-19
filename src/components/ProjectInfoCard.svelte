@@ -79,7 +79,7 @@
 
 <div role="button" tabindex="0" class="project-card" {onclick}>
   <div class="card-content">
-    <i class="material-symbols-outlined project_icon">note_stack</i>
+    <i class="material-icons project_icon">description</i>
     <div class="text-content">
       <h3 class="project-name">{project.name}</h3>
 
@@ -89,7 +89,7 @@
     </div>
     <span>
       <button bind:this={anchor} onclick={(e) => openMenu(e)}>
-        <i class="material-symbols-outlined">more_horiz</i>
+        <i class="material-icons">more_horiz</i>
       </button>
     </span>
   </div>
@@ -122,7 +122,7 @@
           <PrimaryText>Delete</PrimaryText>
           <SecondaryText class="delete">Remove project forever</SecondaryText>
         </Text>
-        <i class="material-symbols-outlined delete">delete</i>
+        <i class="material-icons delete">delete</i>
       </Item>
     </List>
   </Menu>
@@ -212,7 +212,7 @@
       /* Gradient (-50 to 200) */ "opsz" 80; /* Optical size (20 to 48) */
   }
 
-  .material-symbols-outlined {
+  .material-icons {
     color: #333;
   }
 

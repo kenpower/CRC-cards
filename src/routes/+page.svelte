@@ -9,6 +9,7 @@
     DBinsertProject,
   } from "$lib/crcProject.svelte.js";
   import { loginUser } from "$lib/login.js";
+  import { base } from "$app/paths";
   import { user } from "$lib/stores.js";
   import TopBar from "../components/TopBar.svelte";
   import CardArea from "../components/CardArea.svelte";
@@ -83,6 +84,8 @@
       userName = $user.name;
       profileIcon = $user.profileIcon;
       projects = await DBfetchProjects($user.id);
+      const idParam = new URLSearchParams(window.location.search).get("id");
+      if (idParam) projectId = idParam;
     }
   });
 
@@ -90,6 +93,7 @@
     console.log("Setting project ID to", null);
     crcProject = null;
     projectId = null;
+    window.history.replaceState({}, "", base + "/");
   }
 
   $inspect(crcProject, "crcProject");

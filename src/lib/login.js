@@ -40,6 +40,12 @@ const upsertUserInDB = async (userData) => {
   return await response.json();
 };
 
+export const logoutUser = () => {
+    localStorage.removeItem("user");
+    const home_url = import.meta.env.VITE_PUBLIC_URL || (window.location.origin + window.location.pathname);
+    window.location.href = `https://compucore.itcarlow.ie/auth/sign_in?redirect=${home_url}`;
+};
+
 export const loginUser = async() => {
     const home_url = import.meta.env.VITE_PUBLIC_URL || (window.location.origin + window.location.pathname);
 

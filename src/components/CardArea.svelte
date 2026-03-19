@@ -5,6 +5,7 @@
   import Draggable from "./Draggable.svelte";
   import Draggable2 from "./Draggable2.svelte";
   import { onMount } from "svelte";
+  import { base } from "$app/paths";
 
   let { crcProject } = $props();
 
@@ -33,7 +34,7 @@
 
   onMount(() => {
     console.log("CardArea mounted", crcProject);
-    const newUrl = `/?id=${crcProject.base32_id}`;
+    const newUrl = `${base}/?id=${crcProject.base32_id}`;
     window.history.replaceState({}, "", newUrl);
   });
 </script>

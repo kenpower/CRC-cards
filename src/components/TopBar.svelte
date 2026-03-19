@@ -3,7 +3,7 @@
   import IconButton from "@smui/icon-button";
   import Avatar from "./Avatar.svelte";
   import ProfileCircle from "./ProfileCircle.svelte";
-
+  import { logoutUser } from "$lib/login.js";
 
   var { project, showProjectList, user, profileIcon = null } = $props();
 
@@ -34,7 +34,6 @@
         <Title>Project: {projectName}</Title>
       </Section>
       <Section align="end" toolbar>
-
         {#if profileIcon}
           <Avatar
             width="48"
@@ -43,8 +42,11 @@
             src={profileIcon}
           />
         {:else}
-          <ProfileCircle  fullname={user?.display_name} forename={user?.forename} surname={user?.surname} email={user?.email}/>
+          <ProfileCircle fullname={user?.display_name} forename={user?.forename} surname={user?.surname} email={user?.email}/>
         {/if}
+        <IconButton onclick={logoutUser} title="Logout">
+          <i class="material-icons">logout</i>
+        </IconButton>
       </Section>
     </Row>
   </TopAppBar>
